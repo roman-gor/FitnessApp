@@ -1,0 +1,71 @@
+package com.gorman.fitnessapp.di
+
+import android.content.Context
+import androidx.room.Room
+import com.gorman.fitnessapp.data.datasource.MySQLService
+import com.gorman.fitnessapp.data.datasource.local.AppDatabase
+import com.gorman.fitnessapp.data.datasource.local.dao.ExerciseDao
+import com.gorman.fitnessapp.data.datasource.local.dao.UsersDataDao
+import com.gorman.fitnessapp.data.repository.DatabaseRepositoryImpl
+import com.gorman.fitnessapp.domain.repository.DatabaseRepository
+import dagger.Module
+import dagger.Provides
+import dagger.hilt.InstallIn
+import dagger.hilt.android.qualifiers.ApplicationContext
+import dagger.hilt.components.SingletonComponent
+import okhttp3.OkHttpClient
+import retrofit2.Retrofit
+import retrofit2.converter.gson.GsonConverterFactory
+import okhttp3.logging.HttpLoggingInterceptor
+import javax.inject.Singleton
+
+private const val BASE_URL = "https://fitnessapp.42web.io/"
+
+@Module
+@InstallIn(SingletonComponent::class)
+object AppModule {
+    @Provides
+    @Singleton
+    fun provideOkHttpClient(): OkHttpClient {
+        val logging = HttpLoggingInterceptor().apply {
+            level = HttpLoggingInterceptor.Level.BODY
+        }
+        return OkHttpClient.Builder()
+            .addInterceptor(logging)
+            .build()
+    }
+
+    @Provides
+    @Singleton
+    fun provideRetrofitClient(client: OkHttpClient): Retrofit =
+        Retrofit.Builder()
+            .baseUrl(BASE_URL)
+            .client(client)
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+
+    @Provides
+    @Singleton
+    fun provideMySQLService(retrofit: Retrofit): MySQLService =
+        retrofit.create(MySQLService::class.java)
+
+    @Provides
+    @Singleton
+    fun provideDatabaseRepositoryImpl(usersDataDao: UsersDataDao): DatabaseRepository =
+        DatabaseRepositoryImpl(usersDataDao)
+
+    @Provides
+    @Singleton
+    fun provideDatabase(@ApplicationContext context: Context): AppDatabase =
+        Room.databaseBuilder(context, AppDatabase::class.java, "fitness_app_db")
+            .fallbackToDestructiveMigration(false)
+            .build()
+
+    @Provides
+    @Singleton
+    fun provideUsersDataDao(db: AppDatabase): UsersDataDao = db.usersDataDao()
+
+    @Provides
+    @Singleton
+    fun provideExerciseDao(db: AppDatabase): ExerciseDao = db.exerciseDao()
+}
