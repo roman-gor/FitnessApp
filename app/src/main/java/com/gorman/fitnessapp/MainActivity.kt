@@ -1,24 +1,21 @@
 package com.gorman.fitnessapp
 
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.gorman.fitnessapp.data.models.UsersDataEntity
-import com.gorman.fitnessapp.ui.MainViewModel
+import com.gorman.fitnessapp.ui.screens.RegisterScreen
 import com.gorman.fitnessapp.ui.theme.FitnessAppTheme
+import com.gorman.fitnessapp.ui.viewmodel.RegisterViewModel
 import dagger.hilt.android.AndroidEntryPoint
-import java.util.concurrent.TimeUnit
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
@@ -26,34 +23,24 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
-            val mainViewModel: MainViewModel = hiltViewModel()
+            val registerViewModel: RegisterViewModel = hiltViewModel()
+            val users = registerViewModel.usersState.value
             LaunchedEffect(Unit) {
-                mainViewModel.getAllUsers()
+                registerViewModel.getAllUsers()
             }
-            val users by mainViewModel.usersState
             FitnessAppTheme {
                 Surface (
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ){
+                    //RegisterScreen()
                     if (users.isNotEmpty()) {
-                        Greeting(
-                            name = users.first().name!!,
-                            modifier = Modifier.systemBarsPadding())
-                    }
-                    else {
-                        Text("No users")
+                        Log.d("Room", users[1].toString())
+                    } else {
+                        Log.d("Room", "Users list is empty or still loading.")
                     }
                 }
             }
         }
     }
-}
-
-@Composable
-fun Greeting(name: String, modifier: Modifier = Modifier) {
-    Text(
-        text = "Hello $name!",
-        modifier = modifier
-    )
 }
