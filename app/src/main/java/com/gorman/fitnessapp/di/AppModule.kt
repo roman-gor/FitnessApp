@@ -8,8 +8,12 @@ import com.gorman.fitnessapp.data.datasource.MySQLService
 import com.gorman.fitnessapp.data.datasource.local.AppDatabase
 import com.gorman.fitnessapp.data.datasource.local.dao.ExerciseDao
 import com.gorman.fitnessapp.data.datasource.local.dao.UsersDataDao
+import com.gorman.fitnessapp.data.datasource.remote.FirebaseAPI
+import com.gorman.fitnessapp.data.datasource.remote.FirebaseAPIImpl
 import com.gorman.fitnessapp.data.repository.DatabaseRepositoryImpl
+import com.gorman.fitnessapp.data.repository.FirebaseRepositoryImpl
 import com.gorman.fitnessapp.domain.repository.DatabaseRepository
+import com.gorman.fitnessapp.domain.repository.FirebaseRepository
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -62,6 +66,16 @@ object AppModule {
     fun provideDatabaseReference(database: FirebaseDatabase): DatabaseReference {
         return database.getReference("FitnessApp")
     }
+
+    @Provides
+    @Singleton
+    fun provideFirebaseAPI(db: DatabaseReference): FirebaseAPI =
+        FirebaseAPIImpl(db)
+
+    @Provides
+    @Singleton
+    fun provideFirebaseRepositoryImpl(api: FirebaseAPI): FirebaseRepository =
+        FirebaseRepositoryImpl(api)
 
     @Provides
     @Singleton
