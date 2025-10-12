@@ -1,4 +1,4 @@
-package com.gorman.fitnessapp.data.datasource
+package com.gorman.fitnessapp.data.datasource.local
 
 import com.gorman.fitnessapp.data.models.AddUserResponse
 import com.gorman.fitnessapp.data.models.UsersDataEntity

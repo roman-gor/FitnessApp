@@ -26,7 +26,7 @@ class MainActivity : ComponentActivity() {
             val registerViewModel: RegisterViewModel = hiltViewModel()
             val users = registerViewModel.usersState.value
             LaunchedEffect(Unit) {
-                registerViewModel.getAllUsers()
+                registerViewModel.prompt()
             }
             FitnessAppTheme {
                 Surface (

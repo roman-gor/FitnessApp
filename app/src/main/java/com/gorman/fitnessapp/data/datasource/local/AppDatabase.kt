@@ -32,7 +32,7 @@ abstract class AppDatabase: RoomDatabase() {
     abstract fun usersDataDao(): UsersDataDao
     abstract fun exerciseDao(): ExerciseDao
     companion object {
-        val MIGRATION_CALLBACK = object : RoomDatabase.Callback() {
+        val MIGRATION_CALLBACK = object : Callback() {
             override fun onCreate(db: SupportSQLiteDatabase) {
                 super.onCreate(db)
                 db.execSQL(CREATE_TRIGGER_PROGRAM_PROGRESS)

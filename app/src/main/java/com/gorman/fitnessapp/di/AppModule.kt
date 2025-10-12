@@ -4,7 +4,12 @@ import android.content.Context
 import androidx.room.Room
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
-import com.gorman.fitnessapp.data.datasource.MySQLService
+import com.gorman.fitnessapp.BuildConfig
+import com.gorman.fitnessapp.data.datasource.ai.AiApiClient
+import com.gorman.fitnessapp.data.datasource.ai.GeminiApiClientModel
+import com.gorman.fitnessapp.data.datasource.ai.GeminiGenerator
+import com.gorman.fitnessapp.data.datasource.ai.GeminiGeneratorImpl
+import com.gorman.fitnessapp.data.datasource.local.MySQLService
 import com.gorman.fitnessapp.data.datasource.local.AppDatabase
 import com.gorman.fitnessapp.data.datasource.local.dao.ExerciseDao
 import com.gorman.fitnessapp.data.datasource.local.dao.UsersDataDao
@@ -99,4 +104,19 @@ object AppModule {
     @Provides
     @Singleton
     fun provideExerciseDao(db: AppDatabase): ExerciseDao = db.exerciseDao()
+
+    @Provides
+    @Singleton
+    fun provideGeminiApiKey(): String =
+        BuildConfig.GEMINI_API
+
+    @Provides
+    @Singleton
+    fun provideGeminiApiClientModel(apiKey: String): AiApiClient =
+        GeminiApiClientModel(apiKey)
+
+    @Provides
+    @Singleton
+    fun provideGeminiGenerator(aiApiClient: AiApiClient): GeminiGenerator =
+        GeminiGeneratorImpl(aiApiClient)
 }

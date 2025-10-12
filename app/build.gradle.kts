@@ -13,12 +13,13 @@ android {
     compileSdk = 36
 
     defaultConfig {
+        val geminiApiKey: String by rootProject.extra
         applicationId = "com.gorman.fitnessapp"
         minSdk = 26
         targetSdk = 36
         versionCode = 1
         versionName = "1.0"
-
+        buildConfigField("String", "GEMINI_API", "\"$geminiApiKey\"")
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
@@ -46,7 +47,6 @@ android {
 
 dependencies {
 
-    implementation(libs.cronet.embedded)
     val room_version = "2.7.2"
     implementation("io.coil-kt:coil-compose:2.4.0")
     implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.9.2")
