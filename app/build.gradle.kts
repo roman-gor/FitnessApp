@@ -76,6 +76,7 @@ dependencies {
     implementation("androidx.room:room-guava:${room_version}")
     testImplementation("androidx.room:room-testing:${room_version}")
     implementation("androidx.room:room-paging:${room_version}")
+    implementation("com.google.ai.client.generativeai:generativeai:0.9.0")
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.activity.compose)
