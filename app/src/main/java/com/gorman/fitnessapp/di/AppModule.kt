@@ -79,14 +79,17 @@ object AppModule {
 
     @Provides
     @Singleton
-    fun provideDatabaseRepositoryImpl(usersDataDao: UsersDataDao): DatabaseRepository =
-        DatabaseRepositoryImpl(usersDataDao)
+    fun provideDatabaseRepositoryImpl(usersDataDao: UsersDataDao, exerciseDao: ExerciseDao): DatabaseRepository =
+        DatabaseRepositoryImpl(usersDataDao, exerciseDao)
 
     @Provides
     @Singleton
     fun provideDatabase(@ApplicationContext context: Context): AppDatabase =
-        Room.databaseBuilder(context, AppDatabase::class.java, "fitness_app_db")
+        Room.databaseBuilder(context,
+            AppDatabase::class.java,
+            "fitness_app_db")
             .fallbackToDestructiveMigration(false)
+            .addCallback(AppDatabase.MIGRATION_CALLBACK)
             .build()
 
     @Provides

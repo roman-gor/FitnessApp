@@ -46,6 +46,7 @@ android {
 
 dependencies {
 
+    implementation(libs.cronet.embedded)
     val room_version = "2.7.2"
     implementation("io.coil-kt:coil-compose:2.4.0")
     implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.9.2")
