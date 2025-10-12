@@ -33,6 +33,5 @@ data class WorkoutHistoryEntity(
     val date: Long,
     val setsCompleted: Int,
     val repsCompleted: Int,
-    val weightUsed: Float? = null,
-    val isSuccessful: Boolean? = false
+    val weightUsed: Float? = null
 ): Parcelable

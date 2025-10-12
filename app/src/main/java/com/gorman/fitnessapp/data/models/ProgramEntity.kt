@@ -10,12 +10,8 @@ import kotlinx.parcelize.Parcelize
 data class ProgramEntity(
     @PrimaryKey(autoGenerate = true)
     val id: Int = 0,
-    val name: String? = null,
-    val exQuantity: Int? = null,
-    val muscleGroup: String? = null,
-    val complexity: Int? = null,
+    val name: String,
+    val muscleGroup: String,
     val description: String? = null,
-    val goalType: String? = null,
-    val imageUrl: String? = null,
-    val isCompleted: Boolean? = null
+    val goalType: String? = null
 ): Parcelable

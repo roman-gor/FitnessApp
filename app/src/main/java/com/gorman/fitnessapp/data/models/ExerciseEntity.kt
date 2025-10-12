@@ -10,14 +10,10 @@ import kotlinx.parcelize.Parcelize
 data class ExerciseEntity(
     @PrimaryKey(autoGenerate = true)
     val id: Int = 0,
-    val name: String? = null,
+    val name: String,
     val description: String? = null,
-    val muscleGroup: String? = null,
+    val muscleGroup: String,
     val complexity: Int? = null,
     val videoUrl: String? = null,
-    val imageUrl: String? = null,
-    val durationSec: Int? = null,
-    val repetitions: Int? = null,
-    val sets: Int? = null,
-    val caloriesBurned: Float? = null
+    val imageUrl: String? = null
 ): Parcelable

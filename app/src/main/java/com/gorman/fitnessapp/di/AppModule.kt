@@ -2,6 +2,8 @@ package com.gorman.fitnessapp.di
 
 import android.content.Context
 import androidx.room.Room
+import com.google.firebase.database.DatabaseReference
+import com.google.firebase.database.FirebaseDatabase
 import com.gorman.fitnessapp.data.datasource.MySQLService
 import com.gorman.fitnessapp.data.datasource.local.AppDatabase
 import com.gorman.fitnessapp.data.datasource.local.dao.ExerciseDao
@@ -48,6 +50,18 @@ object AppModule {
     @Singleton
     fun provideMySQLService(retrofit: Retrofit): MySQLService =
         retrofit.create(MySQLService::class.java)
+
+    @Provides
+    @Singleton
+    fun provideFirebaseDatabase(): FirebaseDatabase {
+        return FirebaseDatabase.getInstance()
+    }
+
+    @Provides
+    @Singleton
+    fun provideDatabaseReference(database: FirebaseDatabase): DatabaseReference {
+        return database.getReference("FitnessApp")
+    }
 
     @Provides
     @Singleton

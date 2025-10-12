@@ -4,13 +4,14 @@ import android.os.Parcelable
 import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.Index
+import androidx.room.PrimaryKey
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
 @Entity(tableName = "ProgramExercise",
-    primaryKeys = ["programId", "exerciseId"],
     indices = [
-        Index(value = ["exerciseId"])
+        Index(value = ["exerciseId"]),
+        Index(value = ["programId", "exerciseId", "dayOfWeek"], unique = true)
     ],
     foreignKeys = [
         ForeignKey(
@@ -22,7 +23,14 @@ import kotlinx.parcelize.Parcelize
         ForeignKey(entity = ExerciseEntity::class, parentColumns = ["id"], childColumns = ["exerciseId"], onDelete = ForeignKey.CASCADE)
     ])
 data class ProgramExerciseEntity(
+    @PrimaryKey(autoGenerate = true)
+    val id: Int = 0,
     val programId: Int,
     val exerciseId: Int,
-    val order: Int? = null
+    val order: Int,
+    val dayOfWeek: String,
+    val durationSec: Int,
+    val repetitions: Int,
+    val sets: Int,
+    val caloriesBurned: Float? = null
 ): Parcelable

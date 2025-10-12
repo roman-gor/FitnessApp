@@ -6,7 +6,7 @@ import com.gorman.fitnessapp.data.datasource.local.dao.ExerciseDao
 import com.gorman.fitnessapp.data.datasource.local.dao.UsersDataDao
 import com.gorman.fitnessapp.data.models.ExerciseEntity
 import com.gorman.fitnessapp.data.models.MealEntity
-import com.gorman.fitnessapp.data.models.MealPlanEntity
+import com.gorman.fitnessapp.data.models.MealPlanItemEntity
 import com.gorman.fitnessapp.data.models.ProgramEntity
 import com.gorman.fitnessapp.data.models.ProgramExerciseEntity
 import com.gorman.fitnessapp.data.models.UserProgramEntity
@@ -20,7 +20,7 @@ import com.gorman.fitnessapp.data.models.WorkoutHistoryEntity
     ProgramEntity::class,
     ProgramExerciseEntity::class,
     MealEntity::class,
-    MealPlanEntity::class,
+    MealPlanItemEntity::class,
     UserProgressEntity::class,
     UserProgramEntity::class,
     WorkoutHistoryEntity::class
