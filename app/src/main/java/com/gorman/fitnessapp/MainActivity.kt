@@ -5,7 +5,12 @@ import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.compose.foundation.gestures.scrollable
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.text.selection.SelectionContainer
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -25,6 +30,8 @@ class MainActivity : ComponentActivity() {
         setContent {
             val registerViewModel: RegisterViewModel = hiltViewModel()
             val users = registerViewModel.usersState.value
+            val json = registerViewModel.json.value
+            val state = rememberScrollState()
             LaunchedEffect(Unit) {
                 registerViewModel.prompt()
             }
@@ -33,6 +40,13 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ){
+                    Column(modifier = Modifier
+                        .fillMaxSize()
+                        .verticalScroll(rememberScrollState())){
+                        SelectionContainer {
+                            Text(json)
+                        }
+                    }
                     //RegisterScreen()
                     if (users.isNotEmpty()) {
                         Log.d("Room", users[1].toString())

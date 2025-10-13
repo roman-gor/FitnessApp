@@ -15,8 +15,10 @@ import com.gorman.fitnessapp.data.datasource.local.dao.ExerciseDao
 import com.gorman.fitnessapp.data.datasource.local.dao.UsersDataDao
 import com.gorman.fitnessapp.data.datasource.remote.FirebaseAPI
 import com.gorman.fitnessapp.data.datasource.remote.FirebaseAPIImpl
+import com.gorman.fitnessapp.data.repository.AiRepositoryImpl
 import com.gorman.fitnessapp.data.repository.DatabaseRepositoryImpl
 import com.gorman.fitnessapp.data.repository.FirebaseRepositoryImpl
+import com.gorman.fitnessapp.domain.repository.AiRepository
 import com.gorman.fitnessapp.domain.repository.DatabaseRepository
 import com.gorman.fitnessapp.domain.repository.FirebaseRepository
 import dagger.Module
@@ -119,4 +121,9 @@ object AppModule {
     @Singleton
     fun provideGeminiGenerator(aiApiClient: AiApiClient): GeminiGenerator =
         GeminiGeneratorImpl(aiApiClient)
+
+    @Provides
+    @Singleton
+    fun provideAiRepository(geminiGenerator: GeminiGenerator): AiRepository =
+        AiRepositoryImpl(geminiGenerator)
 }
