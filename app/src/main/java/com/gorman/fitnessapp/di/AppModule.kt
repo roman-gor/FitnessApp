@@ -12,6 +12,9 @@ import com.gorman.fitnessapp.data.datasource.ai.GeminiGeneratorImpl
 import com.gorman.fitnessapp.data.datasource.local.MySQLService
 import com.gorman.fitnessapp.data.datasource.local.AppDatabase
 import com.gorman.fitnessapp.data.datasource.local.dao.ExerciseDao
+import com.gorman.fitnessapp.data.datasource.local.dao.ProgramDao
+import com.gorman.fitnessapp.data.datasource.local.dao.ProgramExerciseDao
+import com.gorman.fitnessapp.data.datasource.local.dao.UserProgramDao
 import com.gorman.fitnessapp.data.datasource.local.dao.UsersDataDao
 import com.gorman.fitnessapp.data.datasource.remote.FirebaseAPI
 import com.gorman.fitnessapp.data.datasource.remote.FirebaseAPIImpl
@@ -86,8 +89,12 @@ object AppModule {
 
     @Provides
     @Singleton
-    fun provideDatabaseRepositoryImpl(usersDataDao: UsersDataDao, exerciseDao: ExerciseDao): DatabaseRepository =
-        DatabaseRepositoryImpl(usersDataDao, exerciseDao)
+    fun provideDatabaseRepositoryImpl(usersDataDao: UsersDataDao,
+                                      exerciseDao: ExerciseDao,
+                                      userProgramDao: UserProgramDao,
+                                      programExerciseDao: ProgramExerciseDao,
+                                      programDao: ProgramDao): DatabaseRepository =
+        DatabaseRepositoryImpl(usersDataDao, exerciseDao, userProgramDao, programExerciseDao, programDao)
 
     @Provides
     @Singleton
@@ -106,6 +113,18 @@ object AppModule {
     @Provides
     @Singleton
     fun provideExerciseDao(db: AppDatabase): ExerciseDao = db.exerciseDao()
+
+    @Provides
+    @Singleton
+    fun provideProgramDao(db: AppDatabase): ProgramDao = db.programDao()
+
+    @Provides
+    @Singleton
+    fun provideProgramExerciseDao(db: AppDatabase): ProgramExerciseDao = db.programExerciseDao()
+
+    @Provides
+    @Singleton
+    fun provideUserProgramDao(db: AppDatabase): UserProgramDao = db.userProgramDao()
 
     @Provides
     @Singleton

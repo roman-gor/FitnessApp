@@ -31,7 +31,6 @@ class MainActivity : ComponentActivity() {
             val registerViewModel: RegisterViewModel = hiltViewModel()
             val users = registerViewModel.usersState.value
             val json = registerViewModel.json.value
-            val state = rememberScrollState()
             LaunchedEffect(Unit) {
                 registerViewModel.prompt()
             }

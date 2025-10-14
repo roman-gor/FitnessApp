@@ -62,10 +62,10 @@ class RegisterViewModel @Inject constructor(
         viewModelScope.launch {
             try {
                 Log.d("PromptCall", "Начинаем вызов Gemini...")
-//                _json.value = geminiGenerator.generateWorkoutProgram(
-//                    userData = testUserData,
-//                    availableExercises = availableExercises
-//                )
+                _json.value = geminiGenerator.generateWorkoutProgram(
+                    userData = testUserData,
+                    availableExercises = availableExercises
+                )
                 val programDtos: List<ProgramDto> = Json.decodeFromString("""[
   {
     "program_id": "prog_mass_ppl_01",

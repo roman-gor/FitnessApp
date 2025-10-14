@@ -1,12 +1,12 @@
 package com.gorman.fitnessapp.domain.models
 
 data class ProgramExercise(
-    val id: String,
+    val id: Int,
     val exerciseId: Int,
     val order: Int,
     val dayOfWeek: String,
     val sets: Int,
     val repetitions: Int,
     val durationSec: Int,
-    val caloriesBurned: Int
+    val caloriesBurned: Float?
 )

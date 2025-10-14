@@ -39,12 +39,12 @@ fun ProgramExerciseDto.toEntity(programId: Int): ProgramExerciseEntity =
 
 fun ProgramExerciseDto.toDomain(): ProgramExercise =
     ProgramExercise(
-        id = id,
+        id = id.toInt(),
         exerciseId = exerciseId,
         order = order,
         dayOfWeek = dayOfWeek,
         durationSec = durationSec,
         sets = sets,
         repetitions = repetitions,
-        caloriesBurned = caloriesBurned
+        caloriesBurned = caloriesBurned.toFloat()
     )

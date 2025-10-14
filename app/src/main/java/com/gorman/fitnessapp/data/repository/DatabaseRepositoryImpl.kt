@@ -1,22 +1,40 @@
 package com.gorman.fitnessapp.data.repository
 
 import com.gorman.fitnessapp.data.datasource.local.dao.ExerciseDao
+import com.gorman.fitnessapp.data.datasource.local.dao.ProgramDao
+import com.gorman.fitnessapp.data.datasource.local.dao.ProgramExerciseDao
+import com.gorman.fitnessapp.data.datasource.local.dao.UserProgramDao
 import com.gorman.fitnessapp.data.datasource.local.dao.UsersDataDao
 import com.gorman.fitnessapp.data.mapper.toDomain
 import com.gorman.fitnessapp.data.mapper.toEntity
 import com.gorman.fitnessapp.domain.models.Exercise
+import com.gorman.fitnessapp.domain.models.Program
+import com.gorman.fitnessapp.domain.models.ProgramExercise
+import com.gorman.fitnessapp.domain.models.ProgramTemplate
+import com.gorman.fitnessapp.domain.models.UserProgram
 import com.gorman.fitnessapp.domain.models.UsersData
 import com.gorman.fitnessapp.domain.repository.DatabaseRepository
 import javax.inject.Inject
 
 class DatabaseRepositoryImpl @Inject constructor(
     private val usersDataDao: UsersDataDao,
-    private val exerciseDao: ExerciseDao
+    private val exerciseDao: ExerciseDao,
+    private val userProgramDao: UserProgramDao,
+    private val programExerciseDao: ProgramExerciseDao,
+    private val programDao: ProgramDao
 ): DatabaseRepository {
 
     override suspend fun getAllUsers(): List<UsersData> {
         return usersDataDao.getAllUsers()
             .map { it.toDomain() }
+    }
+
+    override suspend fun getUserProgramById(userId: Int, programId: Int): UserProgram {
+        return userProgramDao.getUserProgramById(userId = userId, programId = programId).toDomain()
+    }
+
+    override suspend fun getListOfProgramExercises(programId: Int): List<ProgramExercise> {
+        return programExerciseDao.getListOfProgramExercise(programId).map { it.toDomain() }
     }
 
     override suspend fun getUser(email: String?): UsersData {
@@ -41,5 +59,13 @@ class DatabaseRepositoryImpl @Inject constructor(
 
     override suspend fun insertExercises(exercises: List<Exercise>) {
         exerciseDao.insertExercises(exercises.map { it.toEntity() })
+    }
+
+    override suspend fun insertProgramExercise(programExercise: List<ProgramExercise>, programId: Int) {
+        programExerciseDao.insertProgramExercise(programExercise.map { it.toEntity(programId) })
+    }
+
+    override suspend fun insertProgram(program: Program): Int {
+        return programDao.insertProgramTemplate(program.toEntity()).toInt()
     }
 }
