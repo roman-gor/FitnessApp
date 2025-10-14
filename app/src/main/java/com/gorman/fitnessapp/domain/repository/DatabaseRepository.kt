@@ -3,7 +3,6 @@ package com.gorman.fitnessapp.domain.repository
 import com.gorman.fitnessapp.domain.models.Exercise
 import com.gorman.fitnessapp.domain.models.Program
 import com.gorman.fitnessapp.domain.models.ProgramExercise
-import com.gorman.fitnessapp.domain.models.ProgramTemplate
 import com.gorman.fitnessapp.domain.models.UserProgram
 import com.gorman.fitnessapp.domain.models.UsersData
 
@@ -17,6 +16,5 @@ interface DatabaseRepository {
     suspend fun updateUser(user: UsersData): Int
     suspend fun getExercises(): List<Exercise>
     suspend fun insertExercises(exercises: List<Exercise>)
-    suspend fun insertProgramExercise(programExercise: List<ProgramExercise>, programId: Int)
-    suspend fun insertProgram(program: Program): Int
+    suspend fun insertProgramWithExercises(program: Program)
 }

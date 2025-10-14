@@ -4,7 +4,6 @@ import com.gorman.fitnessapp.data.models.ProgramEntity
 import com.gorman.fitnessapp.data.models.ProgramExerciseEntity
 import com.gorman.fitnessapp.domain.models.Program
 import com.gorman.fitnessapp.domain.models.ProgramExercise
-import com.gorman.fitnessapp.domain.models.ProgramTemplate
 
 fun ProgramExerciseEntity.toDomain(): ProgramExercise =
     ProgramExercise(

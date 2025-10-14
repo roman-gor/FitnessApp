@@ -1,5 +1,7 @@
 package com.gorman.fitnessapp.data.repository
 
+import androidx.room.withTransaction
+import com.gorman.fitnessapp.data.datasource.local.AppDatabase
 import com.gorman.fitnessapp.data.datasource.local.dao.ExerciseDao
 import com.gorman.fitnessapp.data.datasource.local.dao.ProgramDao
 import com.gorman.fitnessapp.data.datasource.local.dao.ProgramExerciseDao
@@ -10,13 +12,13 @@ import com.gorman.fitnessapp.data.mapper.toEntity
 import com.gorman.fitnessapp.domain.models.Exercise
 import com.gorman.fitnessapp.domain.models.Program
 import com.gorman.fitnessapp.domain.models.ProgramExercise
-import com.gorman.fitnessapp.domain.models.ProgramTemplate
 import com.gorman.fitnessapp.domain.models.UserProgram
 import com.gorman.fitnessapp.domain.models.UsersData
 import com.gorman.fitnessapp.domain.repository.DatabaseRepository
 import javax.inject.Inject
 
 class DatabaseRepositoryImpl @Inject constructor(
+    private val db: AppDatabase,
     private val usersDataDao: UsersDataDao,
     private val exerciseDao: ExerciseDao,
     private val userProgramDao: UserProgramDao,
@@ -61,11 +63,13 @@ class DatabaseRepositoryImpl @Inject constructor(
         exerciseDao.insertExercises(exercises.map { it.toEntity() })
     }
 
-    override suspend fun insertProgramExercise(programExercise: List<ProgramExercise>, programId: Int) {
-        programExerciseDao.insertProgramExercise(programExercise.map { it.toEntity(programId) })
-    }
-
-    override suspend fun insertProgram(program: Program): Int {
-        return programDao.insertProgramTemplate(program.toEntity()).toInt()
+    override suspend fun insertProgramWithExercises(program: Program) {
+        db.withTransaction {
+            val programId = programDao.insertProgramTemplate(program.toEntity()).toInt()
+            val exerciseEntities = program.exercises.map { exercise ->
+                exercise.toEntity(programId)
+            }
+            programExerciseDao.insertProgramExercise(exerciseEntities)
+        }
     }
 }

@@ -1,8 +1,6 @@
 package com.gorman.fitnessapp.data.datasource.ai
 
-import com.gorman.fitnessapp.data.models.ExerciseEntity
 import com.gorman.fitnessapp.data.models.MealPlanTemplateEntity
-import com.gorman.fitnessapp.data.models.ProgramEntity
 import com.gorman.fitnessapp.data.models.UsersDataEntity
 
 interface GeminiGenerator {

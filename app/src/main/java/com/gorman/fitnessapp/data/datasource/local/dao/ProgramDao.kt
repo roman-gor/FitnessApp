@@ -9,5 +9,4 @@ import com.gorman.fitnessapp.data.models.ProgramEntity
 interface ProgramDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertProgramTemplate(programEntity: ProgramEntity): Long
-
 }

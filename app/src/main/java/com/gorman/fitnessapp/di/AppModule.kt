@@ -89,12 +89,13 @@ object AppModule {
 
     @Provides
     @Singleton
-    fun provideDatabaseRepositoryImpl(usersDataDao: UsersDataDao,
+    fun provideDatabaseRepositoryImpl(db: AppDatabase,
+                                      usersDataDao: UsersDataDao,
                                       exerciseDao: ExerciseDao,
                                       userProgramDao: UserProgramDao,
                                       programExerciseDao: ProgramExerciseDao,
                                       programDao: ProgramDao): DatabaseRepository =
-        DatabaseRepositoryImpl(usersDataDao, exerciseDao, userProgramDao, programExerciseDao, programDao)
+        DatabaseRepositoryImpl(db, usersDataDao, exerciseDao, userProgramDao, programExerciseDao, programDao)
 
     @Provides
     @Singleton

@@ -12,8 +12,7 @@ class GetProgramsAndInsertIntoDBUseCase @Inject constructor(
     suspend operator fun invoke(usersData: UsersData, availableExercises: Map<Int, String>) {
         val programs = aiRepository.generatePrograms(usersData, availableExercises)
         programs.forEach { program ->
-            val programId = databaseRepository.insertProgram(program)
-            databaseRepository.insertProgramExercise(program.exercises, programId = programId)
+            databaseRepository.insertProgramWithExercises(program)
         }
     }
 }
