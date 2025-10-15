@@ -1,4 +1,4 @@
-package com.gorman.fitnessapp.data.models
+package com.gorman.fitnessapp.data.models.room
 
 import android.os.Parcelable
 import androidx.room.Entity

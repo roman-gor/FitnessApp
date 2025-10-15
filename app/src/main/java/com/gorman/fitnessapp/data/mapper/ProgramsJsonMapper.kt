@@ -2,8 +2,8 @@ package com.gorman.fitnessapp.data.mapper
 
 import com.gorman.fitnessapp.data.datasource.ai.dto.ProgramDto
 import com.gorman.fitnessapp.data.datasource.ai.dto.ProgramExerciseDto
-import com.gorman.fitnessapp.data.models.ProgramEntity
-import com.gorman.fitnessapp.data.models.ProgramExerciseEntity
+import com.gorman.fitnessapp.data.models.room.ProgramEntity
+import com.gorman.fitnessapp.data.models.room.ProgramExerciseEntity
 import com.gorman.fitnessapp.domain.models.Program
 import com.gorman.fitnessapp.domain.models.ProgramExercise
 

@@ -8,16 +8,16 @@ import com.gorman.fitnessapp.data.datasource.local.dao.ProgramDao
 import com.gorman.fitnessapp.data.datasource.local.dao.ProgramExerciseDao
 import com.gorman.fitnessapp.data.datasource.local.dao.UserProgramDao
 import com.gorman.fitnessapp.data.datasource.local.dao.UsersDataDao
-import com.gorman.fitnessapp.data.models.ExerciseEntity
-import com.gorman.fitnessapp.data.models.MealEntity
-import com.gorman.fitnessapp.data.models.MealPlanItemEntity
-import com.gorman.fitnessapp.data.models.MealPlanTemplateEntity
-import com.gorman.fitnessapp.data.models.ProgramEntity
-import com.gorman.fitnessapp.data.models.ProgramExerciseEntity
-import com.gorman.fitnessapp.data.models.UserProgramEntity
-import com.gorman.fitnessapp.data.models.UserProgressEntity
-import com.gorman.fitnessapp.data.models.UsersDataEntity
-import com.gorman.fitnessapp.data.models.WorkoutHistoryEntity
+import com.gorman.fitnessapp.data.models.room.ExerciseEntity
+import com.gorman.fitnessapp.data.models.room.MealEntity
+import com.gorman.fitnessapp.data.models.room.MealPlanItemEntity
+import com.gorman.fitnessapp.data.models.room.MealPlanTemplateEntity
+import com.gorman.fitnessapp.data.models.room.ProgramEntity
+import com.gorman.fitnessapp.data.models.room.ProgramExerciseEntity
+import com.gorman.fitnessapp.data.models.room.UserProgramEntity
+import com.gorman.fitnessapp.data.models.room.UserProgressEntity
+import com.gorman.fitnessapp.data.models.room.UsersDataEntity
+import com.gorman.fitnessapp.data.models.room.WorkoutHistoryEntity
 
 @Database(entities = [
     UsersDataEntity::class,

@@ -3,7 +3,7 @@ package com.gorman.fitnessapp.data.datasource.local.dao
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
-import com.gorman.fitnessapp.data.models.ProgramEntity
+import com.gorman.fitnessapp.data.models.room.ProgramEntity
 
 @Dao
 interface ProgramDao {

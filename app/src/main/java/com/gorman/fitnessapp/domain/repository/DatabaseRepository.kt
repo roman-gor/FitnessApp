@@ -12,9 +12,9 @@ interface DatabaseRepository {
     suspend fun getListOfProgramExercises(programId: Int): List<ProgramExercise>
     suspend fun getUser(email: String?): UsersData
     suspend fun addUser(user: UsersData)
-    suspend fun deleteUser(user: UsersData)
-    suspend fun updateUser(user: UsersData): Int
+    suspend fun deleteUser(user: UsersData, id: Int)
+    suspend fun updateUser(user: UsersData, id: Int): Int
     suspend fun getExercises(): List<Exercise>
     suspend fun insertExercises(exercises: List<Exercise>)
-    suspend fun insertProgramWithExercises(program: Program)
+    suspend fun insertProgramWithExercises(programs: List<Program>, selectedProgramIndex: Int)
 }

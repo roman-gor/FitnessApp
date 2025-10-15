@@ -1,6 +1,6 @@
 package com.gorman.fitnessapp.data.mapper
 
-import com.gorman.fitnessapp.data.models.UserProgramEntity
+import com.gorman.fitnessapp.data.models.room.UserProgramEntity
 import com.gorman.fitnessapp.domain.models.UserProgram
 
 fun UserProgramEntity.toDomain(): UserProgram =

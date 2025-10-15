@@ -1,4 +1,4 @@
-package com.gorman.fitnessapp.data.models
+package com.gorman.fitnessapp.data.models.room
 
 import android.os.Parcelable
 import androidx.room.Entity
@@ -8,7 +8,7 @@ import androidx.room.PrimaryKey
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
-@Entity(tableName = "UserProgress",
+@Entity(tableName = "MealPlanTemplate",
     indices = [
         Index(value = ["userId"])
     ],
@@ -20,13 +20,10 @@ import kotlinx.parcelize.Parcelize
             onDelete = ForeignKey.CASCADE
         )
     ])
-data class UserProgressEntity(
+data class MealPlanTemplateEntity(
     @PrimaryKey(autoGenerate = true)
     val id: Int = 0,
     val userId: Int,
-    val date: Long,
-    val weight: Float? = null,
-    val caloriesBurned: Float? = null,
-    val durationMinutes: Int? = null,
-    val notes: String? = null
+    val name: String,
+    val description: String? = null
 ): Parcelable

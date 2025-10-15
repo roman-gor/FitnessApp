@@ -8,7 +8,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.gorman.fitnessapp.data.datasource.ai.GeminiGenerator
 import com.gorman.fitnessapp.data.datasource.ai.dto.ProgramDto
-import com.gorman.fitnessapp.data.models.UsersDataEntity
+import com.gorman.fitnessapp.data.models.room.UsersDataEntity
 import com.gorman.fitnessapp.domain.models.UsersData
 import com.gorman.fitnessapp.domain.repository.DatabaseRepository
 import dagger.hilt.android.lifecycle.HiltViewModel

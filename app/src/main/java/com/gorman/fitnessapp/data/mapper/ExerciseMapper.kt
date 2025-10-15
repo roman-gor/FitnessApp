@@ -1,6 +1,6 @@
 package com.gorman.fitnessapp.data.mapper
 
-import com.gorman.fitnessapp.data.models.ExerciseEntity
+import com.gorman.fitnessapp.data.models.room.ExerciseEntity
 import com.gorman.fitnessapp.domain.models.Exercise
 
 fun ExerciseEntity.toDomain(): Exercise =
@@ -15,7 +15,6 @@ fun ExerciseEntity.toDomain(): Exercise =
 
 fun Exercise.toEntity(): ExerciseEntity =
     ExerciseEntity(
-        id = id,
         name = name,
         description = description,
         muscleGroup = muscleGroup,

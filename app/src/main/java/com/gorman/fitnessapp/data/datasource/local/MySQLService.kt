@@ -1,7 +1,7 @@
 package com.gorman.fitnessapp.data.datasource.local
 
 import com.gorman.fitnessapp.data.models.AddUserResponse
-import com.gorman.fitnessapp.data.models.UsersDataEntity
+import com.gorman.fitnessapp.data.models.room.UsersDataEntity
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.GET

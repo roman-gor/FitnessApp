@@ -1,8 +1,8 @@
 package com.gorman.fitnessapp.data.datasource.ai
 
 import android.util.Log
-import com.gorman.fitnessapp.data.models.MealPlanTemplateEntity
-import com.gorman.fitnessapp.data.models.UsersDataEntity
+import com.gorman.fitnessapp.data.models.room.MealPlanTemplateEntity
+import com.gorman.fitnessapp.data.models.room.UsersDataEntity
 import javax.inject.Inject
 
 class GeminiGeneratorImpl @Inject constructor(

@@ -4,7 +4,7 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
-import com.gorman.fitnessapp.data.models.ExerciseEntity
+import com.gorman.fitnessapp.data.models.room.ExerciseEntity
 
 @Dao
 interface ExerciseDao {
