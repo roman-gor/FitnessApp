@@ -2,11 +2,7 @@ package com.gorman.fitnessapp.data.repository
 
 import com.gorman.fitnessapp.data.datasource.remote.FirebaseAPI
 import com.gorman.fitnessapp.data.mapper.toDomain
-import com.gorman.fitnessapp.data.mapper.toEntity
 import com.gorman.fitnessapp.data.mapper.toRemote
-import com.gorman.fitnessapp.data.models.firebase.ProgramExerciseFirebase
-import com.gorman.fitnessapp.data.models.firebase.ProgramFirebase
-import com.gorman.fitnessapp.data.models.firebase.UserFirebase
 import com.gorman.fitnessapp.domain.models.Exercise
 import com.gorman.fitnessapp.domain.models.Program
 import com.gorman.fitnessapp.domain.models.ProgramExercise
@@ -24,19 +20,18 @@ class FirebaseRepositoryImpl @Inject constructor(
     }
 
     override suspend fun getUser(email: String): UsersData? {
-        val user = firebaseAPI.getUser(email)?.toDomain()
-        return user
+        return firebaseAPI.getUser(email)?.toDomain()
     }
 
-    override suspend fun insertProgram(program: Program) {
-        firebaseAPI.insertProgram(program.toRemote())
+    override suspend fun insertProgram(program: Program): String? {
+        return firebaseAPI.insertProgram(program.toRemote())
     }
 
-    override suspend fun insertProgramExercise(programExercise: ProgramExercise, selectedProgramId: Int) {
-        firebaseAPI.insertProgramExercise(programExercise.toRemote(selectedProgramId))
+    override suspend fun insertProgramExercise(programExercise: List<ProgramExercise>?, programId: String?) {
+        firebaseAPI.insertProgramExercise(programExercise?.map { it.toRemote() }, programId)
     }
 
     override suspend fun insertUser(user: UsersData) {
-        firebaseAPI.insertUser(user.toRemote())
+        firebaseAPI.insertUser(user)
     }
 }

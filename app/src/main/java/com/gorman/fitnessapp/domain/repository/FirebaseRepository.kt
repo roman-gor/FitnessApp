@@ -8,7 +8,7 @@ import com.gorman.fitnessapp.domain.models.UsersData
 interface FirebaseRepository {
     suspend fun getExercises(): List<Exercise>
     suspend fun getUser(email: String): UsersData?
-    suspend fun insertProgram(program: Program)
-    suspend fun insertProgramExercise(programExercise: ProgramExercise, selectedProgramId: Int)
+    suspend fun insertProgram(program: Program): String?
+    suspend fun insertProgramExercise(programExercise: List<ProgramExercise>?, programId: String?)
     suspend fun insertUser(user: UsersData)
 }

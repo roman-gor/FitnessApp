@@ -66,13 +66,10 @@ class DatabaseRepositoryImpl @Inject constructor(
     override suspend fun insertProgramWithExercises(programs: List<Program>, selectedProgramIndex: Int) {
         db.withTransaction {
             programs.forEachIndexed { index, program ->
+                val programId = programDao.insertProgramTemplate(program.toEntity()).toInt()
                 if (index == selectedProgramIndex) {
-                    val programId = programDao.insertProgramTemplate(program.toEntity()).toInt()
-                    val exercisesEntity = program.exercises.map { it.toEntity(programId) }
-                    programExerciseDao.insertProgramExercise(exercisesEntity)
-                }
-                else {
-                    programDao.insertProgramTemplate(program.toEntity()).toInt()
+                    val exercisesEntity = program.exercises?.map { it.toEntity(programId) }
+                    exercisesEntity.let { programExerciseDao.insertProgramExercise(it) }
                 }
             }
         }

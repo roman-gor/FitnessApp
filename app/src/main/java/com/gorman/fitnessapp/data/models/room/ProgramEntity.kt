@@ -10,6 +10,7 @@ import kotlinx.parcelize.Parcelize
 data class ProgramEntity(
     @PrimaryKey(autoGenerate = true)
     val id: Int = 0,
+    val firebaseId: String = "",
     val name: String,
     val muscleGroup: String,
     val description: String? = null,

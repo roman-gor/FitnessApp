@@ -11,6 +11,7 @@ import com.gorman.fitnessapp.domain.models.ProgramExercise
 fun ProgramExerciseEntity.toDomain(): ProgramExercise =
     ProgramExercise(
         id = id,
+        firebaseId = firebaseId,
         exerciseId = exerciseId,
         order = order,
         dayOfWeek = dayOfWeek,
@@ -22,6 +23,8 @@ fun ProgramExerciseEntity.toDomain(): ProgramExercise =
 
 fun ProgramExercise.toEntity(programId: Int): ProgramExerciseEntity =
     ProgramExerciseEntity(
+        id = id,
+        firebaseId = firebaseId,
         programId = programId,
         exerciseId = exerciseId,
         order = order,
@@ -32,9 +35,9 @@ fun ProgramExercise.toEntity(programId: Int): ProgramExerciseEntity =
         caloriesBurned = caloriesBurned
     )
 
-fun ProgramExercise.toRemote(programId: Int): ProgramExerciseFirebase =
+fun ProgramExercise.toRemote(): ProgramExerciseFirebase =
     ProgramExerciseFirebase(
-        programId = programId,
+        id = firebaseId,
         exerciseId = exerciseId,
         order = order,
         dayOfWeek = dayOfWeek,
@@ -46,8 +49,6 @@ fun ProgramExercise.toRemote(programId: Int): ProgramExerciseFirebase =
 
 fun ProgramExerciseEntity.toRemote(): ProgramExerciseFirebase =
     ProgramExerciseFirebase(
-        id = id,
-        programId = programId,
         exerciseId = exerciseId,
         order = order,
         dayOfWeek = dayOfWeek,
@@ -58,35 +59,35 @@ fun ProgramExerciseEntity.toRemote(): ProgramExerciseFirebase =
     )
 
 //Program's mappers
+fun ProgramEntity.toDomain(): Program = Program(
+    localId = this.id,
+    firebaseId = this.firebaseId,
+    name = this.name,
+    description = this.description,
+    muscleGroup = this.muscleGroup,
+    goalType = this.goalType
+)
 fun Program.toEntity(): ProgramEntity =
     ProgramEntity(
+        id = localId,
+        firebaseId = firebaseId,
         name = name,
         muscleGroup = muscleGroup,
         description = description,
         goalType = goalType
     )
-
 fun Program.toRemote(): ProgramFirebase =
     ProgramFirebase(
-        id = programId.toInt(),
+        id = firebaseId,
         name = name,
         muscleGroup = muscleGroup,
         description = description,
         goalType = goalType
     )
 
-fun ProgramEntity.toRemote(): ProgramFirebase =
-    ProgramFirebase(
-        id = id,
-        name = name,
-        muscleGroup = muscleGroup,
-        description = description,
-        goalType = goalType
-    )
-
-fun ProgramFirebase.toEntity(): ProgramEntity =
-    ProgramEntity(
-        id = id,
+fun ProgramFirebase.toDomain(): Program =
+    Program(
+        firebaseId = id,
         name = name,
         muscleGroup = muscleGroup,
         description = description,

@@ -1,8 +1,7 @@
-package com.gorman.fitnessapp.domain.models
+package com.gorman.fitnessapp.data.models.firebase
 
-data class Exercise(
-    val id: Int = 0,
-    val firebaseId: String = "",
+data class ExerciseFirebase(
+    val id: String,
     val name: String,
     val description: String? = null,
     val muscleGroup: String,

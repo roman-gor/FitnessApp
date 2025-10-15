@@ -25,6 +25,7 @@ import kotlinx.parcelize.Parcelize
 data class ProgramExerciseEntity(
     @PrimaryKey(autoGenerate = true)
     val id: Int = 0,
+    val firebaseId: String = "",
     val programId: Int,
     val exerciseId: Int,
     val order: Int,

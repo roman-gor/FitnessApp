@@ -1,8 +1,7 @@
 package com.gorman.fitnessapp.data.models.firebase
 
 data class ProgramExerciseFirebase(
-    val id: Int = 0,
-    val programId: Int,
+    val id: String = "",
     val exerciseId: Int,
     val order: Int,
     val dayOfWeek: String,

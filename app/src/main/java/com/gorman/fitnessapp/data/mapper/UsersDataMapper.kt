@@ -34,9 +34,9 @@ fun UsersData.toEntity(userId: Int = 0): UsersDataEntity =
         activityLevel = activityLevel,
         experienceLevel = experienceLevel)
 
-fun UsersData.toRemote(): UserFirebase =
+fun UsersData.toRemote(userId: String): UserFirebase =
     UserFirebase(
-        id = id,
+        userId = userId,
         name = name,
         email = email,
         birthday = birthday,
@@ -49,25 +49,9 @@ fun UsersData.toRemote(): UserFirebase =
         activityLevel = activityLevel,
         experienceLevel = experienceLevel)
 
-fun UsersDataEntity.toRemote(): UserFirebase =
-    UserFirebase(
-        id = id,
-        name = name,
-        email = email,
-        birthday = birthday,
-        goal = goal,
-        weight = weight,
-        desiredWeight = desiredWeight,
-        height = height,
-        gender = gender,
-        photoUrl = photoUrl,
-        activityLevel = activityLevel,
-        experienceLevel = experienceLevel
-    )
 
 fun UserFirebase.toEntity(): UsersDataEntity =
     UsersDataEntity(
-        id = id,
         name = name,
         email = email,
         birthday = birthday,
@@ -83,7 +67,6 @@ fun UserFirebase.toEntity(): UsersDataEntity =
 
 fun UserFirebase.toDomain(): UsersData =
     UsersData(
-        id = id,
         name = name,
         email = email,
         birthday = birthday,

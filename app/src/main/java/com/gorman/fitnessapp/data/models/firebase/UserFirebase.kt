@@ -1,7 +1,7 @@
 package com.gorman.fitnessapp.data.models.firebase
 
 data class UserFirebase(
-    val id: Int,
+    val userId: String,
     val name: String? = null,
     val email: String? = null,
     val birthday: Long? = null,
