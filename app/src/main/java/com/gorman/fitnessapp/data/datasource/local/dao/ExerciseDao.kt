@@ -10,7 +10,6 @@ import com.gorman.fitnessapp.data.models.room.ExerciseEntity
 interface ExerciseDao {
     @Query("SELECT * FROM exercise")
     suspend fun getExercises(): List<ExerciseEntity>
-
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertExercises(exercises: List<ExerciseEntity>)
 }
