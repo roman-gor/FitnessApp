@@ -16,7 +16,7 @@ class GenerateAndSyncProgramUseCase @Inject constructor(
                                 selectedProgramIndex: Int) {
         val generatedPrograms = aiRepository.generatePrograms(usersData, availableExercises)
 
-        val syncedPrograms = generatedPrograms.mapNotNull { program -> // Используем mapNotNull
+        val syncedPrograms = generatedPrograms.mapNotNull { program ->
             val firebaseId = firebaseRepository.insertProgram(program)
             firebaseId?.let {
                 program.copy(firebaseId = it)

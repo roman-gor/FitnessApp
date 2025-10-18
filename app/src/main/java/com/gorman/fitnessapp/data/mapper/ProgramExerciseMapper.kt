@@ -60,12 +60,12 @@ fun ProgramExerciseEntity.toRemote(): ProgramExerciseFirebase =
 
 //Program's mappers
 fun ProgramEntity.toDomain(): Program = Program(
-    localId = this.id,
-    firebaseId = this.firebaseId,
-    name = this.name,
-    description = this.description,
-    muscleGroup = this.muscleGroup,
-    goalType = this.goalType
+    localId = id,
+    firebaseId = firebaseId,
+    name = name,
+    description = description,
+    muscleGroup = muscleGroup,
+    goalType = goalType
 )
 fun Program.toEntity(): ProgramEntity =
     ProgramEntity(

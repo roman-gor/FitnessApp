@@ -5,5 +5,5 @@ import com.gorman.fitnessapp.data.models.room.UsersDataEntity
 
 interface GeminiGenerator {
     suspend fun generateWorkoutProgram(userData: UsersDataEntity, num: Int = 3, availableExercises: Map<Int, String>): String
-    suspend fun generateMealPlan(userData: UsersDataEntity, goal: String): MealPlanTemplateEntity
+    suspend fun generateMealPlan(userData: UsersDataEntity, goal: String, availableMeals: Map<Int, String>): String
 }

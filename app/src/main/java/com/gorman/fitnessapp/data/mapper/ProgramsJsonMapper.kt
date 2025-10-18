@@ -17,7 +17,6 @@ fun ProgramDto.toEntity(): ProgramEntity =
 
 fun ProgramDto.toDomain(): Program =
     Program(
-        programId = programId,
         name = name,
         description = description,
         muscleGroup = muscleGroup,
@@ -39,7 +38,6 @@ fun ProgramExerciseDto.toEntity(programId: Int): ProgramExerciseEntity =
 
 fun ProgramExerciseDto.toDomain(): ProgramExercise =
     ProgramExercise(
-        id = id.toInt(),
         exerciseId = exerciseId,
         order = order,
         dayOfWeek = dayOfWeek,

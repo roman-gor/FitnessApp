@@ -69,7 +69,7 @@ class DatabaseRepositoryImpl @Inject constructor(
                 val programId = programDao.insertProgramTemplate(program.toEntity()).toInt()
                 if (index == selectedProgramIndex) {
                     val exercisesEntity = program.exercises?.map { it.toEntity(programId) }
-                    exercisesEntity.let { programExerciseDao.insertProgramExercise(it) }
+                    exercisesEntity?.let { programExerciseDao.insertProgramExercise(it) }
                 }
             }
         }

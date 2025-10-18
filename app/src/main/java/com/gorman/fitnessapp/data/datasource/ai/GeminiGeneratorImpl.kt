@@ -53,9 +53,16 @@ class GeminiGeneratorImpl @Inject constructor(
 
     override suspend fun generateMealPlan(
         userData: UsersDataEntity,
-        goal: String
-    ): MealPlanTemplateEntity {
-        TODO("Not yet implemented")
+        goal: String,
+        availableMeals: Map<Int, String>
+    ): String {
+        val mealsList = availableMeals.entries.joinToString(separator = ", ") {
+            "${it.key}: ${it.value}"
+        }
+        val prompt = """ """
+        val rawResponse = apiClient.completion(prompt)
+        Log.d("rawResponse", rawResponse)
+        return rawResponse
     }
 
 }

@@ -9,7 +9,7 @@ import com.gorman.fitnessapp.data.models.room.ProgramExerciseEntity
 @Dao
 interface ProgramExerciseDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertProgramExercise(programExerciseEntity: List<ProgramExerciseEntity>?)
+    suspend fun insertProgramExercise(programExerciseEntity: List<ProgramExerciseEntity>)
     @Query("SELECT * FROM ProgramExercise WHERE programId=:programId")
     suspend fun getListOfProgramExercise(programId: Int): List<ProgramExerciseEntity>
 }
