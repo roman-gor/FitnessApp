@@ -71,3 +71,64 @@ const val JSON_SCHEMA = """
               "required": ["program_id", "name", "description", "goalType", "program_exercise"]
             }
         """
+const val MEALS_JSON_SCHEMA = """
+            {
+              "type": "object",
+              "description": "Сгенерированный персонализированный план питания на одну неделю.",
+              "properties": {
+                "planName": {
+                  "type": "string",
+                  "description": "Название плана питания (например, 'Сбалансированный рацион на 1800 ккал'). Соответствует полю 'name' в MealPlanTemplateEntity."
+                },
+                "description": {
+                  "type": "string",
+                  "description": "Краткое описание и цели плана питания. Соответствует полю 'description' в MealPlanTemplateEntity."
+                },
+                "goalType": {
+                  "type": "string",
+                  "description": "Тип цели, для которой создан план (например, 'weight_loss', 'muscle_gain', 'maintenance')."
+                },
+                "weeklyPlan": {
+                  "type": "array",
+                  "description": "Массив объектов, где каждый объект представляет собой план питания на один день недели.",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "dayOfWeek": {
+                        "type": "string",
+                        "description": "День недели (например, 'Понедельник', 'Вторник')."
+                      },
+                      "meals": {
+                        "type": "array",
+                        "description": "Массив приемов пищи на этот день. Каждый элемент соответствует одной записи MealPlanItemEntity.",
+                        "items": {
+                          "type": "object",
+                          "properties": {
+                            "mealId": {
+                              "type": "integer",
+                              "description": "Числовой ID блюда из предоставленного списка availableMeals. Соответствует 'mealId'."
+                            },
+                            "mealType": {
+                              "type": "string",
+                              "description": "Тип приема пищи (например, 'Завтрак', 'Обед', 'Ужин', 'Перекус'). Соответствует 'mealType'."
+                            },
+                            "quantity": {
+                              "type": "integer",
+                              "description": "Количество порций. Обычно 1. Соответствует 'quantity'."
+                            },
+                            "notes": {
+                              "type": "string",
+                              "description": "Необязательные заметки к приему пищи (например, 'Добавить свежие овощи'). Соответствует 'notes'."
+                            }
+                          },
+                          "required": ["mealId", "mealType", "quantity"]
+                        }
+                      }
+                    },
+                    "required": ["dayOfWeek", "meals"]
+                  }
+                }
+              },
+              "required": ["planName", "description", "goalType", "weeklyPlan"]
+            }
+            """

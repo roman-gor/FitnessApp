@@ -12,6 +12,9 @@ import com.gorman.fitnessapp.data.datasource.ai.GeminiGeneratorImpl
 import com.gorman.fitnessapp.data.datasource.local.MySQLService
 import com.gorman.fitnessapp.data.datasource.local.AppDatabase
 import com.gorman.fitnessapp.data.datasource.local.dao.ExerciseDao
+import com.gorman.fitnessapp.data.datasource.local.dao.MealDao
+import com.gorman.fitnessapp.data.datasource.local.dao.MealPlanItemDao
+import com.gorman.fitnessapp.data.datasource.local.dao.MealPlanTemplateDao
 import com.gorman.fitnessapp.data.datasource.local.dao.ProgramDao
 import com.gorman.fitnessapp.data.datasource.local.dao.ProgramExerciseDao
 import com.gorman.fitnessapp.data.datasource.local.dao.UserProgramDao
@@ -94,8 +97,11 @@ object AppModule {
                                       exerciseDao: ExerciseDao,
                                       userProgramDao: UserProgramDao,
                                       programExerciseDao: ProgramExerciseDao,
-                                      programDao: ProgramDao): DatabaseRepository =
-        DatabaseRepositoryImpl(db, usersDataDao, exerciseDao, userProgramDao, programExerciseDao, programDao)
+                                      programDao: ProgramDao,
+                                      mealDao: MealDao,
+                                      mealPlanTemplateDao: MealPlanTemplateDao,
+                                      mealPlanItemDao: MealPlanItemDao): DatabaseRepository =
+        DatabaseRepositoryImpl(db, usersDataDao, exerciseDao, userProgramDao, programExerciseDao, programDao, mealDao, mealPlanTemplateDao, mealPlanItemDao)
 
     @Provides
     @Singleton
@@ -126,6 +132,18 @@ object AppModule {
     @Provides
     @Singleton
     fun provideUserProgramDao(db: AppDatabase): UserProgramDao = db.userProgramDao()
+
+    @Provides
+    @Singleton
+    fun provideMealDao(db: AppDatabase): MealDao = db.mealDao()
+
+    @Provides
+    @Singleton
+    fun provideMealPlanItemDao(db: AppDatabase): MealPlanItemDao = db.mealPlanItemDao()
+
+    @Provides
+    @Singleton
+    fun provideMealPlanTemplateDao(db: AppDatabase): MealPlanTemplateDao = db.mealPlanTemplateDao()
 
     @Provides
     @Singleton

@@ -3,6 +3,9 @@ package com.gorman.fitnessapp.data.repository
 import androidx.room.withTransaction
 import com.gorman.fitnessapp.data.datasource.local.AppDatabase
 import com.gorman.fitnessapp.data.datasource.local.dao.ExerciseDao
+import com.gorman.fitnessapp.data.datasource.local.dao.MealDao
+import com.gorman.fitnessapp.data.datasource.local.dao.MealPlanItemDao
+import com.gorman.fitnessapp.data.datasource.local.dao.MealPlanTemplateDao
 import com.gorman.fitnessapp.data.datasource.local.dao.ProgramDao
 import com.gorman.fitnessapp.data.datasource.local.dao.ProgramExerciseDao
 import com.gorman.fitnessapp.data.datasource.local.dao.UserProgramDao
@@ -10,6 +13,8 @@ import com.gorman.fitnessapp.data.datasource.local.dao.UsersDataDao
 import com.gorman.fitnessapp.data.mapper.toDomain
 import com.gorman.fitnessapp.data.mapper.toEntity
 import com.gorman.fitnessapp.domain.models.Exercise
+import com.gorman.fitnessapp.domain.models.Meal
+import com.gorman.fitnessapp.domain.models.MealPlan
 import com.gorman.fitnessapp.domain.models.Program
 import com.gorman.fitnessapp.domain.models.ProgramExercise
 import com.gorman.fitnessapp.domain.models.UserProgram
@@ -23,7 +28,10 @@ class DatabaseRepositoryImpl @Inject constructor(
     private val exerciseDao: ExerciseDao,
     private val userProgramDao: UserProgramDao,
     private val programExerciseDao: ProgramExerciseDao,
-    private val programDao: ProgramDao
+    private val programDao: ProgramDao,
+    private val mealDao: MealDao,
+    private val mealPlanTemplateDao: MealPlanTemplateDao,
+    private val mealPlanItemDao: MealPlanItemDao
 ): DatabaseRepository {
 
     override suspend fun getAllUsers(): List<UsersData> {
@@ -72,6 +80,22 @@ class DatabaseRepositoryImpl @Inject constructor(
                     exercisesEntity?.let { programExerciseDao.insertProgramExercise(it) }
                 }
             }
+        }
+    }
+
+    override suspend fun getMeals(): List<Meal> {
+        return mealDao.getMeals().map { it.toDomain() }
+    }
+
+    override suspend fun insertMeals(meals: List<Meal>) {
+        mealDao.insertMeals(meals.map { it.toEntity() })
+    }
+
+    override suspend fun insertMealsItems(meal: MealPlan) {
+        db.withTransaction {
+            val templateId = mealPlanTemplateDao.insertMealPlanTemplate(meal.template.toEntity()).toInt()
+            val mappedItems = meal.items.map { it.toEntity(templateId) }
+            mealPlanItemDao.insertMealPlanItem(mappedItems)
         }
     }
 }

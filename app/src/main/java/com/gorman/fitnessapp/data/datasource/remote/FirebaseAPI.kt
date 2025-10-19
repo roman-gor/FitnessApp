@@ -1,6 +1,9 @@
 package com.gorman.fitnessapp.data.datasource.remote
 
 import com.gorman.fitnessapp.data.models.firebase.ExerciseFirebase
+import com.gorman.fitnessapp.data.models.firebase.MealFirebase
+import com.gorman.fitnessapp.data.models.firebase.MealPlanItemFirebase
+import com.gorman.fitnessapp.data.models.firebase.MealPlanTemplateFirebase
 import com.gorman.fitnessapp.data.models.firebase.ProgramExerciseFirebase
 import com.gorman.fitnessapp.data.models.firebase.ProgramFirebase
 import com.gorman.fitnessapp.data.models.firebase.UserFirebase
@@ -12,4 +15,8 @@ interface FirebaseAPI {
     suspend fun insertProgram(program: ProgramFirebase): String?
     suspend fun insertProgramExercise(programExercise: List<ProgramExerciseFirebase>?, programId: String?)
     suspend fun insertUser(user: UsersData)
+    suspend fun getMeals(): List<MealFirebase>
+    suspend fun insertMealPlan(mealPlanItemFirebase: List<MealPlanItemFirebase>,
+                               mealPlanTemplateFirebase: MealPlanTemplateFirebase): String?
+    suspend fun getMealPlans(userId: Int): Map<List<MealPlanItemFirebase>, MealPlanTemplateFirebase>
 }

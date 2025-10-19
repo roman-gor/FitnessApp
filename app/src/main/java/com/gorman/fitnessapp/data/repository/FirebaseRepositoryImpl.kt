@@ -3,7 +3,12 @@ package com.gorman.fitnessapp.data.repository
 import com.gorman.fitnessapp.data.datasource.remote.FirebaseAPI
 import com.gorman.fitnessapp.data.mapper.toDomain
 import com.gorman.fitnessapp.data.mapper.toRemote
+import com.gorman.fitnessapp.data.models.firebase.MealPlanItemFirebase
+import com.gorman.fitnessapp.data.models.firebase.MealPlanTemplateFirebase
 import com.gorman.fitnessapp.domain.models.Exercise
+import com.gorman.fitnessapp.domain.models.Meal
+import com.gorman.fitnessapp.domain.models.MealPlanItem
+import com.gorman.fitnessapp.domain.models.MealPlanTemplate
 import com.gorman.fitnessapp.domain.models.Program
 import com.gorman.fitnessapp.domain.models.ProgramExercise
 import com.gorman.fitnessapp.domain.models.UsersData
@@ -33,5 +38,18 @@ class FirebaseRepositoryImpl @Inject constructor(
 
     override suspend fun insertUser(user: UsersData) {
         firebaseAPI.insertUser(user)
+    }
+
+    override suspend fun getMeals(): List<Meal> {
+        return firebaseAPI.getMeals().map { it.toDomain(it.id) }
+    }
+
+    override suspend fun insertMealPlan(
+        mealPlanItem: List<MealPlanItem>,
+        mealPlanTemplate: MealPlanTemplate
+    ): String? {
+        return firebaseAPI.insertMealPlan(
+            mealPlanItem.map { it.toRemote() },
+            mealPlanTemplate.toRemote())
     }
 }

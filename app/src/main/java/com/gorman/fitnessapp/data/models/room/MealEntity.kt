@@ -10,11 +10,12 @@ import kotlinx.parcelize.Parcelize
 data class MealEntity(
     @PrimaryKey(autoGenerate = true)
     val id: Int = 0,
+    val firebaseId: String = "",
     val name: String,
     val description: String,
     val calories: Float,
     val protein: Float,
     val carbs: Float,
     val fats: Float,
-    val recipe: String,
+    val recipe: String
 ): Parcelable

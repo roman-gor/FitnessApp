@@ -4,6 +4,9 @@ import androidx.room.Database
 import androidx.room.RoomDatabase
 import androidx.sqlite.db.SupportSQLiteDatabase
 import com.gorman.fitnessapp.data.datasource.local.dao.ExerciseDao
+import com.gorman.fitnessapp.data.datasource.local.dao.MealDao
+import com.gorman.fitnessapp.data.datasource.local.dao.MealPlanItemDao
+import com.gorman.fitnessapp.data.datasource.local.dao.MealPlanTemplateDao
 import com.gorman.fitnessapp.data.datasource.local.dao.ProgramDao
 import com.gorman.fitnessapp.data.datasource.local.dao.ProgramExerciseDao
 import com.gorman.fitnessapp.data.datasource.local.dao.UserProgramDao
@@ -37,6 +40,9 @@ abstract class AppDatabase: RoomDatabase() {
     abstract fun programDao(): ProgramDao
     abstract fun programExerciseDao(): ProgramExerciseDao
     abstract fun userProgramDao(): UserProgramDao
+    abstract fun mealDao(): MealDao
+    abstract fun mealPlanItemDao(): MealPlanItemDao
+    abstract fun mealPlanTemplateDao(): MealPlanTemplateDao
     companion object {
         val MIGRATION_CALLBACK = object : Callback() {
             override fun onCreate(db: SupportSQLiteDatabase) {

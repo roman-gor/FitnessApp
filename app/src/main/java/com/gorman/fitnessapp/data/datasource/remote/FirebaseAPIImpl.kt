@@ -1,16 +1,19 @@
 package com.gorman.fitnessapp.data.datasource.remote
 
 import android.util.Log
+import androidx.compose.animation.core.copy
 import androidx.compose.foundation.gestures.forEach
-import androidx.compose.ui.input.key.key
+import androidx.compose.ui.geometry.isEmpty
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.getValue
 import com.gorman.fitnessapp.data.mapper.toRemote
 import com.gorman.fitnessapp.data.models.firebase.ExerciseFirebase
+import com.gorman.fitnessapp.data.models.firebase.MealFirebase
+import com.gorman.fitnessapp.data.models.firebase.MealPlanItemFirebase
+import com.gorman.fitnessapp.data.models.firebase.MealPlanTemplateFirebase
 import com.gorman.fitnessapp.data.models.firebase.ProgramExerciseFirebase
 import com.gorman.fitnessapp.data.models.firebase.ProgramFirebase
 import com.gorman.fitnessapp.data.models.firebase.UserFirebase
-import com.gorman.fitnessapp.data.models.room.ExerciseEntity
 import com.gorman.fitnessapp.domain.models.UsersData
 import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
@@ -71,5 +74,43 @@ class FirebaseAPIImpl @Inject constructor(
         val userIdRef = usersRef.push()
         val userId = userIdRef.key
         userId?.let { userIdRef.setValue(user.toRemote(it)).await() }
+    }
+
+    override suspend fun getMeals(): List<MealFirebase> {
+        val mealsRef = database.child("meals")
+        val mealsSnapshot = mealsRef.get().await()
+        val mealsList = mutableListOf<MealFirebase>()
+        for (mealSnap in mealsSnapshot.children) {
+            val meal = mealSnap.getValue<MealFirebase>()
+            meal?.let { mealsList.add(it.copy(id = mealsSnapshot.key ?: "")) }
+        }
+        return mealsList
+    }
+
+    override suspend fun insertMealPlan(
+        mealPlanItemFirebase: List<MealPlanItemFirebase>,
+        mealPlanTemplateFirebase: MealPlanTemplateFirebase
+    ): String? {
+        val mealPlanTemplateRef = database.child("meal_plan_templates")
+        val newMealPlanTemplate = mealPlanTemplateRef.push()
+        val newMealPlanTemplateId = newMealPlanTemplate.key
+            ?: throw IllegalStateException("Failed to generate key for meal plan template.")
+        val mealPlanItemsRef = database.child("meal_plan_items")
+            .child(newMealPlanTemplateId)
+        newMealPlanTemplate.setValue(mealPlanTemplateFirebase).await()
+        if (mealPlanItemFirebase.isEmpty()) {
+            return null
+        }
+        val itemsUpdateMap = mutableMapOf<String, Any>()
+        mealPlanItemFirebase.forEach { item ->
+            val newItemId = mealPlanItemsRef.push().key ?: return@forEach
+            itemsUpdateMap[newItemId] = item
+        }
+        mealPlanItemsRef.updateChildren(itemsUpdateMap).await()
+        return newMealPlanTemplateId
+    }
+
+    override suspend fun getMealPlans(userId: Int): Map<List<MealPlanItemFirebase>, MealPlanTemplateFirebase> {
+        TODO("Not yet implemented")
     }
 }

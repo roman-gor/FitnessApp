@@ -30,6 +30,7 @@ import androidx.room.Index
 data class MealPlanItemEntity(
     @PrimaryKey(autoGenerate = true)
     val id: Int = 0,
+    val firebaseId: String = "",
     val templateId: Int,
     val mealId: Int,
     val date: Long,

@@ -8,7 +8,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.gorman.fitnessapp.data.datasource.ai.GeminiGenerator
 import com.gorman.fitnessapp.data.datasource.ai.dto.ProgramDto
-import com.gorman.fitnessapp.data.models.room.UsersDataEntity
 import com.gorman.fitnessapp.domain.models.UsersData
 import com.gorman.fitnessapp.domain.repository.DatabaseRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -25,7 +24,7 @@ class RegisterViewModel @Inject constructor(
     val usersState: State<List<UsersData>> = _usersState
     private val _json: MutableState<String> = mutableStateOf("")
     val json: State<String> = _json
-    val testUserData = UsersDataEntity(
+    val testUserData = UsersData(
         goal = "Набор мышечной массы (Гипертрофия)",
         experienceLevel = "Средний",
         weight = 75f,
@@ -55,13 +54,33 @@ class RegisterViewModel @Inject constructor(
         20 to "Сгибание ног лежа в тренажере" // ex_20
     )
 
+    val availableMeals = mapOf(
+        1 to "Овсяная каша на воде с ягодами и орехами",
+        2 to "Гречневая каша с отварной куриной грудкой",
+        3 to "Творог 5% жирности с медом и бананом",
+        4 to "Омлет из 3-х яиц со шпинатом и помидорами",
+        5 to "Запеченная треска с брокколи на пару",
+        6 to "Стейк из индейки на гриле с бурым рисом",
+        7 to "Большой овощной салат (огурцы, помидоры, перец, зелень) с оливковым маслом",
+        8 to "Куриный суп с лапшой и овощами",
+        9 to "Говядина, тушеная с черносливом и морковью",
+        10 to "Чечевичный суп-пюре",
+        11 to "Протеиновый коктейль (сывороточный изолят)",
+        12 to "Греческий йогурт без добавок",
+        13 to "Цельнозерновые хлебцы с авокадо и слабосоленым лососем",
+        14 to "Яблоко",
+        15 to "Горсть миндаля (30г)"
+    )
+
     fun prompt() {
         viewModelScope.launch {
             try {
                 Log.d("PromptCall", "Начинаем вызов Gemini...")
-                _json.value = geminiGenerator.generateWorkoutProgram(
+                _json.value = geminiGenerator.generateMealPlan(
                     userData = testUserData,
-                    availableExercises = availableExercises
+                    goal = testUserData.goal!!,
+                    availableMeals = availableMeals,
+                    exceptionProducts = listOf("Молоко")
                 )
                 val programDtos: List<ProgramDto> = Json.decodeFromString("""[
                           {
@@ -581,11 +600,9 @@ class RegisterViewModel @Inject constructor(
                               }
                             ]
                           }
-                        ]"""
-                )
-                for (programDto in programDtos) {
-                    Log.d("PromptCall", "Программа: $programDto")
-                }
+                        ]""")
+
+                Log.d("PromptCall", "Рацион: ${_json.value}")
                 Log.d("PromptCall", "Вызов Gemini завершен успешно.")
             } catch (e: Exception) {
                 Log.e("PROMPT_CRASH", "Критическая ошибка: ${e.message}", e)

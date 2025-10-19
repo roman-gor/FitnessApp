@@ -1,6 +1,8 @@
 package com.gorman.fitnessapp.domain.repository
 
 import com.gorman.fitnessapp.domain.models.Exercise
+import com.gorman.fitnessapp.domain.models.Meal
+import com.gorman.fitnessapp.domain.models.MealPlan
 import com.gorman.fitnessapp.domain.models.Program
 import com.gorman.fitnessapp.domain.models.ProgramExercise
 import com.gorman.fitnessapp.domain.models.UserProgram
@@ -17,4 +19,7 @@ interface DatabaseRepository {
     suspend fun getExercises(): List<Exercise>
     suspend fun insertExercises(exercises: List<Exercise>)
     suspend fun insertProgramWithExercises(programs: List<Program>, selectedProgramIndex: Int)
+    suspend fun getMeals(): List<Meal>
+    suspend fun insertMeals(meals: List<Meal>)
+    suspend fun insertMealsItems(meal: MealPlan)
 }

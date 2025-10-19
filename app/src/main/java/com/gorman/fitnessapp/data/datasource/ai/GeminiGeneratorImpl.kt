@@ -1,15 +1,14 @@
 package com.gorman.fitnessapp.data.datasource.ai
 
 import android.util.Log
-import com.gorman.fitnessapp.data.models.room.MealPlanTemplateEntity
-import com.gorman.fitnessapp.data.models.room.UsersDataEntity
+import com.gorman.fitnessapp.domain.models.UsersData
 import javax.inject.Inject
 
 class GeminiGeneratorImpl @Inject constructor(
     private val apiClient: AiApiClient
 ): GeminiGenerator {
     override suspend fun generateWorkoutProgram(
-        userData: UsersDataEntity,
+        userData: UsersData,
         num: Int,
         availableExercises: Map<Int, String>
     ): String {
@@ -52,14 +51,44 @@ class GeminiGeneratorImpl @Inject constructor(
     }
 
     override suspend fun generateMealPlan(
-        userData: UsersDataEntity,
+        userData: UsersData,
         goal: String,
-        availableMeals: Map<Int, String>
+        availableMeals: Map<Int, String>,
+        exceptionProducts: List<String>
     ): String {
         val mealsList = availableMeals.entries.joinToString(separator = ", ") {
             "${it.key}: ${it.value}"
         }
-        val prompt = """ """
+        val prompt = """
+                        Ты — опытный диетолог-нутрициолог, специализирующийся на создании персонализированных планов питания.
+                        Твоя задача — сгенерировать детализированный и сбалансированный план питания на 7 дней для пользователя, основываясь на его данных и доступных блюдах.
+                    
+                        --- ДАННЫЕ ПОЛЬЗОВАТЕЛЯ ---
+                        - Основная цель: ${userData.goal}
+                        - Текущий вес: ${userData.weight} кг
+                        - Желаемый вес: ${userData.desiredWeight} кг
+                        - Рост: ${userData.height} см
+                        - Пол: ${userData.gender}
+                        - Уровень активности: ${userData.activityLevel}
+                        - Продукты-исключения (аллергии, непереносимости): $exceptionProducts
+                    
+                        --- ДОСТУПНЫЕ БЛЮДА (ИСПОЛЬЗУЙ СТРОГО ЭТОТ СПИСОК) ---
+                        - Карта доступных блюд: $mealsList
+                    
+                        --- ИНСТРУКЦИИ ---
+                        1.  Проанализируй данные пользователя, чтобы определить его примерную суточную потребность в калориях и макронутриентах (БЖУ) для достижения цели (${userData.goal}).
+                        2.  Составь план питания на 7 дней (Понедельник - Воскресенье).
+                        3.  Для каждого дня запланируй 3-4 приема пищи (например, Завтрак, Обед, Ужин, Перекус).
+                        4.  Используй числовые ID для блюд СТРОГО из предоставленной карты ${availableMeals}. Не придумывай новые блюда.
+                        5.  СТРОГО исключи из плана любые блюда, которые могут содержать продукты из списка ${exceptionProducts}. Внимательно проанализируй состав блюд, исходя из их названий.
+                        6.  Постарайся сделать рацион разнообразным и сбалансированным в течение недели.
+                        7.  Поле 'goalType' в итоговом JSON должно соответствовать цели пользователя (например, 'weight_loss', 'muscle_gain', 'maintenance').
+                        8.  Спасибо!
+                    
+                        --- ФОРМАТ ВЫВОДА (ВАЖНО!) ---
+                        Твой ответ должен быть **только** в формате JSON и полностью соответствовать предоставленной схеме: $MEALS_JSON_SCHEMA.
+                        Не добавляй никаких пояснений, приветствий или другого текста вне структуры JSON.
+                    """
         val rawResponse = apiClient.completion(prompt)
         Log.d("rawResponse", rawResponse)
         return rawResponse

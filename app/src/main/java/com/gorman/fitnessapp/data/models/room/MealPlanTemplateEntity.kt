@@ -23,6 +23,7 @@ import kotlinx.parcelize.Parcelize
 data class MealPlanTemplateEntity(
     @PrimaryKey(autoGenerate = true)
     val id: Int = 0,
+    val firebaseId: String = "",
     val userId: Int,
     val name: String,
     val description: String? = null
