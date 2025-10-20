@@ -7,7 +7,6 @@ import kotlinx.serialization.Serializable
 data class DailyPlanDto(
     @SerialName("dayOfWeek")
     val dayOfWeek: String,
-
     @SerialName("meals")
     val meals: List<MealItemDto>
 )

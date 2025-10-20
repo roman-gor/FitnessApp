@@ -7,13 +7,10 @@ import kotlinx.serialization.Serializable
 data class MealPlanDto(
     @SerialName("planName")
     val planName: String,
-
     @SerialName("description")
     val description: String,
-
     @SerialName("goalType")
     val goalType: String,
-
     @SerialName("weeklyPlan")
     val weeklyPlan: List<DailyPlanDto>
 )
