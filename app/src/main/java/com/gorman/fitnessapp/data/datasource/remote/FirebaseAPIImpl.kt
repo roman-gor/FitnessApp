@@ -82,7 +82,7 @@ class FirebaseAPIImpl @Inject constructor(
         val mealsList = mutableListOf<MealFirebase>()
         for (mealSnap in mealsSnapshot.children) {
             val meal = mealSnap.getValue<MealFirebase>()
-            meal?.let { mealsList.add(it.copy(id = mealsSnapshot.key ?: "")) }
+            meal?.let { mealsList.add(it.copy(id = mealSnap.key ?: "")) }
         }
         return mealsList
     }

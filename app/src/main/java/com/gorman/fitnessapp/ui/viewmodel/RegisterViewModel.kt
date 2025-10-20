@@ -10,6 +10,7 @@ import com.gorman.fitnessapp.data.datasource.ai.GeminiGenerator
 import com.gorman.fitnessapp.data.datasource.ai.dto.ProgramDto
 import com.gorman.fitnessapp.domain.models.UsersData
 import com.gorman.fitnessapp.domain.repository.DatabaseRepository
+import com.gorman.fitnessapp.domain.repository.FirebaseRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import kotlinx.serialization.json.Json
@@ -18,7 +19,8 @@ import javax.inject.Inject
 @HiltViewModel
 class RegisterViewModel @Inject constructor(
     private val databaseRepository: DatabaseRepository,
-    private val geminiGenerator: GeminiGenerator
+    private val geminiGenerator: GeminiGenerator,
+    private val firebaseRepository: FirebaseRepository
 ) : ViewModel(){
     private val _usersState: MutableState<List<UsersData>> = mutableStateOf(emptyList())
     val usersState: State<List<UsersData>> = _usersState
@@ -75,13 +77,15 @@ class RegisterViewModel @Inject constructor(
     fun prompt() {
         viewModelScope.launch {
             try {
+                val meals = firebaseRepository.getMeals()
+                Log.d("Exercises", meals.toString())
                 Log.d("PromptCall", "Начинаем вызов Gemini...")
-                _json.value = geminiGenerator.generateMealPlan(
-                    userData = testUserData,
-                    goal = testUserData.goal!!,
-                    availableMeals = availableMeals,
-                    exceptionProducts = listOf("Молоко")
-                )
+//                _json.value = geminiGenerator.generateMealPlan(
+//                    userData = testUserData,
+//                    goal = testUserData.goal!!,
+//                    availableMeals = availableMeals,
+//                    exceptionProducts = listOf("Молоко")
+//                )
                 val programDtos: List<ProgramDto> = Json.decodeFromString("""[
                           {
                             "program_id": "prog_mass_ppl_01",
