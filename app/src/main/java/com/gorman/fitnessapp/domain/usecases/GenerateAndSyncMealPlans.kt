@@ -13,8 +13,11 @@ class GenerateAndSyncMealPlans @Inject constructor(
 ){
     suspend operator fun invoke(usersData: UsersData,
                                 goal: String,
-                                availableMeals: Map<Int, String>,
                                 exceptionProducts: List<String>) {
+        val availableMeals = firebaseRepository.getMeals().associate { meal ->
+            val key = meal.firebaseId.toIntOrNull()
+            key to meal.name
+        }
         val generatedMealPlan = aiRepository.generateMealPlan(
             usersData,
             goal,

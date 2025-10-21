@@ -36,8 +36,8 @@ const val JSON_SCHEMA = """
                         "description": "Уникальный ID детали упражнения в программе (например, detail_001)."
                       },
                       "exerciseId": {
-                        "type": "string",
-                        "description": "Строковый ID упражнения, который соответствует справочнику 'exercises' (например, ex_001)."
+                        "type": "integer",
+                        "description": "Числовой ID упражнения, который соответствует справочнику 'exercises' (например, 1, 2, 3...)."
                       },
                       "order": {
                         "type": "integer",

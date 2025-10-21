@@ -11,6 +11,7 @@ import com.gorman.fitnessapp.data.datasource.ai.dto.ProgramDto
 import com.gorman.fitnessapp.domain.models.UsersData
 import com.gorman.fitnessapp.domain.repository.DatabaseRepository
 import com.gorman.fitnessapp.domain.repository.FirebaseRepository
+import com.gorman.fitnessapp.domain.usecases.GenerateAndSyncProgramUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import kotlinx.serialization.json.Json
@@ -19,7 +20,7 @@ import javax.inject.Inject
 @HiltViewModel
 class RegisterViewModel @Inject constructor(
     private val databaseRepository: DatabaseRepository,
-    private val geminiGenerator: GeminiGenerator,
+    private val generateAndSyncProgramUseCase: GenerateAndSyncProgramUseCase,
     private val firebaseRepository: FirebaseRepository
 ) : ViewModel(){
     private val _usersState: MutableState<List<UsersData>> = mutableStateOf(emptyList())
@@ -77,9 +78,8 @@ class RegisterViewModel @Inject constructor(
     fun prompt() {
         viewModelScope.launch {
             try {
-                val meals = firebaseRepository.getMeals()
-                Log.d("Exercises", meals.toString())
                 Log.d("PromptCall", "Начинаем вызов Gemini...")
+                _json.value = generateAndSyncProgramUseCase(testUserData, 2)
 //                _json.value = geminiGenerator.generateMealPlan(
 //                    userData = testUserData,
 //                    goal = testUserData.goal!!,
@@ -606,16 +606,11 @@ class RegisterViewModel @Inject constructor(
                           }
                         ]""")
 
-                Log.d("PromptCall", "Рацион: ${_json.value}")
+                //Log.d("PromptCall", "Рацион: ${_json.value}")
                 Log.d("PromptCall", "Вызов Gemini завершен успешно.")
             } catch (e: Exception) {
                 Log.e("PROMPT_CRASH", "Критическая ошибка: ${e.message}", e)
             }
-        }
-    }
-    fun getAllUsers() {
-        viewModelScope.launch {
-            _usersState.value = databaseRepository.getAllUsers()
         }
     }
 

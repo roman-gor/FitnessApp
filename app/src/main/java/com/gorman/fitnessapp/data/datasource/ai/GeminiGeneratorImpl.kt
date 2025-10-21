@@ -10,7 +10,7 @@ class GeminiGeneratorImpl @Inject constructor(
     override suspend fun generateWorkoutProgram(
         userData: UsersData,
         num: Int,
-        availableExercises: Map<Int, String>
+        availableExercises: Map<Int?, String>
     ): String {
         val exerciseList = availableExercises.entries.joinToString(separator = ", ") {
             "${it.key}: ${it.value}"
@@ -53,7 +53,7 @@ class GeminiGeneratorImpl @Inject constructor(
     override suspend fun generateMealPlan(
         userData: UsersData,
         goal: String,
-        availableMeals: Map<Int, String>,
+        availableMeals: Map<Int?, String>,
         exceptionProducts: List<String>
     ): String {
         val mealsList = availableMeals.entries.joinToString(separator = ", ") {
@@ -90,7 +90,6 @@ class GeminiGeneratorImpl @Inject constructor(
                         Не добавляй никаких пояснений, приветствий или другого текста вне структуры JSON.
                     """
         val rawResponse = apiClient.completion(prompt)
-        Log.d("rawResponse", rawResponse)
         return rawResponse
     }
 

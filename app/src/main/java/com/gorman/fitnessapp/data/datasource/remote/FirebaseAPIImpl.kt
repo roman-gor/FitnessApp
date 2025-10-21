@@ -67,6 +67,7 @@ class FirebaseAPIImpl @Inject constructor(
         if (exercisesMap.isNotEmpty()) {
             programExerciseRef.updateChildren(exercisesMap).await()
         }
+        Log.d("ProgramExercise", "$exercisesMap")
     }
 
     override suspend fun insertUser(user: UsersData) {
