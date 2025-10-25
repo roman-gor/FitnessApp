@@ -10,6 +10,10 @@ import com.gorman.fitnessapp.data.models.room.UserProgramEntity
 interface UserProgramDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertUserProgram(userProgramEntity: UserProgramEntity)
-    @Query("SELECT * FROM userprogram WHERE userId=:userId AND programId=:programId")
-    suspend fun getUserProgramById(userId: Int, programId: Int): UserProgramEntity
+    @Query("SELECT * FROM userprogram WHERE programId=:programId")
+    suspend fun getUserProgramById(programId: Int): UserProgramEntity
+    @Query("SELECT COUNT(*) FROM userprogram")
+    suspend fun getUserProgramsCount(): Int
+    @Query("DELETE FROM userprogram")
+    suspend fun deleteUserProgram()
 }

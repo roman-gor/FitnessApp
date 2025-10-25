@@ -41,8 +41,8 @@ class DatabaseRepositoryImpl @Inject constructor(
             .map { it.toDomain() }
     }
 
-    override suspend fun getUserProgramById(userId: Int, programId: Int): UserProgram {
-        return userProgramDao.getUserProgramById(userId = userId, programId = programId).toDomain()
+    override suspend fun getUserProgramById(programId: Int): UserProgram {
+        return userProgramDao.getUserProgramById(programId = programId).toDomain()
     }
 
     override suspend fun getListOfProgramExercises(programId: Int): List<ProgramExercise> {
@@ -65,33 +65,33 @@ class DatabaseRepositoryImpl @Inject constructor(
         return usersDataDao.updateUser(user.toEntity(id))
     }
 
-    @Transaction
     override suspend fun getExercises(): List<Exercise>? {
-        return if (exerciseDao.getExerciseCount() == 0) {
-            exerciseDao.getExercises().map { it.toDomain() }
-        } else null
+        return exerciseDao.getExercises().map { it.toDomain() }
     }
 
+    @Transaction
     override suspend fun insertExercises(exercises: List<Exercise>) {
-        exerciseDao.insertExercises(exercises.map { it.toEntity() })
+        if (exerciseDao.getExerciseCount() == 0) {
+            exerciseDao.insertExercises(exercises.map { it.toEntity() })
+        }
     }
 
-    override suspend fun insertProgramWithExercises(program: Program, selectedProgramIndex: Int) {
-        db.withTransaction {
-            if (programDao.getProgramsCount() == 0 && programExerciseDao.getProgramsExerciseCount() == 0){
-                val programId = programDao.insertProgramTemplate(program.toEntity()).toInt()
-                val exercisesEntity = program.exercises?.map { it.toEntity(programId).copy(programId = programId) }
-                exercisesEntity?.let { programExerciseDao.insertProgramExercise(it) }
-            }
-            else {
-                programDao.deleteAllRows()
-                programExerciseDao.deleteAllRows()
-                val programId = programDao.insertProgramTemplate(program.toEntity()).toInt()
-                val exercisesEntity = program.exercises?.map { it.toEntity(programId).copy(programId = programId) }
-                exercisesEntity?.let { programExerciseDao.insertProgramExercise(it) }
-            }
-            Log.d("ProgramSize", programDao.getProgramsCount().toString())
-        }
+    @Transaction
+    override suspend fun insertProgramWithExercises(program: Program): Int {
+        programDao.deleteAllRows()
+        programExerciseDao.deleteAllRows()
+        val programId = programDao.insertProgramTemplate(program.toEntity()).toInt()
+        val exercisesEntity = program.exercises?.map { it.toEntity(programId) }
+        exercisesEntity?.let { programExerciseDao.insertProgramExercise(it) }
+        Log.d("ProgramSize", programDao.getProgramsCount().toString())
+        return programId
+    }
+
+    override suspend fun insertUserProgram(program: UserProgram) {
+        if (userProgramDao.getUserProgramsCount() != 0)
+            userProgramDao.deleteUserProgram()
+        userProgramDao.insertUserProgram(program.toEntity())
+        Log.d("UserProgram Count", userProgramDao.getUserProgramsCount().toString())
     }
 
     override suspend fun getMeals(): List<Meal> {

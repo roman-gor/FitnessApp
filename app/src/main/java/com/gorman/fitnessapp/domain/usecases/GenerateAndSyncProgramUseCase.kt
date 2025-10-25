@@ -6,6 +6,7 @@ import com.gorman.fitnessapp.domain.models.UsersData
 import com.gorman.fitnessapp.domain.repository.AiRepository
 import com.gorman.fitnessapp.domain.repository.DatabaseRepository
 import com.gorman.fitnessapp.domain.repository.FirebaseRepository
+import java.time.Instant
 import javax.inject.Inject
 
 class GenerateAndSyncProgramUseCase @Inject constructor(
@@ -16,31 +17,41 @@ class GenerateAndSyncProgramUseCase @Inject constructor(
 ) {
     suspend operator fun invoke(usersData: UsersData,
                                 selectedProgramIndex: Int): String {
+        val oldUserPrograms = firebaseRepository.findUserPrograms("0")
+        if (oldUserPrograms.isNotEmpty()) {
+            firebaseRepository.deleteAllUserPrograms(oldUserPrograms)
+        }
+
         val availableExercises = getExercisesUseCase()?.associate { exercise ->
             val key = exercise.firebaseId.toIntOrNull()
             key to exercise.name
         }
         val generatedPrograms = aiRepository.generatePrograms(usersData, availableExercises)
 
-        val selectedProgram = generatedPrograms[selectedProgramIndex]
-        val firebaseId = firebaseRepository.insertProgram(selectedProgram)
-        firebaseId?.let {
-            selectedProgram.copy(firebaseId = it)
+        var selectedProgram = generatedPrograms[selectedProgramIndex]
+        val firebaseProgramId = firebaseRepository.insertProgram(selectedProgram)
+        firebaseProgramId?.let {
+            selectedProgram = selectedProgram.copy(firebaseId = it)
         }
 
-        databaseRepository.insertProgramWithExercises(selectedProgram, selectedProgramIndex)
+        val programId = databaseRepository.insertProgramWithExercises(selectedProgram)
 
         firebaseRepository.insertProgramExercise(
             programId = selectedProgram.firebaseId,
             programExercise = selectedProgram.exercises ?: emptyList()
         )
-        val userProgram = UserProgram(
-            userId = "0",
-            firebaseId = firebaseId,
-            programId = 0,
-
-
-        )
+        val actualTimestamp: Long = Instant.now().toEpochMilli()
+        if (firebaseProgramId?.isNotEmpty() == true) {
+            val userProgram = UserProgram(
+                userId = "0",
+                firebaseId = firebaseProgramId,
+                programId = programId,
+                startDate = actualTimestamp,
+                isCompleted = false
+            )
+            databaseRepository.insertUserProgram(userProgram)
+            firebaseRepository.insertUserProgram(userProgram)
+        }
         Log.d("ProgramExercise", selectedProgram.firebaseId)
         return generatedPrograms.toString()
     }

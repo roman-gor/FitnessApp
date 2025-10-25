@@ -10,7 +10,7 @@ import com.gorman.fitnessapp.domain.models.UsersData
 
 interface DatabaseRepository {
     suspend fun getAllUsers(): List<UsersData>
-    suspend fun getUserProgramById(userId: Int, programId: Int): UserProgram
+    suspend fun getUserProgramById(programId: Int): UserProgram
     suspend fun getListOfProgramExercises(programId: Int): List<ProgramExercise>
     suspend fun getUser(email: String?): UsersData
     suspend fun addUser(user: UsersData)
@@ -18,7 +18,8 @@ interface DatabaseRepository {
     suspend fun updateUser(user: UsersData, id: Int): Int
     suspend fun getExercises(): List<Exercise>?
     suspend fun insertExercises(exercises: List<Exercise>)
-    suspend fun insertProgramWithExercises(program: Program, selectedProgramIndex: Int)
+    suspend fun insertProgramWithExercises(program: Program): Int
+    suspend fun insertUserProgram(program: UserProgram)
     suspend fun getMeals(): List<Meal>
     suspend fun insertMeals(meals: List<Meal>)
     suspend fun insertMealsItems(meal: MealPlan)

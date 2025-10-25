@@ -1,11 +1,9 @@
 package com.gorman.fitnessapp.data.datasource.local.dao
 
 import androidx.room.Dao
-import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
-import androidx.room.Transaction
 import com.gorman.fitnessapp.data.models.room.ProgramEntity
 
 @Dao

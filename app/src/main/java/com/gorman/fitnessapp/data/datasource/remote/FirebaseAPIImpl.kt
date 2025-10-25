@@ -1,9 +1,6 @@
 package com.gorman.fitnessapp.data.datasource.remote
 
 import android.util.Log
-import androidx.compose.animation.core.copy
-import androidx.compose.foundation.gestures.forEach
-import androidx.compose.ui.geometry.isEmpty
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.getValue
 import com.gorman.fitnessapp.data.mapper.toRemote
@@ -14,6 +11,7 @@ import com.gorman.fitnessapp.data.models.firebase.MealPlanTemplateFirebase
 import com.gorman.fitnessapp.data.models.firebase.ProgramExerciseFirebase
 import com.gorman.fitnessapp.data.models.firebase.ProgramFirebase
 import com.gorman.fitnessapp.data.models.firebase.UserFirebase
+import com.gorman.fitnessapp.data.models.firebase.UserProgramFirebase
 import com.gorman.fitnessapp.domain.models.UsersData
 import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
@@ -46,8 +44,36 @@ class FirebaseAPIImpl @Inject constructor(
         return userSnapshot.getValue<UserFirebase>()
     }
 
+    override suspend fun findUserPrograms(userId: String): Map<String, UserProgramFirebase> {
+        val userProgramsRef = database.child("user_program")
+        val query = userProgramsRef.orderByChild("userId").equalTo(userId)
+        val snapshot = query.get().await()
+
+        if (!snapshot.exists()) return emptyMap()
+
+        return snapshot.children.associate { child ->
+            val key = child.key!!
+            val value = child.getValue(UserProgramFirebase::class.java)!!
+            key to value
+        }
+    }
+
+    override suspend fun deleteAllUserPrograms(userPrograms: Map<String, UserProgramFirebase>) {
+        if (userPrograms.isEmpty()) return
+
+        val updates = mutableMapOf<String, Any?>()
+        userPrograms.forEach { (userProgramKey, userProgramValue) ->
+            updates["/user_program/$userProgramKey"] = null
+            updates["/program/${userProgramValue.programId}"] = null
+            updates["/program_exercise/${userProgramValue.programId}"] = null
+        }
+        database.updateChildren(updates).await()
+        Log.d("FirebaseAPI", "Успешно удалены старые программы и связанные данные.")
+    }
+
     override suspend fun insertProgram(program: ProgramFirebase): String? {
-        val newProgramRef = database.child("program").push()
+        val programRef = database.child("program")
+        val newProgramRef = programRef.push()
         val programId = newProgramRef.key ?: throw IllegalStateException("Firebase push key is null")
         newProgramRef.setValue(program).await()
         return programId
@@ -70,9 +96,9 @@ class FirebaseAPIImpl @Inject constructor(
         Log.d("ProgramExercise", "$exercisesMap")
     }
 
-    override suspend fun insertUserProgram(programExercise: List<ProgramExerciseFirebase>?, programId: String?) {
+    override suspend fun insertUserProgram(program: UserProgramFirebase) {
         val userProgramRef = database.child("user_program").push()
-
+        userProgramRef.setValue(program).await()
     }
 
     override suspend fun insertUser(user: UsersData) {
