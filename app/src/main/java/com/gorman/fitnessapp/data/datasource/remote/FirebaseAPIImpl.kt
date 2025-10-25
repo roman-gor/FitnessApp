@@ -70,6 +70,11 @@ class FirebaseAPIImpl @Inject constructor(
         Log.d("ProgramExercise", "$exercisesMap")
     }
 
+    override suspend fun insertUserProgram(programExercise: List<ProgramExerciseFirebase>?, programId: String?) {
+        val userProgramRef = database.child("user_program").push()
+
+    }
+
     override suspend fun insertUser(user: UsersData) {
         val usersRef = database.child("users")
         val userIdRef = usersRef.push()

@@ -14,6 +14,7 @@ interface FirebaseAPI {
     suspend fun getUser(email: String): UserFirebase?
     suspend fun insertProgram(program: ProgramFirebase): String?
     suspend fun insertProgramExercise(programExercise: List<ProgramExerciseFirebase>?, programId: String?)
+    suspend fun insertUserProgram(programExercise: List<ProgramExerciseFirebase>?, programId: String?)
     suspend fun insertUser(user: UsersData)
     suspend fun getMeals(): List<MealFirebase>
     suspend fun insertMealPlan(mealPlanItemFirebase: List<MealPlanItemFirebase>,

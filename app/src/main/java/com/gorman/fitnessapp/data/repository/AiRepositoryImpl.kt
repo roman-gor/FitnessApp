@@ -15,7 +15,7 @@ import javax.inject.Inject
 class AiRepositoryImpl @Inject constructor(
     private val generator: GeminiGenerator
 ): AiRepository {
-    override suspend fun generatePrograms(usersData: UsersData, availableExercises: Map<Int?, String>): List<Program> {
+    override suspend fun generatePrograms(usersData: UsersData, availableExercises: Map<Int?, String>?): List<Program> {
 //        val response = generator.generateWorkoutProgram(userData = usersData, availableExercises = availableExercises)
 //            .trimIndent()
 //            .removePrefix("```json")

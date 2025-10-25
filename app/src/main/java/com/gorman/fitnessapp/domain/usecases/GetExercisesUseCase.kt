@@ -9,9 +9,9 @@ class GetExercisesUseCase @Inject constructor(
     private val databaseRepository: DatabaseRepository,
     private val firebaseRepository: FirebaseRepository
 ) {
-    suspend operator fun invoke(): List<Exercise> {
+    suspend operator fun invoke(): List<Exercise>? {
         val localExercises = databaseRepository.getExercises()
-        return localExercises.ifEmpty {
+        return localExercises?.ifEmpty {
             val remoteExercises = firebaseRepository.getExercises()
             databaseRepository.insertExercises(remoteExercises)
             remoteExercises

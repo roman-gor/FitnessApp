@@ -16,10 +16,12 @@ interface DatabaseRepository {
     suspend fun addUser(user: UsersData)
     suspend fun deleteUser(user: UsersData, id: Int)
     suspend fun updateUser(user: UsersData, id: Int): Int
-    suspend fun getExercises(): List<Exercise>
+    suspend fun getExercises(): List<Exercise>?
     suspend fun insertExercises(exercises: List<Exercise>)
-    suspend fun insertProgramWithExercises(programs: List<Program>, selectedProgramIndex: Int)
+    suspend fun insertProgramWithExercises(program: Program, selectedProgramIndex: Int)
     suspend fun getMeals(): List<Meal>
     suspend fun insertMeals(meals: List<Meal>)
     suspend fun insertMealsItems(meal: MealPlan)
+    suspend fun getList(): List<ProgramExercise>
+    suspend fun getProgramList(): List<Program>
 }

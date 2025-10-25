@@ -33,7 +33,7 @@ import com.gorman.fitnessapp.data.models.room.WorkoutHistoryEntity
     UserProgressEntity::class,
     UserProgramEntity::class,
     WorkoutHistoryEntity::class
-], version = 2, exportSchema = false)
+], version = 1, exportSchema = false)
 abstract class AppDatabase: RoomDatabase() {
     abstract fun usersDataDao(): UsersDataDao
     abstract fun exerciseDao(): ExerciseDao

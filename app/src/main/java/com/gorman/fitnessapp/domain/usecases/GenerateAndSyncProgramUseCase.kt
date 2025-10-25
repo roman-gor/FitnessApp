@@ -1,6 +1,7 @@
 package com.gorman.fitnessapp.domain.usecases
 
 import android.util.Log
+import com.gorman.fitnessapp.domain.models.UserProgram
 import com.gorman.fitnessapp.domain.models.UsersData
 import com.gorman.fitnessapp.domain.repository.AiRepository
 import com.gorman.fitnessapp.domain.repository.DatabaseRepository
@@ -15,26 +16,32 @@ class GenerateAndSyncProgramUseCase @Inject constructor(
 ) {
     suspend operator fun invoke(usersData: UsersData,
                                 selectedProgramIndex: Int): String {
-        val availableExercises = getExercisesUseCase().associate { exercise ->
+        val availableExercises = getExercisesUseCase()?.associate { exercise ->
             val key = exercise.firebaseId.toIntOrNull()
             key to exercise.name
         }
         val generatedPrograms = aiRepository.generatePrograms(usersData, availableExercises)
 
-        val syncedPrograms = generatedPrograms.mapNotNull { program ->
-            val firebaseId = firebaseRepository.insertProgram(program)
-            firebaseId?.let {
-                program.copy(firebaseId = it)
-            }
+        val selectedProgram = generatedPrograms[selectedProgramIndex]
+        val firebaseId = firebaseRepository.insertProgram(selectedProgram)
+        firebaseId?.let {
+            selectedProgram.copy(firebaseId = it)
         }
-        databaseRepository.insertProgramWithExercises(syncedPrograms, selectedProgramIndex)
 
-        val selectedProgram = syncedPrograms[selectedProgramIndex]
+        databaseRepository.insertProgramWithExercises(selectedProgram, selectedProgramIndex)
+
         firebaseRepository.insertProgramExercise(
             programId = selectedProgram.firebaseId,
             programExercise = selectedProgram.exercises ?: emptyList()
         )
-        Log.d("ProgramExercise", selectedProgram.exercises.toString())
+        val userProgram = UserProgram(
+            userId = "0",
+            firebaseId = firebaseId,
+            programId = 0,
+
+
+        )
+        Log.d("ProgramExercise", selectedProgram.firebaseId)
         return generatedPrograms.toString()
     }
 }

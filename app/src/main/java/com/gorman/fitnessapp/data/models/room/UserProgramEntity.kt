@@ -22,7 +22,8 @@ import kotlinx.parcelize.Parcelize
         ForeignKey(entity = ProgramEntity::class, parentColumns = ["id"], childColumns = ["programId"], onDelete = ForeignKey.CASCADE)
     ])
 data class UserProgramEntity(
-    val userId: Int,
+    val firebaseId: String = "",
+    val userId: String,
     val programId: Int,
     val startDate: Long,
     val endDate: Long? = null,
