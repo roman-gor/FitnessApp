@@ -14,4 +14,6 @@ interface MealDao {
     suspend fun insertMeals(meals: List<MealEntity>)
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertMeal(meals: MealEntity)
+    @Query("SELECT COUNT(*) FROM meal")
+    suspend fun getMealsCount(): Int
 }

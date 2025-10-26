@@ -22,5 +22,7 @@ interface FirebaseAPI {
     suspend fun getMeals(): List<MealFirebase>
     suspend fun insertMealPlan(mealPlanItemFirebase: List<MealPlanItemFirebase>,
                                mealPlanTemplateFirebase: MealPlanTemplateFirebase): String?
+    suspend fun findUserMealPlanTemplate(userId: String): Map<String, MealPlanTemplateFirebase>
+    suspend fun deleteMealPlan(templateId: String)
     suspend fun getMealPlans(userId: Int): Map<List<MealPlanItemFirebase>, MealPlanTemplateFirebase>
 }

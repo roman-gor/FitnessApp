@@ -60,14 +60,28 @@ fun MealPlanItem.toEntity(templateId: Int): MealPlanItemEntity = MealPlanItemEnt
     quantity = quantity,
     notes = notes
 )
-
 fun MealPlanTemplate.toRemote(): MealPlanTemplateFirebase = MealPlanTemplateFirebase(
     userId = userId,
     name = name,
     description = description
 )
-
 fun MealPlanItem.toRemote(): MealPlanItemFirebase = MealPlanItemFirebase(
+    mealId = mealId,
+    mealType = mealType,
+    date = date,
+    quantity = quantity,
+    notes = notes
+)
+
+fun MealPlanTemplateFirebase.toDomain(): MealPlanTemplate = MealPlanTemplate(
+    firebaseId = id,
+    userId = userId,
+    name = name,
+    description = description
+)
+
+fun MealPlanItemFirebase.toDomain(): MealPlanItem = MealPlanItem(
+    firebaseId = id,
     mealId = mealId,
     mealType = mealType,
     date = date,

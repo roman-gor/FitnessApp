@@ -37,8 +37,7 @@ class DatabaseRepositoryImpl @Inject constructor(
 ): DatabaseRepository {
 
     override suspend fun getAllUsers(): List<UsersData> {
-        return usersDataDao.getAllUsers()
-            .map { it.toDomain() }
+        return usersDataDao.getAllUsers().map { it.toDomain() }
     }
 
     override suspend fun getUserProgramById(programId: Int): UserProgram {
@@ -71,9 +70,8 @@ class DatabaseRepositoryImpl @Inject constructor(
 
     @Transaction
     override suspend fun insertExercises(exercises: List<Exercise>) {
-        if (exerciseDao.getExerciseCount() == 0) {
+        if (exerciseDao.getExerciseCount() == 0)
             exerciseDao.insertExercises(exercises.map { it.toEntity() })
-        }
     }
 
     @Transaction
@@ -99,15 +97,17 @@ class DatabaseRepositoryImpl @Inject constructor(
     }
 
     override suspend fun insertMeals(meals: List<Meal>) {
-        mealDao.insertMeals(meals.map { it.toEntity() })
+        if (mealDao.getMealsCount() == 0)
+            mealDao.insertMeals(meals.map { it.toEntity() })
     }
 
+    @Transaction
     override suspend fun insertMealsItems(meal: MealPlan) {
-        db.withTransaction {
-            val templateId = mealPlanTemplateDao.insertMealPlanTemplate(meal.template.toEntity()).toInt()
-            val mappedItems = meal.items.map { it.toEntity(templateId) }
-            mealPlanItemDao.insertMealPlanItem(mappedItems)
-        }
+        mealPlanItemDao.deleteAllRows()
+        mealPlanTemplateDao.deleteAllRows()
+        val templateId = mealPlanTemplateDao.insertMealPlanTemplate(meal.template.toEntity()).toInt()
+        val mappedItems = meal.items.map { it.toEntity(templateId) }
+        mealPlanItemDao.insertMealPlanItem(mappedItems)
     }
 
     override suspend fun getList(): List<ProgramExercise> {

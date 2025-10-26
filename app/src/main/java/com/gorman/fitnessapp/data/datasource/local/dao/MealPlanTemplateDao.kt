@@ -13,8 +13,8 @@ interface MealPlanTemplateDao {
     suspend fun getMealPlanTemplates(): List<MealPlanTemplateEntity>
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertMealPlanTemplate(meals: MealPlanTemplateEntity): Long
-    @Delete(entity = MealPlanTemplateEntity::class)
-    suspend fun deleteMealPlanTemplate(mealPlanTemplateEntity: MealPlanTemplateEntity)
+    @Query("DELETE FROM mealplantemplate")
+    suspend fun deleteAllRows()
     @Query("SELECT * FROM mealplantemplate WHERE userId=:userId")
     suspend fun getMealPlanTemplateByUserId(userId: Int): MealPlanTemplateEntity
 }

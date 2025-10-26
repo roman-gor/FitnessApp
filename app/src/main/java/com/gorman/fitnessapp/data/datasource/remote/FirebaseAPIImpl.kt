@@ -142,6 +142,28 @@ class FirebaseAPIImpl @Inject constructor(
         return newMealPlanTemplateId
     }
 
+    override suspend fun findUserMealPlanTemplate(userId: String): Map<String, MealPlanTemplateFirebase> {
+        val templatesRef = database.child("meal_plan_templates")
+        val query = templatesRef.orderByChild("userId").equalTo(userId)
+        val snapshot = query.get().await()
+
+        if (!snapshot.exists()) return emptyMap()
+
+        return snapshot.children.associate { child ->
+            val key = child.key!!
+            val value = child.getValue(MealPlanTemplateFirebase::class.java)!!
+            key to value
+        }
+    }
+
+    override suspend fun deleteMealPlan(templateId: String) {
+        val updates = mutableMapOf<String, Any?>()
+        updates["/meal_plan_templates/$templateId"] = null // Удаляем сам шаблон
+        updates["/meal_plan_items/$templateId"] = null     // Удаляем все его элементы
+        database.updateChildren(updates).await()
+        Log.d("FirebaseAPI", "Успешно удален старый план питания: $templateId")
+    }
+
     override suspend fun getMealPlans(userId: Int): Map<List<MealPlanItemFirebase>, MealPlanTemplateFirebase> {
         TODO("Not yet implemented")
     }

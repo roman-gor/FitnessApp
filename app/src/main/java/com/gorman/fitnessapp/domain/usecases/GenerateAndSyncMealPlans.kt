@@ -1,5 +1,6 @@
 package com.gorman.fitnessapp.domain.usecases
 
+import android.util.Log
 import com.gorman.fitnessapp.domain.models.UsersData
 import com.gorman.fitnessapp.domain.repository.AiRepository
 import com.gorman.fitnessapp.domain.repository.DatabaseRepository
@@ -14,6 +15,14 @@ class GenerateAndSyncMealPlans @Inject constructor(
     suspend operator fun invoke(usersData: UsersData,
                                 goal: String,
                                 exceptionProducts: List<String>) {
+        val oldMealPlans = firebaseRepository.findUserMealPlanTemplate("0")
+        if (oldMealPlans.isNotEmpty()) {
+            oldMealPlans.keys.forEach { templateId ->
+                firebaseRepository.deleteMealPlan(templateId)
+            }
+            Log.d("SyncMealPlanUseCase", "Старые планы питания для пользователя ${"0"} удалены.")
+        }
+
         val availableMeals = firebaseRepository.getMeals().associate { meal ->
             val key = meal.firebaseId.toIntOrNull()
             key to meal.name

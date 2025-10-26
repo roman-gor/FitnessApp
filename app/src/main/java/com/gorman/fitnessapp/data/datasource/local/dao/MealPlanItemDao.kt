@@ -15,6 +15,6 @@ interface MealPlanItemDao {
     suspend fun getMealPlanItemByTemplateId(templateId: Int): MealPlanItemEntity
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertMealPlanItem(mealPlanItemEntity: List<MealPlanItemEntity>)
-    @Delete(entity = MealPlanItemEntity::class)
-    suspend fun deleteMealPlan(mealPlanItemEntity: MealPlanItemEntity)
+    @Query("DELETE FROM mealplanitem")
+    suspend fun deleteAllRows()
 }
