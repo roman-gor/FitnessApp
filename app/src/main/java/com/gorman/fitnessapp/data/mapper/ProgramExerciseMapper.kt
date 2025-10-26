@@ -21,6 +21,18 @@ fun ProgramExerciseEntity.toDomain(): ProgramExercise =
         caloriesBurned = caloriesBurned
     )
 
+fun ProgramExerciseFirebase.toDomain(): ProgramExercise =
+    ProgramExercise(
+        firebaseId = id,
+        exerciseId = exerciseId,
+        order = order,
+        dayOfWeek = dayOfWeek,
+        sets = sets,
+        repetitions = repetitions,
+        durationSec = durationSec,
+        caloriesBurned = caloriesBurned
+    )
+
 fun ProgramExercise.toEntity(programId: Int): ProgramExerciseEntity =
     ProgramExerciseEntity(
         id = id,

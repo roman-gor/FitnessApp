@@ -26,11 +26,13 @@ import com.gorman.fitnessapp.data.repository.DatabaseRepositoryImpl
 import com.gorman.fitnessapp.data.repository.FirebaseRepositoryImpl
 import com.gorman.fitnessapp.data.repository.MealRepositoryImpl
 import com.gorman.fitnessapp.data.repository.ProgramRepositoryImpl
+import com.gorman.fitnessapp.data.repository.SettingsRepositoryImpl
 import com.gorman.fitnessapp.domain.repository.AiRepository
 import com.gorman.fitnessapp.domain.repository.DatabaseRepository
 import com.gorman.fitnessapp.domain.repository.FirebaseRepository
 import com.gorman.fitnessapp.domain.repository.MealRepository
 import com.gorman.fitnessapp.domain.repository.ProgramRepository
+import com.gorman.fitnessapp.domain.repository.SettingsRepository
 import com.gorman.fitnessapp.domain.usecases.GetExercisesUseCase
 import com.gorman.fitnessapp.domain.usecases.GetMealsUseCase
 import dagger.Module
@@ -185,4 +187,10 @@ object AppModule {
                               firebaseRepository: FirebaseRepository,
                               databaseRepository: DatabaseRepository): MealRepository =
         MealRepositoryImpl(getMealsUseCase, aiRepository, firebaseRepository, databaseRepository)
+
+    @Provides
+    @Singleton
+    fun provideSettingRepository(@ApplicationContext context: Context): SettingsRepository {
+        return SettingsRepositoryImpl(context)
+    }
 }

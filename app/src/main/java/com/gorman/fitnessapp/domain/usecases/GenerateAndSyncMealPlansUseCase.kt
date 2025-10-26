@@ -4,7 +4,7 @@ import com.gorman.fitnessapp.domain.models.UsersData
 import com.gorman.fitnessapp.domain.repository.MealRepository
 import javax.inject.Inject
 
-class GenerateAndSyncMealPlans @Inject constructor(
+class GenerateAndSyncMealPlansUseCase @Inject constructor(
     private val mealRepository: MealRepository
 ){
     /**

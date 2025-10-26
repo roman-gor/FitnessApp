@@ -1,6 +1,9 @@
 package com.gorman.fitnessapp.data.datasource.remote
 
 import android.util.Log
+import androidx.compose.animation.core.copy
+import androidx.compose.ui.input.key.key
+import androidx.room.util.query
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.getValue
 import com.gorman.fitnessapp.data.mapper.toRemote
@@ -12,6 +15,7 @@ import com.gorman.fitnessapp.data.models.firebase.ProgramExerciseFirebase
 import com.gorman.fitnessapp.data.models.firebase.ProgramFirebase
 import com.gorman.fitnessapp.data.models.firebase.UserFirebase
 import com.gorman.fitnessapp.data.models.firebase.UserProgramFirebase
+import com.gorman.fitnessapp.domain.models.ProgramExercise
 import com.gorman.fitnessapp.domain.models.UsersData
 import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
@@ -41,7 +45,13 @@ class FirebaseAPIImpl @Inject constructor(
             return null
         }
         val userSnapshot = dataSnapshot.children.first()
-        return userSnapshot.getValue<UserFirebase>()
+        val userId = userSnapshot.key
+        val user = userSnapshot.getValue(UserFirebase::class.java)
+        return if (user != null && userId != null) {
+            user.copy(userId = userId)
+        } else {
+            null
+        }
     }
 
     override suspend fun findUserPrograms(userId: String): Map<String, UserProgramFirebase> {
@@ -101,11 +111,12 @@ class FirebaseAPIImpl @Inject constructor(
         userProgramRef.setValue(program).await()
     }
 
-    override suspend fun insertUser(user: UsersData) {
+    override suspend fun insertUser(user: UsersData): String? {
         val usersRef = database.child("users")
         val userIdRef = usersRef.push()
         val userId = userIdRef.key
         userId?.let { userIdRef.setValue(user.toRemote(it)).await() }
+        return userId
     }
 
     override suspend fun getMeals(): List<MealFirebase> {
@@ -163,6 +174,31 @@ class FirebaseAPIImpl @Inject constructor(
         updates["/meal_plan_items/$templateId"] = null
         database.updateChildren(updates).await()
         Log.d("FirebaseAPI", "Успешно удален старый план питания: $templateId")
+    }
+
+    override suspend fun getProgram(programId: String): ProgramFirebase? {
+        val programRef = database.child("program").child(programId)
+        val snapshot = programRef.get().await()
+        if (!snapshot.exists()) return null
+        return snapshot.getValue<ProgramFirebase>()
+    }
+
+    override suspend fun getProgramExercises(programId: String): List<ProgramExerciseFirebase> {
+        val programExerciseRef = database.child("program_exercise").child(programId)
+        val snapshot = programExerciseRef.get().await()
+        if (!snapshot.exists()) return emptyList()
+        return snapshot.children.mapNotNull { child->
+            child.getValue(ProgramExerciseFirebase::class.java)
+        }
+    }
+
+    override suspend fun getUserProgram(userId: String): UserProgramFirebase? {
+        val userProgramRef = database.child("user_program")
+        val query = userProgramRef.orderByChild("userId").equalTo(userId)
+        val snapshot = query.get().await()
+        if (!snapshot.exists()) return null
+        val userProgram = snapshot.children.first()
+        return userProgram.getValue<UserProgramFirebase>()
     }
 
     override suspend fun getMealPlans(userId: Int): Map<List<MealPlanItemFirebase>, MealPlanTemplateFirebase> {

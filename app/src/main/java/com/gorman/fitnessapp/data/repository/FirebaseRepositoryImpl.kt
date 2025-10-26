@@ -1,5 +1,6 @@
 package com.gorman.fitnessapp.data.repository
 
+import android.util.Log
 import com.gorman.fitnessapp.data.datasource.remote.FirebaseAPI
 import com.gorman.fitnessapp.data.mapper.toDomain
 import com.gorman.fitnessapp.data.mapper.toRemote
@@ -9,6 +10,7 @@ import com.gorman.fitnessapp.domain.models.MealPlanItem
 import com.gorman.fitnessapp.domain.models.MealPlanTemplate
 import com.gorman.fitnessapp.domain.models.Program
 import com.gorman.fitnessapp.domain.models.ProgramExercise
+import com.gorman.fitnessapp.domain.models.ProgramOutput
 import com.gorman.fitnessapp.domain.models.UserProgram
 import com.gorman.fitnessapp.domain.models.UsersData
 import com.gorman.fitnessapp.domain.repository.FirebaseRepository
@@ -48,8 +50,8 @@ class FirebaseRepositoryImpl @Inject constructor(
         firebaseAPI.insertUserProgram(program.toRemote())
     }
 
-    override suspend fun insertUser(user: UsersData) {
-        firebaseAPI.insertUser(user)
+    override suspend fun insertUser(user: UsersData): String? {
+        return firebaseAPI.insertUser(user)
     }
 
     override suspend fun getMeals(): List<Meal> {
@@ -74,5 +76,22 @@ class FirebaseRepositoryImpl @Inject constructor(
 
     override suspend fun deleteMealPlan(templateId: String) {
         firebaseAPI.deleteMealPlan(templateId)
+    }
+
+    override suspend fun getProgram(userId: String): ProgramOutput? {
+        val userProgram = firebaseAPI.getUserProgram(userId)
+            ?: return null
+        val programDetails = userProgram.programId.let { firebaseAPI.getProgram(it) }
+            ?: return null
+        val programExercises = userProgram.programId.let { firebaseAPI.getProgramExercises(it) }
+        val domainProgram = ProgramOutput(
+            template = programDetails.toDomain()
+                .copy(
+                    firebaseId = userProgram.programId,
+                    exercises = programExercises.map { it.toDomain() }),
+            userProgram = userProgram.toDomain()
+        )
+        Log.d("FirebaseProgramId", domainProgram.template.toString())
+        return domainProgram
     }
 }

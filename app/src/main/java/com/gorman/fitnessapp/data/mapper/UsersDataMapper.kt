@@ -49,24 +49,9 @@ fun UsersData.toRemote(userId: String): UserFirebase =
         activityLevel = activityLevel,
         experienceLevel = experienceLevel)
 
-
-fun UserFirebase.toEntity(): UsersDataEntity =
-    UsersDataEntity(
-        name = name,
-        email = email,
-        birthday = birthday,
-        goal = goal,
-        weight = weight,
-        desiredWeight = desiredWeight,
-        height = height,
-        gender = gender,
-        photoUrl = photoUrl,
-        activityLevel = activityLevel,
-        experienceLevel = experienceLevel
-    )
-
 fun UserFirebase.toDomain(): UsersData =
     UsersData(
+        firebaseId = userId,
         name = name,
         email = email,
         birthday = birthday,

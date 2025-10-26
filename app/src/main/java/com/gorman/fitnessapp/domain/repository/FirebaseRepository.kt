@@ -6,6 +6,7 @@ import com.gorman.fitnessapp.domain.models.MealPlanItem
 import com.gorman.fitnessapp.domain.models.MealPlanTemplate
 import com.gorman.fitnessapp.domain.models.Program
 import com.gorman.fitnessapp.domain.models.ProgramExercise
+import com.gorman.fitnessapp.domain.models.ProgramOutput
 import com.gorman.fitnessapp.domain.models.UserProgram
 import com.gorman.fitnessapp.domain.models.UsersData
 
@@ -17,11 +18,12 @@ interface FirebaseRepository {
     suspend fun insertProgram(program: Program): String?
     suspend fun insertProgramExercise(programExercise: List<ProgramExercise>?, programId: String?)
     suspend fun insertUserProgram(program: UserProgram)
-    suspend fun insertUser(user: UsersData)
+    suspend fun insertUser(user: UsersData): String?
     suspend fun getMeals(): List<Meal>
     suspend fun insertMealPlan(mealPlanItem: List<MealPlanItem>,
                                mealPlanTemplate: MealPlanTemplate,
                                userId: String): String?
     suspend fun findUserMealPlanTemplate(userId: String): Map<String, MealPlanTemplate>
     suspend fun deleteMealPlan(templateId: String)
+    suspend fun getProgram(userId: String): ProgramOutput?
 }

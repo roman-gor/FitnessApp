@@ -18,12 +18,15 @@ interface FirebaseAPI {
     suspend fun insertProgram(program: ProgramFirebase): String?
     suspend fun insertProgramExercise(programExercise: List<ProgramExerciseFirebase>?, programId: String?)
     suspend fun insertUserProgram(program: UserProgramFirebase)
-    suspend fun insertUser(user: UsersData)
+    suspend fun insertUser(user: UsersData): String?
     suspend fun getMeals(): List<MealFirebase>
     suspend fun insertMealPlan(mealPlanItemFirebase: List<MealPlanItemFirebase>,
                                mealPlanTemplateFirebase: MealPlanTemplateFirebase,
                                userId: String = "0"): String?
     suspend fun findUserMealPlanTemplate(userId: String): Map<String, MealPlanTemplateFirebase>
     suspend fun deleteMealPlan(templateId: String)
+    suspend fun getProgram(programId: String): ProgramFirebase?
+    suspend fun getProgramExercises(programId: String): List<ProgramExerciseFirebase>
+    suspend fun getUserProgram(userId: String): UserProgramFirebase?
     suspend fun getMealPlans(userId: Int): Map<List<MealPlanItemFirebase>, MealPlanTemplateFirebase>
 }
