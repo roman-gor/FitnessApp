@@ -46,7 +46,6 @@ fun MealFirebase.toDomain(id: String): Meal = Meal(
 
 fun MealPlanTemplate.toEntity(): MealPlanTemplateEntity = MealPlanTemplateEntity(
     firebaseId = firebaseId,
-    userId = userId,
     name = name,
     description = description
 )
@@ -61,7 +60,7 @@ fun MealPlanItem.toEntity(templateId: Int): MealPlanItemEntity = MealPlanItemEnt
     notes = notes
 )
 fun MealPlanTemplate.toRemote(): MealPlanTemplateFirebase = MealPlanTemplateFirebase(
-    userId = userId,
+    userId = userFirebaseId,
     name = name,
     description = description
 )
@@ -73,15 +72,15 @@ fun MealPlanItem.toRemote(): MealPlanItemFirebase = MealPlanItemFirebase(
     notes = notes
 )
 
-fun MealPlanTemplateFirebase.toDomain(): MealPlanTemplate = MealPlanTemplate(
-    firebaseId = id,
-    userId = userId,
+fun MealPlanTemplateFirebase.toDomain(firebaseId: String): MealPlanTemplate = MealPlanTemplate(
+    firebaseId = firebaseId,
+    userFirebaseId = userId,
     name = name,
     description = description
 )
 
 fun MealPlanItemFirebase.toDomain(): MealPlanItem = MealPlanItem(
-    firebaseId = id,
+    firebaseId = templateId,
     mealId = mealId,
     mealType = mealType,
     date = date,

@@ -8,23 +8,12 @@ import androidx.room.PrimaryKey
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
-@Entity(tableName = "MealPlanTemplate",
-    indices = [
-        Index(value = ["userId"])
-    ],
-    foreignKeys = [
-        ForeignKey(
-            entity = UsersDataEntity::class,
-            parentColumns = ["id"],
-            childColumns = ["userId"],
-            onDelete = ForeignKey.CASCADE
-        )
-    ])
+@Entity(tableName = "MealPlanTemplate")
 data class MealPlanTemplateEntity(
     @PrimaryKey(autoGenerate = true)
     val id: Int = 0,
     val firebaseId: String = "",
-    val userId: Int,
+    val userFirebaseId: String = "",
     val name: String,
     val description: String? = null
 ): Parcelable

@@ -15,6 +15,8 @@ interface MealPlanTemplateDao {
     suspend fun insertMealPlanTemplate(meals: MealPlanTemplateEntity): Long
     @Query("DELETE FROM mealplantemplate")
     suspend fun deleteAllRows()
-    @Query("SELECT * FROM mealplantemplate WHERE userId=:userId")
-    suspend fun getMealPlanTemplateByUserId(userId: Int): MealPlanTemplateEntity
+    @Query("SELECT * FROM mealplantemplate")
+    suspend fun getMealPlanTemplateByUserId(): MealPlanTemplateEntity
+    @Query("SELECT COUNT(*) FROM mealplantemplate")
+    suspend fun getMealsTemplateCount(): Int
 }

@@ -2,8 +2,6 @@ package com.gorman.fitnessapp.data.repository
 
 import android.util.Log
 import androidx.room.Transaction
-import androidx.room.withTransaction
-import com.gorman.fitnessapp.data.datasource.local.AppDatabase
 import com.gorman.fitnessapp.data.datasource.local.dao.ExerciseDao
 import com.gorman.fitnessapp.data.datasource.local.dao.MealDao
 import com.gorman.fitnessapp.data.datasource.local.dao.MealPlanItemDao
@@ -25,7 +23,6 @@ import com.gorman.fitnessapp.domain.repository.DatabaseRepository
 import javax.inject.Inject
 
 class DatabaseRepositoryImpl @Inject constructor(
-    private val db: AppDatabase,
     private val usersDataDao: UsersDataDao,
     private val exerciseDao: ExerciseDao,
     private val userProgramDao: UserProgramDao,
@@ -108,6 +105,7 @@ class DatabaseRepositoryImpl @Inject constructor(
         val templateId = mealPlanTemplateDao.insertMealPlanTemplate(meal.template.toEntity()).toInt()
         val mappedItems = meal.items.map { it.toEntity(templateId) }
         mealPlanItemDao.insertMealPlanItem(mappedItems)
+        Log.d("MealsPlansCount", mealPlanTemplateDao.getMealsTemplateCount().toString())
     }
 
     override suspend fun getList(): List<ProgramExercise> {

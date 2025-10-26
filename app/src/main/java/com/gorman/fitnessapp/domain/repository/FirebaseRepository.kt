@@ -20,7 +20,8 @@ interface FirebaseRepository {
     suspend fun insertUser(user: UsersData)
     suspend fun getMeals(): List<Meal>
     suspend fun insertMealPlan(mealPlanItem: List<MealPlanItem>,
-                               mealPlanTemplate: MealPlanTemplate): String?
+                               mealPlanTemplate: MealPlanTemplate,
+                               userId: String): String?
     suspend fun findUserMealPlanTemplate(userId: String): Map<String, MealPlanTemplate>
     suspend fun deleteMealPlan(templateId: String)
 }

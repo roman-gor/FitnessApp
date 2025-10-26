@@ -562,12 +562,224 @@ class AiRepositoryImpl @Inject constructor(
         availableMeals: Map<Int?, String>,
         exceptionProducts: List<String>
     ): MealPlan {
-        val response = generator.generateMealPlan(userData, goal, availableMeals, exceptionProducts)
-            .trimIndent()
-            .removePrefix("```json")
-            .removeSuffix("```")
-        Log.d("Json", response)
-        val mealDto: MealPlanDto = Json.decodeFromString(response)
+//        val response = generator.generateMealPlan(userData, goal, availableMeals, exceptionProducts)
+//            .trimIndent()
+//            .removePrefix("```json")
+//            .removeSuffix("```")
+        val testResponse = """
+            {
+                                                                                                      "planName": "План питания для набора мышечной массы (~3100 ккал)",
+                                                                                                      "description": "Сбалансированный рацион на 7 дней, нацеленный на гипертрофию мышц, с профицитом калорий. План содержит высокое количество белка и комплексных углеводов для эффективного роста и восстановления. Из рациона исключены продукты, содержащие молоко.",
+                                                                                                      "goalType": "muscle_gain",
+                                                                                                      "weeklyPlan": [
+                                                                                                        {
+                                                                                                          "dayOfWeek": "Понедельник",
+                                                                                                          "meals": [
+                                                                                                            {
+                                                                                                              "mealId": 17,
+                                                                                                              "mealType": "Завтрак",
+                                                                                                              "quantity": 1,
+                                                                                                              "notes": "Готовить без добавления молока."
+                                                                                                            },
+                                                                                                            {
+                                                                                                              "mealId": 6,
+                                                                                                              "mealType": "Обед",
+                                                                                                              "quantity": 1,
+                                                                                                              "notes": ""
+                                                                                                            },
+                                                                                                            {
+                                                                                                              "mealId": 8,
+                                                                                                              "mealType": "Перекус",
+                                                                                                              "quantity": 1,
+                                                                                                              "notes": "Приготовить на воде или растительном молоке (миндальное, соевое). Идеально после тренировки."
+                                                                                                            },
+                                                                                                            {
+                                                                                                              "mealId": 10,
+                                                                                                              "mealType": "Ужин",
+                                                                                                              "quantity": 1,
+                                                                                                              "notes": ""
+                                                                                                            }
+                                                                                                          ]
+                                                                                                        },
+                                                                                                        {
+                                                                                                          "dayOfWeek": "Вторник",
+                                                                                                          "meals": [
+                                                                                                            {
+                                                                                                              "mealId": 19,
+                                                                                                              "mealType": "Завтрак",
+                                                                                                              "quantity": 1,
+                                                                                                              "notes": ""
+                                                                                                            },
+                                                                                                            {
+                                                                                                              "mealId": 18,
+                                                                                                              "mealType": "Обед",
+                                                                                                              "quantity": 1,
+                                                                                                              "notes": ""
+                                                                                                            },
+                                                                                                            {
+                                                                                                              "mealId": 22,
+                                                                                                              "mealType": "Перекус",
+                                                                                                              "quantity": 1,
+                                                                                                              "notes": ""
+                                                                                                            },
+                                                                                                            {
+                                                                                                              "mealId": 2,
+                                                                                                              "mealType": "Ужин",
+                                                                                                              "quantity": 1,
+                                                                                                              "notes": "Лосось богат омега-3 жирными кислотами, полезными для восстановления."
+                                                                                                            }
+                                                                                                          ]
+                                                                                                        },
+                                                                                                        {
+                                                                                                          "dayOfWeek": "Среда",
+                                                                                                          "meals": [
+                                                                                                            {
+                                                                                                              "mealId": 1,
+                                                                                                              "mealType": "Завтрак",
+                                                                                                              "quantity": 1,
+                                                                                                              "notes": ""
+                                                                                                            },
+                                                                                                            {
+                                                                                                              "mealId": 13,
+                                                                                                              "mealType": "Обед",
+                                                                                                              "quantity": 1,
+                                                                                                              "notes": ""
+                                                                                                            },
+                                                                                                            {
+                                                                                                              "mealId": 8,
+                                                                                                              "mealType": "Перекус",
+                                                                                                              "quantity": 1,
+                                                                                                              "notes": "Приготовить на воде или растительном молоке. Употребить в течение часа после тренировки."
+                                                                                                            },
+                                                                                                            {
+                                                                                                              "mealId": 21,
+                                                                                                              "mealType": "Ужин",
+                                                                                                              "quantity": 1,
+                                                                                                              "notes": ""
+                                                                                                            }
+                                                                                                          ]
+                                                                                                        },
+                                                                                                        {
+                                                                                                          "dayOfWeek": "Четверг",
+                                                                                                          "meals": [
+                                                                                                            {
+                                                                                                              "mealId": 17,
+                                                                                                              "mealType": "Завтрак",
+                                                                                                              "quantity": 1,
+                                                                                                              "notes": "Готовить без добавления молока."
+                                                                                                            },
+                                                                                                            {
+                                                                                                              "mealId": 1,
+                                                                                                              "mealType": "Обед",
+                                                                                                              "quantity": 1,
+                                                                                                              "notes": ""
+                                                                                                            },
+                                                                                                            {
+                                                                                                              "mealId": 22,
+                                                                                                              "mealType": "Перекус",
+                                                                                                              "quantity": 1,
+                                                                                                              "notes": ""
+                                                                                                            },
+                                                                                                            {
+                                                                                                              "mealId": 20,
+                                                                                                              "mealType": "Ужин",
+                                                                                                              "quantity": 1,
+                                                                                                              "notes": "Легкий ужин с высоким содержанием белка."
+                                                                                                            }
+                                                                                                          ]
+                                                                                                        },
+                                                                                                        {
+                                                                                                          "dayOfWeek": "Пятница",
+                                                                                                          "meals": [
+                                                                                                            {
+                                                                                                              "mealId": 19,
+                                                                                                              "mealType": "Завтрак",
+                                                                                                              "quantity": 1,
+                                                                                                              "notes": ""
+                                                                                                            },
+                                                                                                            {
+                                                                                                              "mealId": 6,
+                                                                                                              "mealType": "Обед",
+                                                                                                              "quantity": 1,
+                                                                                                              "notes": ""
+                                                                                                            },
+                                                                                                            {
+                                                                                                              "mealId": 8,
+                                                                                                              "mealType": "Перекус",
+                                                                                                              "quantity": 1,
+                                                                                                              "notes": "Приготовить на воде или растительном молоке. Быстрое восстановление после тренировки."
+                                                                                                            },
+                                                                                                            {
+                                                                                                              "mealId": 15,
+                                                                                                              "mealType": "Ужин",
+                                                                                                              "quantity": 1,
+                                                                                                              "notes": ""
+                                                                                                            }
+                                                                                                          ]
+                                                                                                        },
+                                                                                                        {
+                                                                                                          "dayOfWeek": "Суббота",
+                                                                                                          "meals": [
+                                                                                                            {
+                                                                                                              "mealId": 17,
+                                                                                                              "mealType": "Завтрак",
+                                                                                                              "quantity": 1,
+                                                                                                              "notes": "Готовить без добавления молока. Можно добавить свежие овощи."
+                                                                                                            },
+                                                                                                            {
+                                                                                                              "mealId": 16,
+                                                                                                              "mealType": "Обед",
+                                                                                                              "quantity": 1,
+                                                                                                              "notes": "Отличный источник растительного белка и полезных жиров."
+                                                                                                            },
+                                                                                                            {
+                                                                                                              "mealId": 5,
+                                                                                                              "mealType": "Перекус",
+                                                                                                              "quantity": 1,
+                                                                                                              "notes": ""
+                                                                                                            },
+                                                                                                            {
+                                                                                                              "mealId": 10,
+                                                                                                              "mealType": "Ужин",
+                                                                                                              "quantity": 1,
+                                                                                                              "notes": ""
+                                                                                                            }
+                                                                                                          ]
+                                                                                                        },
+                                                                                                        {
+                                                                                                          "dayOfWeek": "Воскресенье",
+                                                                                                          "meals": [
+                                                                                                            {
+                                                                                                              "mealId": 1,
+                                                                                                              "mealType": "Завтрак",
+                                                                                                              "quantity": 1,
+                                                                                                              "notes": ""
+                                                                                                            },
+                                                                                                            {
+                                                                                                              "mealId": 18,
+                                                                                                              "mealType": "Обед",
+                                                                                                              "quantity": 1,
+                                                                                                              "notes": ""
+                                                                                                            },
+                                                                                                            {
+                                                                                                              "mealId": 22,
+                                                                                                              "mealType": "Перекус",
+                                                                                                              "quantity": 1,
+                                                                                                              "notes": ""
+                                                                                                            },
+                                                                                                            {
+                                                                                                              "mealId": 2,
+                                                                                                              "mealType": "Ужин",
+                                                                                                              "quantity": 1,
+                                                                                                              "notes": ""
+                                                                                                            }
+                                                                                                          ]
+                                                                                                        }
+                                                                                                      ]
+                                                                                                    }
+        """.trimIndent()
+        Log.d("Json", testResponse)
+        val mealDto: MealPlanDto = Json.decodeFromString(testResponse)
         return mealDto.toDomain(userData.id)
     }
 }

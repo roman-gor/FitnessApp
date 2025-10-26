@@ -2,6 +2,7 @@ package com.gorman.fitnessapp.domain.models
 
 data class UsersData(
     val id: Int = 0,
+    val firebaseId: String = "",
     val name: String? = null,
     val email: String? = null,
     val birthday: Long? = null,

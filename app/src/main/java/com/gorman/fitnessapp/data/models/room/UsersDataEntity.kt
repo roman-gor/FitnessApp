@@ -10,6 +10,7 @@ import kotlinx.parcelize.Parcelize
 data class UsersDataEntity(
     @PrimaryKey(autoGenerate = true)
     val id: Int = 0,
+    val firebaseId: String = "",
     val name: String? = null,
     val email: String? = null,
     val birthday: Long? = null,

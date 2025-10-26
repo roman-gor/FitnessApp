@@ -24,9 +24,15 @@ import com.gorman.fitnessapp.data.datasource.remote.FirebaseAPIImpl
 import com.gorman.fitnessapp.data.repository.AiRepositoryImpl
 import com.gorman.fitnessapp.data.repository.DatabaseRepositoryImpl
 import com.gorman.fitnessapp.data.repository.FirebaseRepositoryImpl
+import com.gorman.fitnessapp.data.repository.MealRepositoryImpl
+import com.gorman.fitnessapp.data.repository.ProgramRepositoryImpl
 import com.gorman.fitnessapp.domain.repository.AiRepository
 import com.gorman.fitnessapp.domain.repository.DatabaseRepository
 import com.gorman.fitnessapp.domain.repository.FirebaseRepository
+import com.gorman.fitnessapp.domain.repository.MealRepository
+import com.gorman.fitnessapp.domain.repository.ProgramRepository
+import com.gorman.fitnessapp.domain.usecases.GetExercisesUseCase
+import com.gorman.fitnessapp.domain.usecases.GetMealsUseCase
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -92,8 +98,7 @@ object AppModule {
 
     @Provides
     @Singleton
-    fun provideDatabaseRepositoryImpl(db: AppDatabase,
-                                      usersDataDao: UsersDataDao,
+    fun provideDatabaseRepositoryImpl(usersDataDao: UsersDataDao,
                                       exerciseDao: ExerciseDao,
                                       userProgramDao: UserProgramDao,
                                       programExerciseDao: ProgramExerciseDao,
@@ -101,7 +106,7 @@ object AppModule {
                                       mealDao: MealDao,
                                       mealPlanTemplateDao: MealPlanTemplateDao,
                                       mealPlanItemDao: MealPlanItemDao): DatabaseRepository =
-        DatabaseRepositoryImpl(db, usersDataDao, exerciseDao, userProgramDao, programExerciseDao, programDao, mealDao, mealPlanTemplateDao, mealPlanItemDao)
+        DatabaseRepositoryImpl(usersDataDao, exerciseDao, userProgramDao, programExerciseDao, programDao, mealDao, mealPlanTemplateDao, mealPlanItemDao)
 
     @Provides
     @Singleton
@@ -164,4 +169,20 @@ object AppModule {
     @Singleton
     fun provideAiRepository(geminiGenerator: GeminiGenerator): AiRepository =
         AiRepositoryImpl(geminiGenerator)
+
+    @Provides
+    @Singleton
+    fun provideProgramRepository(firebaseRepository: FirebaseRepository,
+                                 aiRepository: AiRepository,
+                                 databaseRepository: DatabaseRepository,
+                                 getExercisesUseCase: GetExercisesUseCase): ProgramRepository =
+        ProgramRepositoryImpl(firebaseRepository, aiRepository, databaseRepository, getExercisesUseCase)
+
+    @Provides
+    @Singleton
+    fun provideMealRepository(getMealsUseCase: GetMealsUseCase,
+                              aiRepository: AiRepository,
+                              firebaseRepository: FirebaseRepository,
+                              databaseRepository: DatabaseRepository): MealRepository =
+        MealRepositoryImpl(getMealsUseCase, aiRepository, firebaseRepository, databaseRepository)
 }

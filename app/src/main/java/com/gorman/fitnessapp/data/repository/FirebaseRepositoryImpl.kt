@@ -58,16 +58,18 @@ class FirebaseRepositoryImpl @Inject constructor(
 
     override suspend fun insertMealPlan(
         mealPlanItem: List<MealPlanItem>,
-        mealPlanTemplate: MealPlanTemplate
+        mealPlanTemplate: MealPlanTemplate,
+        userId: String
     ): String? {
         return firebaseAPI.insertMealPlan(
             mealPlanItem.map { it.toRemote() },
-            mealPlanTemplate.toRemote())
+            mealPlanTemplate.toRemote(),
+            userId)
     }
 
     override suspend fun findUserMealPlanTemplate(userId: String): Map<String, MealPlanTemplate> {
         val remoteTemplates = firebaseAPI.findUserMealPlanTemplate(userId)
-        return remoteTemplates.mapValues { it.value.toDomain() }
+        return remoteTemplates.mapValues { it.value.toDomain(remoteTemplates.keys.first()) }
     }
 
     override suspend fun deleteMealPlan(templateId: String) {

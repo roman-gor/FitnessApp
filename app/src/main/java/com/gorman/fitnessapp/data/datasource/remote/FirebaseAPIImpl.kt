@@ -121,7 +121,8 @@ class FirebaseAPIImpl @Inject constructor(
 
     override suspend fun insertMealPlan(
         mealPlanItemFirebase: List<MealPlanItemFirebase>,
-        mealPlanTemplateFirebase: MealPlanTemplateFirebase
+        mealPlanTemplateFirebase: MealPlanTemplateFirebase,
+        userId: String
     ): String? {
         val mealPlanTemplateRef = database.child("meal_plan_templates")
         val newMealPlanTemplate = mealPlanTemplateRef.push()
@@ -129,14 +130,14 @@ class FirebaseAPIImpl @Inject constructor(
             ?: throw IllegalStateException("Failed to generate key for meal plan template.")
         val mealPlanItemsRef = database.child("meal_plan_items")
             .child(newMealPlanTemplateId)
-        newMealPlanTemplate.setValue(mealPlanTemplateFirebase).await()
+        newMealPlanTemplate.setValue(mealPlanTemplateFirebase.copy(userId = userId)).await()
         if (mealPlanItemFirebase.isEmpty()) {
             return null
         }
         val itemsUpdateMap = mutableMapOf<String, Any>()
         mealPlanItemFirebase.forEach { item ->
             val newItemId = mealPlanItemsRef.push().key ?: return@forEach
-            itemsUpdateMap[newItemId] = item
+            itemsUpdateMap[newItemId] = item.copy(templateId = newMealPlanTemplateId)
         }
         mealPlanItemsRef.updateChildren(itemsUpdateMap).await()
         return newMealPlanTemplateId
@@ -158,8 +159,8 @@ class FirebaseAPIImpl @Inject constructor(
 
     override suspend fun deleteMealPlan(templateId: String) {
         val updates = mutableMapOf<String, Any?>()
-        updates["/meal_plan_templates/$templateId"] = null // Удаляем сам шаблон
-        updates["/meal_plan_items/$templateId"] = null     // Удаляем все его элементы
+        updates["/meal_plan_templates/$templateId"] = null
+        updates["/meal_plan_items/$templateId"] = null
         database.updateChildren(updates).await()
         Log.d("FirebaseAPI", "Успешно удален старый план питания: $templateId")
     }
