@@ -9,6 +9,7 @@ import androidx.lifecycle.viewModelScope
 import com.gorman.fitnessapp.data.datasource.local.dao.ExerciseDao
 import com.gorman.fitnessapp.data.datasource.local.dao.ProgramDao
 import com.gorman.fitnessapp.data.datasource.local.dao.ProgramExerciseDao
+import com.gorman.fitnessapp.data.datasource.local.dao.UserProgramDao
 import com.gorman.fitnessapp.domain.models.UsersData
 import com.gorman.fitnessapp.domain.repository.DatabaseRepository
 import com.gorman.fitnessapp.domain.repository.SupabaseRepository
@@ -31,6 +32,7 @@ class RegisterViewModel @Inject constructor(
     private val getExercisesUseCase: GetExercisesUseCase,
     private val dao: ProgramDao,
     private val daoM: ProgramExerciseDao,
+    private val daoU: UserProgramDao,
     private val getAndSyncUserProgramsUseCase: GetAndSyncUserProgramsUseCase
 ) : ViewModel(){
     private val _usersState: MutableState<List<UsersData>> = mutableStateOf(emptyList())
@@ -59,7 +61,7 @@ class RegisterViewModel @Inject constructor(
                 //getExercisesUseCase()
 
                 val list = dao.getList()
-                val pList = daoM.getList()
+                val pList = daoU.getUserProgram()
                 Log.d("ViewModelListRoom", "$list")
                 Log.d("ViewModelListRoom", "$pList")
                 Log.d("PromptCall", "Вызов Gemini завершен успешно.")

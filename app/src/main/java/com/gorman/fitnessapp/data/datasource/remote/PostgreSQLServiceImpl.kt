@@ -12,8 +12,15 @@ import com.gorman.fitnessapp.data.models.postgresql.UserProgramSupabase
 import io.github.jan.supabase.SupabaseClient
 import io.github.jan.supabase.postgrest.postgrest
 import io.github.jan.supabase.postgrest.rpc
+import kotlinx.serialization.Serializable
 import javax.inject.Inject
 
+@Serializable
+data class DeleteDebugResult(
+    val programexercise_deleted: Int,
+    val userprogram_deleted: Int,
+    val program_deleted: Int
+)
 class PostgreSQLServiceImpl @Inject constructor(
     private val client: SupabaseClient
 ) : PostgreSQLService {
@@ -63,15 +70,14 @@ class PostgreSQLServiceImpl @Inject constructor(
         if (userPrograms.isEmpty()) return
         try {
             val programIds = userPrograms.map { it.programId }
-
-            val json = client.postgrest.rpc(
-                function = "delete_user_programs_debug",
+            Log.d("ProgramId", programIds.first().toString())
+            val result = client.postgrest.rpc(
+                function = "delete_user_program_atomic",
                 parameters = mapOf(
-                    "program_ids_to_delete" to programIds
+                    "program_id" to programIds.first()
                 )
             )
-
-            Log.d("SupabaseAPI", "Успешно вызвана атомарная функция удаления программ. $json")
+            Log.d("SupabaseAPI", "Успешно вызвана атомарная функция удаления программ. $result")
         } catch (e: Exception) {
             Log.e("SupabaseAPI", "Ошибка при удалении программ: ${e.message}")
         }
@@ -84,6 +90,7 @@ class PostgreSQLServiceImpl @Inject constructor(
                     select()
                 }
                 .decodeSingle<ProgramSupabase>()
+            Log.d("InsertProgramId", insertedProgram.id.toString())
             insertedProgram.id
         } catch (e: Exception) {
             Log.e("SupabaseAPI", "Ошибка при вставке программы: ${e.message}")

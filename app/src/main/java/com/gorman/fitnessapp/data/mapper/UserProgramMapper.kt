@@ -15,6 +15,7 @@ fun UserProgramEntity.toDomain(): UserProgram =
 
 fun UserProgram.toEntity(): UserProgramEntity =
     UserProgramEntity(
+        supabaseId = supabaseId,
         programId = programId,
         startDate = startDate,
         endDate = endDate,
@@ -25,7 +26,7 @@ fun UserProgram.toEntity(): UserProgramEntity =
 fun UserProgram.toRemote(): UserProgramSupabase =
     UserProgramSupabase(
         userId = userId,
-        programId = programId,
+        programId = supabaseId,
         startDate = startDate,
         endDate = endDate,
         progress = progress,

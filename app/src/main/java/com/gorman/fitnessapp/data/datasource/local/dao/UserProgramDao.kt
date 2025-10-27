@@ -12,6 +12,8 @@ interface UserProgramDao {
     suspend fun insertUserProgram(userProgramEntity: UserProgramEntity)
     @Query("SELECT * FROM userprogram WHERE programId=:programId")
     suspend fun getUserProgramById(programId: Int): UserProgramEntity
+    @Query("SELECT * FROM userprogram")
+    suspend fun getUserProgram(): List<UserProgramEntity>
     @Query("SELECT COUNT(*) FROM userprogram")
     suspend fun getUserProgramsCount(): Int
     @Query("DELETE FROM userprogram")
