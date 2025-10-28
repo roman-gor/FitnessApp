@@ -28,5 +28,5 @@ interface FirebaseAPI {
     suspend fun getProgram(programId: String): ProgramFirebase?
     suspend fun getProgramExercises(programId: String): List<ProgramExerciseFirebase>
     suspend fun getUserProgram(userId: String): UserProgramFirebase?
-    suspend fun getMealPlans(userId: Int): Map<List<MealPlanItemFirebase>, MealPlanTemplateFirebase>
+    suspend fun getMealPlans(userId: String): Map<String, Pair<MealPlanTemplateFirebase, List<MealPlanItemFirebase>>>?
 }

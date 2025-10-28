@@ -15,6 +15,9 @@ import com.gorman.fitnessapp.domain.models.UserProgram
 import com.gorman.fitnessapp.domain.models.UsersData
 import com.gorman.fitnessapp.domain.repository.FirebaseRepository
 import javax.inject.Inject
+import kotlin.collections.first
+import kotlin.collections.map
+import kotlin.collections.toMap
 
 class FirebaseRepositoryImpl @Inject constructor(
     private val firebaseAPI: FirebaseAPI
@@ -93,5 +96,19 @@ class FirebaseRepositoryImpl @Inject constructor(
         )
         Log.d("FirebaseProgramId", domainProgram.template.toString())
         return domainProgram
+    }
+
+    override suspend fun getMealPlans(userId: String): Map<MealPlanTemplate, List<MealPlanItem>>? {
+        val remoteData = firebaseAPI.getMealPlans(userId)
+        if (remoteData == null) {
+            return null
+        }
+        return remoteData.map { (templateId, dataPair) ->
+            val templateFirebase = dataPair.first
+            val itemsFirebase = dataPair.second
+            val domainTemplate = templateFirebase.toDomain(templateId)
+            val domainItems = itemsFirebase.map { it.toDomain() }
+            domainTemplate to domainItems
+        }.toMap()
     }
 }

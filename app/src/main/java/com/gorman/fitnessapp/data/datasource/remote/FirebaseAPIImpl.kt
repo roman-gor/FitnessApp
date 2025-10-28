@@ -37,23 +37,6 @@ class FirebaseAPIImpl @Inject constructor(
         return exerciseList
     }
 
-    override suspend fun getUser(email: String): UserFirebase? {
-        val usersRef = database.child("users")
-        val query = usersRef.orderByChild("email").equalTo(email)
-        val dataSnapshot = query.get().await()
-        if (!dataSnapshot.exists()) {
-            return null
-        }
-        val userSnapshot = dataSnapshot.children.first()
-        val userId = userSnapshot.key
-        val user = userSnapshot.getValue(UserFirebase::class.java)
-        return if (user != null && userId != null) {
-            user.copy(userId = userId)
-        } else {
-            null
-        }
-    }
-
     override suspend fun findUserPrograms(userId: String): Map<String, UserProgramFirebase> {
         val userProgramsRef = database.child("user_program")
         val query = userProgramsRef.orderByChild("userId").equalTo(userId)
@@ -109,6 +92,23 @@ class FirebaseAPIImpl @Inject constructor(
     override suspend fun insertUserProgram(program: UserProgramFirebase) {
         val userProgramRef = database.child("user_program").push()
         userProgramRef.setValue(program).await()
+    }
+
+    override suspend fun getUser(email: String): UserFirebase? {
+        val usersRef = database.child("users")
+        val query = usersRef.orderByChild("email").equalTo(email)
+        val dataSnapshot = query.get().await()
+        if (!dataSnapshot.exists()) {
+            return null
+        }
+        val userSnapshot = dataSnapshot.children.first()
+        val userId = userSnapshot.key
+        val user = userSnapshot.getValue(UserFirebase::class.java)
+        return if (user != null && userId != null) {
+            user.copy(userId = userId)
+        } else {
+            null
+        }
     }
 
     override suspend fun insertUser(user: UsersData): String? {
@@ -201,7 +201,36 @@ class FirebaseAPIImpl @Inject constructor(
         return userProgram.getValue<UserProgramFirebase>()
     }
 
-    override suspend fun getMealPlans(userId: Int): Map<List<MealPlanItemFirebase>, MealPlanTemplateFirebase> {
-        TODO("Not yet implemented")
+    override suspend fun getMealPlans(userId: String): Map<String, Pair<MealPlanTemplateFirebase, List<MealPlanItemFirebase>>>? {
+        val templatesRef = database.child("meal_plan_templates")
+        val templateQuery = templatesRef.orderByChild("userId").equalTo(userId)
+        val templateSnapshot = templateQuery.get().await()
+
+        if (!templateSnapshot.exists()) {
+            Log.d("FirebaseAPI", "Шаблоны планов питания для пользователя $userId не найдены.")
+            return null
+        }
+
+        val userTemplateSnapshot = templateSnapshot.children.first()
+        val templateId = userTemplateSnapshot.key
+        val template = userTemplateSnapshot.getValue(MealPlanTemplateFirebase::class.java)
+
+        if (templateId == null || template == null) {
+            Log.e("FirebaseAPI", "Не удалось получить ID или данные шаблона.")
+            return null
+        }
+
+        val itemsRef = database.child("meal_plan_items").child(templateId)
+        val itemsSnapshot = itemsRef.get().await()
+
+        val mealItems = if (itemsSnapshot.exists()) {
+            itemsSnapshot.children.mapNotNull { child ->
+                child.getValue(MealPlanItemFirebase::class.java)
+            }
+        } else {
+            emptyList()
+        }
+        return mapOf(templateId to Pair(template, mealItems))
     }
+
 }
