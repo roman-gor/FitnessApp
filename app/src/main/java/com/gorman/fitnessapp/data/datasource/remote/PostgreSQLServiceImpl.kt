@@ -2,6 +2,7 @@ package com.gorman.fitnessapp.data.datasource.remote
 
 import android.util.Log
 import com.gorman.fitnessapp.data.models.postgresql.ExerciseSupabase
+import com.gorman.fitnessapp.data.models.postgresql.MealPlanFullSupabase
 import com.gorman.fitnessapp.data.models.postgresql.MealSupabase
 import com.gorman.fitnessapp.data.models.postgresql.MealPlanItemSupabase
 import com.gorman.fitnessapp.data.models.postgresql.MealPlanTemplateSupabase
@@ -12,15 +13,8 @@ import com.gorman.fitnessapp.data.models.postgresql.UserProgramSupabase
 import io.github.jan.supabase.SupabaseClient
 import io.github.jan.supabase.postgrest.postgrest
 import io.github.jan.supabase.postgrest.rpc
-import kotlinx.serialization.Serializable
 import javax.inject.Inject
 
-@Serializable
-data class DeleteDebugResult(
-    val programexercise_deleted: Int,
-    val userprogram_deleted: Int,
-    val program_deleted: Int
-)
 class PostgreSQLServiceImpl @Inject constructor(
     private val client: SupabaseClient
 ) : PostgreSQLService {
@@ -145,7 +139,7 @@ class PostgreSQLServiceImpl @Inject constructor(
 
     override suspend fun insertUser(user: UserSupabase): Int? {
         return try {
-            val insertedUser = client.postgrest["user"]
+            val insertedUser = client.postgrest["usersdata"]
                 .insert(user) {
                     select()
                 }
@@ -208,10 +202,6 @@ class PostgreSQLServiceImpl @Inject constructor(
         }
     }
 
-    override suspend fun deleteMealPlan(templateId: Int) {
-        TODO("Not yet implemented")
-    }
-
     override suspend fun getProgram(programId: Int): ProgramSupabase? {
         return try {
             val program = client.postgrest["program"]
@@ -234,7 +224,7 @@ class PostgreSQLServiceImpl @Inject constructor(
             val exercises = client.postgrest["programexercise"]
                 .select {
                     filter {
-                        eq("programId", programId)
+                        eq("programid_program", programId)
                     }
                 }
                 .decodeList<ProgramExerciseSupabase>()
@@ -251,7 +241,7 @@ class PostgreSQLServiceImpl @Inject constructor(
             val userProgram = client.postgrest["userprogram"]
                 .select {
                     filter {
-                        eq("userId", userId)
+                        eq("userid_usersdata", userId)
                     }
                     limit(1)
                 }
@@ -265,7 +255,48 @@ class PostgreSQLServiceImpl @Inject constructor(
         }
     }
 
-    override suspend fun getMealPlans(userId: Int): Map<List<MealPlanItemSupabase>, MealPlanTemplateSupabase> {
-        TODO("Not yet implemented")
+    override suspend fun getMealPlans(userId: Int): List<MealPlanFullSupabase> {
+        val templates = client.postgrest["mealplantemplate"]
+            .select {
+                filter {
+                    eq("userid_usersdata", userId)
+                }
+            }
+            .decodeList<MealPlanTemplateSupabase>()
+
+        if (templates.isEmpty()) {
+            Log.d("SUPABASE", "Шаблоны планов питания для пользователя $userId не найдены.")
+            return emptyList()
+        }
+
+        val mealPlans = mutableListOf<MealPlanFullSupabase>()
+
+        for (template in templates) {
+            val items = client.postgrest["mealplanitem"]
+                .select {
+                    filter {
+                        eq("templateid_mealplantemplate", template.templateId)
+                    }
+                }
+                .decodeList<MealPlanItemSupabase>()
+            mealPlans.add(MealPlanFullSupabase(template, items))
+        }
+
+        return mealPlans
+    }
+
+    override suspend fun deleteMealPlan(templateId: Int) {
+        try {
+            client.postgrest.rpc(
+                function = "delete_meal_plan",
+                parameters = mapOf(
+                    "template_id" to templateId
+                )
+            )
+            Log.d("SUPABASE", "План питания с id=$templateId успешно удалён.")
+        } catch (e: Exception) {
+            Log.e("SUPABASE", "Ошибка при удалении плана питания: ${e.message}")
+            throw e
+        }
     }
 }

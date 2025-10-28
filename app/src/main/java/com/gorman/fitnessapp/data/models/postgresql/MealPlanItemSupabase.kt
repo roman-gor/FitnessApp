@@ -9,7 +9,7 @@ data class MealPlanItemSupabase(
     val itemId: Int = 0,
     @SerialName("templateid_mealplantemplate")
     val templateId: Int = 0,
-    @SerialName("id_meal")
+    @SerialName("mealid_meal")
     val mealId: Int = 0,
     @SerialName("date")
     val date: Long = 0,

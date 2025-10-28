@@ -2,6 +2,7 @@ package com.gorman.fitnessapp.domain.repository
 
 import com.gorman.fitnessapp.domain.models.Exercise
 import com.gorman.fitnessapp.domain.models.Meal
+import com.gorman.fitnessapp.domain.models.MealPlan
 import com.gorman.fitnessapp.domain.models.MealPlanItem
 import com.gorman.fitnessapp.domain.models.MealPlanTemplate
 import com.gorman.fitnessapp.domain.models.Program
@@ -26,4 +27,5 @@ interface SupabaseRepository {
     suspend fun findUserMealPlanTemplate(userId: Int): Map<Int, MealPlanTemplate>
     suspend fun deleteMealPlan(templateId: Int)
     suspend fun getProgram(userId: Int): ProgramOutput?
+    suspend fun getMealPlans(userId: Int): MealPlan?
 }

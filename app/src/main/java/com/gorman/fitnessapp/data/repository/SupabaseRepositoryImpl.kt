@@ -6,6 +6,7 @@ import com.gorman.fitnessapp.data.mapper.toDomain
 import com.gorman.fitnessapp.data.mapper.toRemote
 import com.gorman.fitnessapp.domain.models.Exercise
 import com.gorman.fitnessapp.domain.models.Meal
+import com.gorman.fitnessapp.domain.models.MealPlan
 import com.gorman.fitnessapp.domain.models.MealPlanItem
 import com.gorman.fitnessapp.domain.models.MealPlanTemplate
 import com.gorman.fitnessapp.domain.models.Program
@@ -95,5 +96,15 @@ class SupabaseRepositoryImpl @Inject constructor(
         )
         Log.d("FirebaseProgramId", domainProgram.template.toString())
         return domainProgram
+    }
+
+    override suspend fun getMealPlans(userId: Int): MealPlan? {
+        val mealPlans = postgreSQLService.getMealPlans(userId)
+        val firstPlan = mealPlans.firstOrNull() ?: return null
+        val supabaseTemplateId = firstPlan.template.templateId
+        return MealPlan(
+            template = firstPlan.template.toDomain(supabaseTemplateId),
+            items = firstPlan.items.map { it.toDomain() }
+        )
     }
 }

@@ -1,6 +1,7 @@
 package com.gorman.fitnessapp.data.datasource.remote
 
 import com.gorman.fitnessapp.data.models.postgresql.ExerciseSupabase
+import com.gorman.fitnessapp.data.models.postgresql.MealPlanFullSupabase
 import com.gorman.fitnessapp.data.models.postgresql.MealSupabase
 import com.gorman.fitnessapp.data.models.postgresql.MealPlanItemSupabase
 import com.gorman.fitnessapp.data.models.postgresql.MealPlanTemplateSupabase
@@ -28,5 +29,5 @@ interface PostgreSQLService {
     suspend fun getProgram(programId: Int): ProgramSupabase?
     suspend fun getProgramExercises(programId: Int): List<ProgramExerciseSupabase>
     suspend fun getUserProgram(userId: Int): UserProgramSupabase?
-    suspend fun getMealPlans(userId: Int): Map<List<MealPlanItemSupabase>, MealPlanTemplateSupabase>
+    suspend fun getMealPlans(userId: Int): List<MealPlanFullSupabase>
 }

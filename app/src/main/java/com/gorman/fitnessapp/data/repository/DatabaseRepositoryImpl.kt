@@ -103,7 +103,9 @@ class DatabaseRepositoryImpl @Inject constructor(
         mealPlanItemDao.deleteAllRows()
         mealPlanTemplateDao.deleteAllRows()
         val templateId = mealPlanTemplateDao.insertMealPlanTemplate(meal.template.toEntity()).toInt()
-        val mappedItems = meal.items.map { it.toEntity(templateId) }
+        val mappedItems = meal.items.map { item ->
+            item.toEntity(templateId).copy(mealId = item.mealId)
+        }
         mealPlanItemDao.insertMealPlanItem(mappedItems)
         Log.d("MealsPlansCount", mealPlanTemplateDao.getMealsTemplateCount().toString())
     }

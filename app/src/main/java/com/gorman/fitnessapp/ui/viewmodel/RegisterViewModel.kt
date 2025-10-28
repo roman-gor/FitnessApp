@@ -7,6 +7,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.gorman.fitnessapp.data.datasource.local.dao.ExerciseDao
+import com.gorman.fitnessapp.data.datasource.local.dao.MealDao
 import com.gorman.fitnessapp.data.datasource.local.dao.ProgramDao
 import com.gorman.fitnessapp.data.datasource.local.dao.ProgramExerciseDao
 import com.gorman.fitnessapp.data.datasource.local.dao.UserProgramDao
@@ -15,8 +16,10 @@ import com.gorman.fitnessapp.domain.repository.DatabaseRepository
 import com.gorman.fitnessapp.domain.repository.SupabaseRepository
 import com.gorman.fitnessapp.domain.usecases.GenerateAndSyncMealPlansUseCase
 import com.gorman.fitnessapp.domain.usecases.GenerateAndSyncProgramUseCase
+import com.gorman.fitnessapp.domain.usecases.GetAndSyncMealPlansUseCase
 import com.gorman.fitnessapp.domain.usecases.GetAndSyncUserProgramsUseCase
 import com.gorman.fitnessapp.domain.usecases.GetExercisesUseCase
+import com.gorman.fitnessapp.domain.usecases.GetMealsUseCase
 import com.gorman.fitnessapp.domain.usecases.SaveNewUserUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
@@ -30,10 +33,12 @@ class RegisterViewModel @Inject constructor(
     private val supabaseRepository: SupabaseRepository,
     private val saveNewUserUseCase: SaveNewUserUseCase,
     private val getExercisesUseCase: GetExercisesUseCase,
+    private val getMealsUseCase: GetMealsUseCase,
     private val dao: ProgramDao,
-    private val daoM: ProgramExerciseDao,
+    private val daoM: MealDao,
     private val daoU: UserProgramDao,
-    private val getAndSyncUserProgramsUseCase: GetAndSyncUserProgramsUseCase
+    private val getAndSyncUserProgramsUseCase: GetAndSyncUserProgramsUseCase,
+    private val getAndSyncMealPlansUseCase: GetAndSyncMealPlansUseCase
 ) : ViewModel(){
     private val _usersState: MutableState<List<UsersData>> = mutableStateOf(emptyList())
     val usersState: State<List<UsersData>> = _usersState
@@ -57,10 +62,11 @@ class RegisterViewModel @Inject constructor(
 //                    goal = testUserData.goal!!,
 //                    exceptionProducts = listOf("Молоко")
 //                )
-                //getAndSyncUserProgramsUseCase(testUserData.firebaseId)
-                //getExercisesUseCase()
-
-                val list = dao.getList()
+//                getExercisesUseCase()
+//                getMealsUseCase()
+//                getAndSyncUserProgramsUseCase(testUserData.supabaseId)
+//                getAndSyncMealPlansUseCase(testUserData.supabaseId)
+                val list = daoM.getMeals()
                 val pList = daoU.getUserProgram()
                 Log.d("ViewModelListRoom", "$list")
                 Log.d("ViewModelListRoom", "$pList")
