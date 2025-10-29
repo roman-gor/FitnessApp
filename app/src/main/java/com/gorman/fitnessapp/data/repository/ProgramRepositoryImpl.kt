@@ -9,6 +9,7 @@ import com.gorman.fitnessapp.domain.repository.DatabaseRepository
 import com.gorman.fitnessapp.domain.repository.SupabaseRepository
 import com.gorman.fitnessapp.domain.repository.ProgramRepository
 import com.gorman.fitnessapp.domain.usecases.GetExercisesUseCase
+import com.gorman.fitnessapp.domain.usecases.SetProgramIdUseCase
 import java.time.Instant
 import javax.inject.Inject
 
@@ -16,7 +17,8 @@ class ProgramRepositoryImpl @Inject constructor(
     private val supabaseRepository: SupabaseRepository,
     private val aiRepository: AiRepository,
     private val databaseRepository: DatabaseRepository,
-    private val getExercisesUseCase: GetExercisesUseCase
+    private val getExercisesUseCase: GetExercisesUseCase,
+    private val setProgramIdUseCase: SetProgramIdUseCase
 ): ProgramRepository {
     @Transaction
     override suspend fun generateAndSyncProgram(
@@ -64,6 +66,7 @@ class ProgramRepositoryImpl @Inject constructor(
                 )
                 databaseRepository.insertUserProgram(userProgram)
                 supabaseRepository.insertUserProgram(userSupabaseProgram)
+                setProgramIdUseCase(supabaseProgramId)
             }
             Log.d("ProgramExercise", selectedProgram.supabaseId.toString())
         }

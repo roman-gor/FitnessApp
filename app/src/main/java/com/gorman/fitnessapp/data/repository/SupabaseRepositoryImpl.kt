@@ -13,7 +13,9 @@ import com.gorman.fitnessapp.domain.models.Program
 import com.gorman.fitnessapp.domain.models.ProgramExercise
 import com.gorman.fitnessapp.domain.models.ProgramOutput
 import com.gorman.fitnessapp.domain.models.UserProgram
+import com.gorman.fitnessapp.domain.models.UserProgress
 import com.gorman.fitnessapp.domain.models.UsersData
+import com.gorman.fitnessapp.domain.models.WorkoutHistory
 import com.gorman.fitnessapp.domain.repository.SupabaseRepository
 import javax.inject.Inject
 
@@ -53,8 +55,28 @@ class SupabaseRepositoryImpl @Inject constructor(
         postgreSQLService.insertUserProgram(program.toRemote())
     }
 
+    override suspend fun insertUserProgress(userProgress: UserProgress): Int? {
+        return postgreSQLService.insertUserProgress(userProgress.toRemote())
+    }
+
+    override suspend fun updateUserProgress(userProgress: UserProgress) {
+        postgreSQLService.updateUserProgress(userProgress.toRemote())
+    }
+
+    override suspend fun getUserProgress(userId: Int): List<UserProgress> {
+        return postgreSQLService.getUserProgress(userId).map { it.toDomain() }
+    }
+
     override suspend fun insertUser(user: UsersData): Int? {
         return postgreSQLService.insertUser(user.toRemote())
+    }
+
+    override suspend fun deleteUser(user: UsersData) {
+        return postgreSQLService.deleteUser(user.toRemote())
+    }
+
+    override suspend fun updateUser(user: UsersData) {
+        return postgreSQLService.updateUser(user.toRemote())
     }
 
     override suspend fun getMeals(): List<Meal> {
@@ -106,5 +128,17 @@ class SupabaseRepositoryImpl @Inject constructor(
             template = firstPlan.template.toDomain(supabaseTemplateId),
             items = firstPlan.items.map { it.toDomain() }
         )
+    }
+
+    override suspend fun insertWorkoutHistory(workoutHistory: WorkoutHistory): Int? {
+        return postgreSQLService.insertWorkoutHistory(workoutHistory.toRemote())
+    }
+
+    override suspend fun updateWorkoutHistory(workoutHistory: WorkoutHistory) {
+        postgreSQLService.updateWorkoutHistory(workoutHistory.toRemote())
+    }
+
+    override suspend fun getWorkoutHistory(userId: Int): List<WorkoutHistory> {
+        return postgreSQLService.getWorkoutHistory(userId).map { it.toDomain() }
     }
 }

@@ -2,28 +2,16 @@ package com.gorman.fitnessapp.data.models.room
 
 import android.os.Parcelable
 import androidx.room.Entity
-import androidx.room.ForeignKey
-import androidx.room.Index
 import androidx.room.PrimaryKey
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
-@Entity(tableName = "UserProgress",
-    indices = [
-        Index(value = ["userId"])
-    ],
-    foreignKeys = [
-        ForeignKey(
-            entity = UsersDataEntity::class,
-            parentColumns = ["id"],
-            childColumns = ["userId"],
-            onDelete = ForeignKey.CASCADE
-        )
-    ])
+@Entity(tableName = "UserProgress")
 data class UserProgressEntity(
     @PrimaryKey(autoGenerate = true)
     val id: Int = 0,
-    val userId: Int,
+    val supabaseId: Int = 0,
+    val remoteUserId: Int,
     val date: Long,
     val weight: Float? = null,
     val caloriesBurned: Float? = null,

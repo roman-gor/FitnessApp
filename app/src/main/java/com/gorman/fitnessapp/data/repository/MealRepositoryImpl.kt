@@ -31,7 +31,7 @@ class MealRepositoryImpl @Inject constructor(
             exceptionProducts)
         val isPlanValid = generatedMealPlan.template.name.isNotBlank() && generatedMealPlan.items.isNotEmpty()
         if (isPlanValid) {
-            val userId = usersData.id
+            val userId = usersData.supabaseId
             val oldMealPlans = supabaseRepository.findUserMealPlanTemplate(userId)
             if (oldMealPlans.isNotEmpty()) {
                 oldMealPlans.keys.forEach { templateId ->

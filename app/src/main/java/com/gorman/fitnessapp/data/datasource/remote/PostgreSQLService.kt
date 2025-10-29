@@ -9,6 +9,8 @@ import com.gorman.fitnessapp.data.models.postgresql.ProgramExerciseSupabase
 import com.gorman.fitnessapp.data.models.postgresql.ProgramSupabase
 import com.gorman.fitnessapp.data.models.postgresql.UserSupabase
 import com.gorman.fitnessapp.data.models.postgresql.UserProgramSupabase
+import com.gorman.fitnessapp.data.models.postgresql.UserProgressSupabase
+import com.gorman.fitnessapp.data.models.postgresql.WorkoutHistorySupabase
 import com.gorman.fitnessapp.domain.models.UsersData
 
 interface PostgreSQLService {
@@ -19,15 +21,23 @@ interface PostgreSQLService {
     suspend fun insertProgram(program: ProgramSupabase): Int?
     suspend fun insertProgramExercise(programExercises: List<ProgramExerciseSupabase>?, programId: Int?)
     suspend fun insertUserProgram(program: UserProgramSupabase)
+    suspend fun insertUserProgress(userProgress: UserProgressSupabase): Int?
+    suspend fun updateUserProgress(userProgress: UserProgressSupabase)
+    suspend fun getUserProgress(userId: Int): List<UserProgressSupabase>
     suspend fun insertUser(user: UserSupabase): Int?
+    suspend fun deleteUser(user: UserSupabase)
+    suspend fun updateUser(user: UserSupabase)
     suspend fun getMeals(): List<MealSupabase>
     suspend fun insertMealPlan(mealPlanItemSupabase: List<MealPlanItemSupabase>,
                                mealPlanTemplateSupabase: MealPlanTemplateSupabase,
-                               userId: Int = 0): Int?
+                               userId: Int): Int?
     suspend fun findUserMealPlanTemplate(userId: Int): Map<Int, MealPlanTemplateSupabase>
     suspend fun deleteMealPlan(templateId: Int)
     suspend fun getProgram(programId: Int): ProgramSupabase?
     suspend fun getProgramExercises(programId: Int): List<ProgramExerciseSupabase>
     suspend fun getUserProgram(userId: Int): UserProgramSupabase?
     suspend fun getMealPlans(userId: Int): List<MealPlanFullSupabase>
+    suspend fun insertWorkoutHistory(workoutHistorySupabase: WorkoutHistorySupabase): Int?
+    suspend fun updateWorkoutHistory(workoutHistorySupabase: WorkoutHistorySupabase)
+    suspend fun getWorkoutHistory(userId: Int): List<WorkoutHistorySupabase>
 }

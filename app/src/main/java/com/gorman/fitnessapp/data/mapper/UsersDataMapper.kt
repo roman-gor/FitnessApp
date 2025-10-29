@@ -7,6 +7,7 @@ import com.gorman.fitnessapp.domain.models.UsersData
 fun UsersDataEntity.toDomain(): UsersData =
     UsersData(
         id = id,
+        supabaseId = supabaseId,
         name = name,
         email = email,
         birthday = birthday,
@@ -22,6 +23,7 @@ fun UsersDataEntity.toDomain(): UsersData =
 fun UsersData.toEntity(userId: Int = 0): UsersDataEntity =
     UsersDataEntity(
         id = userId,
+        supabaseId = supabaseId,
         name = name,
         email = email,
         birthday = birthday,

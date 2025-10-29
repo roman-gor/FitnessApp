@@ -13,16 +13,12 @@ interface UsersDataDao {
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun addUser(user: UsersDataEntity)
-
-    @Query("SELECT * FROM UsersData")
-    suspend fun getAllUsers(): List<UsersDataEntity>
-
-    @Query("SELECT * FROM UsersData WHERE email=:email")
-    suspend fun getUserByEmail(email: String?): UsersDataEntity
-
-    @Delete
-    suspend fun deleteUser(user: UsersDataEntity)
-
+    @Query("SELECT * FROM UsersData LIMIT(1)")
+    suspend fun getUser(): UsersDataEntity
+    @Query("SELECT COUNT(*) FROM UsersData")
+    suspend fun getUsersCount(): Int
+    @Query("DELETE FROM usersdata")
+    suspend fun deleteUser()
     @Update
     suspend fun updateUser(user: UsersDataEntity): Int
 }

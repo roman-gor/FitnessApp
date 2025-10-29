@@ -21,8 +21,7 @@ const val CREATE_TRIGGER_USER_WEIGHT = """
         SET 
             weight = NEW.weight
         WHERE 
-            id = NEW.userId AND 
-            NEW.date >= COALESCE((SELECT MAX(date) FROM UserProgress WHERE userId = NEW.userId), 0);
+            supabaseId = NEW.supabaseId;
     END;"""
 
 const val CREATE_TRIGGER_PROGRAM_COMPLETION = """

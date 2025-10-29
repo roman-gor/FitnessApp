@@ -11,10 +11,18 @@ import kotlinx.coroutines.flow.map
 class SettingsRepositoryImpl(private val context: Context): SettingsRepository {
     override val userIdFlow: Flow<Int> = context.dataStore.data
         .map { prefs -> prefs[SettingsKeys.USER_ID] ?: 0 }
+    override val programIdFlow: Flow<Int> = context.dataStore.data
+        .map { prefs -> prefs[SettingsKeys.PROGRAM_ID] ?: 0 }
 
     override suspend fun setUserId(id: Int) {
         context.dataStore.edit { prefs ->
             prefs[SettingsKeys.USER_ID] = id
+        }
+    }
+
+    override suspend fun setProgramId(id: Int) {
+        context.dataStore.edit { prefs ->
+            prefs[SettingsKeys.PROGRAM_ID] = id
         }
     }
 }

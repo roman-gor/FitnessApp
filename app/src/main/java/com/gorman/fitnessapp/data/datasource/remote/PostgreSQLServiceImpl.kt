@@ -10,24 +10,50 @@ import com.gorman.fitnessapp.data.models.postgresql.ProgramExerciseSupabase
 import com.gorman.fitnessapp.data.models.postgresql.ProgramSupabase
 import com.gorman.fitnessapp.data.models.postgresql.UserSupabase
 import com.gorman.fitnessapp.data.models.postgresql.UserProgramSupabase
+import com.gorman.fitnessapp.data.models.postgresql.UserProgressSupabase
+import com.gorman.fitnessapp.data.models.postgresql.WorkoutHistorySupabase
+import com.gorman.fitnessapp.logger.AppLogger
 import io.github.jan.supabase.SupabaseClient
 import io.github.jan.supabase.postgrest.postgrest
 import io.github.jan.supabase.postgrest.rpc
 import javax.inject.Inject
 
 class PostgreSQLServiceImpl @Inject constructor(
-    private val client: SupabaseClient
+    private val client: SupabaseClient,
+    private val logger: AppLogger
 ) : PostgreSQLService {
-    override suspend fun getExercises(): List<ExerciseSupabase> {
+
+    private suspend fun <T> executeRequest(
+        tag: String,
+        operationName: String,
+        request: suspend () -> T
+    ): T? {
         return try {
-            val exercises = client.postgrest["exercise"]
+            val result = request()
+            logger.d(tag, "Успех. $operationName")
+            result
+        } catch (e: Exception) {
+            logger.e(tag, "Ошибка при выполнении $operationName: ${e.message}", e)
+            null
+        }
+    }
+
+    private suspend fun <T> executeListRequest(
+        tag: String,
+        operationName: String,
+        request: suspend () -> List<T>
+    ): List<T> {
+        return executeRequest(tag, operationName, request) ?: emptyList()
+    }
+
+    override suspend fun getExercises(): List<ExerciseSupabase> {
+        return executeListRequest(
+            tag = "SUPABASE Exercises",
+            operationName = "Получен список упражнений"
+        ) {
+            client.postgrest["exercise"]
                 .select()
                 .decodeList<ExerciseSupabase>()
-            Log.d("SUPABASE Exercises", "Получен список упражнений $exercises")
-            exercises
-        } catch (e: Exception){
-            Log.e("SUPABASE Exercises", "Ошибка при получении списка упражнений ${e.message}")
-            emptyList()
         }
     }
     override suspend fun getMeals(): List<MealSupabase> {
@@ -120,6 +146,47 @@ class PostgreSQLServiceImpl @Inject constructor(
         }
     }
 
+    override suspend fun insertUserProgress(userProgress: UserProgressSupabase): Int? {
+        return try {
+            val progressId = client.postgrest["userprogress"]
+                .insert(userProgress) {
+                    select()
+                }
+                .decodeSingle<UserProgressSupabase>()
+            Log.d("SupabaseAPI", "Успешно добавлена запись прогресса пользователя.")
+            progressId.id
+        } catch (e: Exception) {
+            Log.e("SupabaseAPI", "Ошибка при добавлении записи прогресса пользователя: ${e.message}")
+            null
+        }
+    }
+
+    override suspend fun updateUserProgress(userProgress: UserProgressSupabase) {
+        try {
+            client.postgrest["userprogress"]
+                .update(userProgress)
+            Log.e("SUPABASE Delete", "Запись прогресса успешно обновлена")
+        } catch (e: Exception) {
+            Log.e("SUPABASE Delete", "Ошибка при обновлении записи прогресса: ${e.message}")
+        }
+    }
+
+    override suspend fun getUserProgress(userId: Int): List<UserProgressSupabase> {
+        return try {
+            val queries = client.postgrest["userprogress"]
+                .select {
+                    filter {
+                        eq("userid_usersdata", userId)
+                    }
+                }
+                .decodeList<UserProgressSupabase>()
+            queries
+        } catch (e: Exception) {
+            Log.e("SupabaseAPI", "Ошибка при извлечении записи прогресса пользователя: ${e.message}")
+            emptyList()
+        }
+    }
+
     override suspend fun getUser(email: String): UserSupabase? {
         return try {
             val user = client.postgrest["usersdata"]
@@ -149,6 +216,28 @@ class PostgreSQLServiceImpl @Inject constructor(
         } catch (e: Exception) {
             Log.e("SUPABASE Insert", "Ошибка при вставке пользователя: ${e.message}")
             null
+        }
+    }
+
+    override suspend fun deleteUser(user: UserSupabase) {
+        try {
+            client.postgrest["usersdata"]
+                .delete{
+                    filter {
+                        eq("userId", user.userId)
+                    }
+                }
+        } catch (e: Exception) {
+            Log.e("SUPABASE Delete", "Ошибка при удалении пользователя: ${user.userId}, ${e.message}")
+        }
+    }
+
+    override suspend fun updateUser(user: UserSupabase) {
+        try {
+            client.postgrest["usersdata"]
+                .update(user)
+        } catch (e: Exception) {
+            Log.e("SUPABASE Delete", "Ошибка при обновлении пользователя: ${user.userId}, ${e.message}")
         }
     }
 
@@ -283,6 +372,48 @@ class PostgreSQLServiceImpl @Inject constructor(
         }
 
         return mealPlans
+    }
+
+    override suspend fun insertWorkoutHistory(workoutHistorySupabase: WorkoutHistorySupabase): Int? {
+        return try {
+            val workoutHistory = client.postgrest["workouthistory"]
+                .insert(workoutHistorySupabase) {
+                    select()
+                }
+                .decodeSingle<WorkoutHistorySupabase>()
+            Log.d("SupabaseAPI", "Успешно добавлена запись тренировки.")
+            workoutHistory.id
+        } catch (e: Exception) {
+            Log.e("SupabaseAPI", "Ошибка при добавлении записи тренировки пользователя: ${e.message}")
+            null
+        }
+    }
+
+    override suspend fun updateWorkoutHistory(workoutHistorySupabase: WorkoutHistorySupabase) {
+        try {
+            client.postgrest["workouthistory"]
+                .update(workoutHistorySupabase)
+            Log.e("SUPABASE Delete", "Запись истории тренировки успешно обновлена")
+        } catch (e: Exception) {
+            Log.e("SUPABASE Delete", "Ошибка при обновлении записи истории тренировки: ${e.message}")
+        }
+    }
+
+    override suspend fun getWorkoutHistory(userId: Int): List<WorkoutHistorySupabase> {
+        return try {
+            val workoutHistory = client.postgrest["workouthistory"]
+                .select {
+                    filter {
+                        eq("userid_usersdata", userId)
+                    }
+                }
+                .decodeList<WorkoutHistorySupabase>()
+            Log.d("SupabaseAPI", "Успешно добавлена запись тренировки.")
+            workoutHistory
+        } catch (e: Exception) {
+            Log.e("SupabaseAPI", "Ошибка при добавлении записи тренировки пользователя: ${e.message}")
+            emptyList()
+        }
     }
 
     override suspend fun deleteMealPlan(templateId: Int) {
