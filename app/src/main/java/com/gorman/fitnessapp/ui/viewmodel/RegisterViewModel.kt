@@ -10,6 +10,8 @@ import com.gorman.fitnessapp.data.datasource.local.dao.MealPlanItemDao
 import com.gorman.fitnessapp.data.datasource.local.dao.MealPlanTemplateDao
 import com.gorman.fitnessapp.data.datasource.local.dao.ProgramDao
 import com.gorman.fitnessapp.data.datasource.local.dao.ProgramExerciseDao
+import com.gorman.fitnessapp.data.datasource.local.dao.UsersDataDao
+import com.gorman.fitnessapp.domain.models.UserProgress
 import com.gorman.fitnessapp.domain.models.UsersData
 import com.gorman.fitnessapp.domain.repository.DatabaseRepository
 import com.gorman.fitnessapp.domain.repository.FirebaseRepository
@@ -18,7 +20,10 @@ import com.gorman.fitnessapp.domain.usecases.GenerateAndSyncProgramUseCase
 import com.gorman.fitnessapp.domain.usecases.GetAndSyncMealPlansUseCase
 import com.gorman.fitnessapp.domain.usecases.GetAndSyncUserProgramsUseCase
 import com.gorman.fitnessapp.domain.usecases.GetMealsUseCase
+import com.gorman.fitnessapp.domain.usecases.GetUserIdUseCase
+import com.gorman.fitnessapp.domain.usecases.InsertUserProgressLocalAndRemoteUseCase
 import com.gorman.fitnessapp.domain.usecases.SaveNewUserUseCase
+import com.gorman.fitnessapp.domain.usecases.SetUserIdUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -30,18 +35,21 @@ class RegisterViewModel @Inject constructor(
     private val generateAndSyncMealPlansUseCase: GenerateAndSyncMealPlansUseCase,
     private val firebaseRepository: FirebaseRepository,
     private val saveNewUserUseCase: SaveNewUserUseCase,
-    private val dao: MealPlanItemDao,
-    private val daoM: MealPlanTemplateDao,
+    private val dao: ProgramExerciseDao,
+    private val daoM: UsersDataDao,
     private val getAndSyncUserProgramsUseCase: GetAndSyncUserProgramsUseCase,
     private val getMealsUseCase: GetMealsUseCase,
-    private val getAndSyncMealPlansUseCase: GetAndSyncMealPlansUseCase
+    private val getAndSyncMealPlansUseCase: GetAndSyncMealPlansUseCase,
+    private val insertUserProgressLocalAndRemoteUseCase: InsertUserProgressLocalAndRemoteUseCase,
+    private val getUserIdUseCase: GetUserIdUseCase
 ) : ViewModel(){
     private val _usersState: MutableState<List<UsersData>> = mutableStateOf(emptyList())
     val usersState: State<List<UsersData>> = _usersState
     private val _json: MutableState<String> = mutableStateOf("")
     val json: State<String> = _json
     val testUserData = UsersData(
-        firebaseId = "0",
+        name = "Горбачёв",
+        email = "romangorbachev2006@gmail.com",
         goal = "Набор мышечной массы (Гипертрофия)",
         experienceLevel = "Средний",
         weight = 75f,
@@ -52,18 +60,30 @@ class RegisterViewModel @Inject constructor(
         viewModelScope.launch {
             try {
                 Log.d("PromptCall", "Начинаем вызов Gemini...")
-//                _json.value = generateAndSyncProgramUseCase(testUserData, 1)
-//                _json.value = generateAndSyncMealPlansUseCase(
-//                    usersData = testUserData,
-//                    goal = testUserData.goal!!,
-//                    exceptionProducts = listOf("Молоко")
-//                )
-                //getAndSyncUserProgramsUseCase(testUserData.firebaseId)
+                getUserIdUseCase()?.let {
+                    _json.value = generateAndSyncProgramUseCase(testUserData.copy(firebaseId = it), 1)
+                    _json.value = generateAndSyncMealPlansUseCase(
+                        usersData = testUserData.copy(firebaseId = it),
+                        goal = testUserData.goal!!,
+                        exceptionProducts = listOf("Молоко")
+                    )
+                }
 //                getMealsUseCase()
 //                getAndSyncMealPlansUseCase(testUserData.firebaseId)
-                val list = dao.getMealPlanItems()
-                val pList = daoM.getMealPlanTemplates()
-                Log.d("ViewModelListRoom", "$list")
+//                val userId = getUserIdUseCase()
+//                userId?.let {
+//                    insertUserProgressLocalAndRemoteUseCase(
+//                        UserProgress(
+//                            userId = it,
+//                            date = 1750000000,
+//                            weight = 120f
+//                        )
+//                    )
+//                }
+                //saveNewUserUseCase(testUserData)
+                val list = dao.getList()
+                val pList = daoM.getUser()
+                Log.d("ViewModelListRoom", "${dao.getProgramsExerciseCount()}")
                 Log.d("ViewModelListRoom", "$pList")
                 Log.d("PromptCall", "Вызов Gemini завершен успешно.")
             } catch (e: Exception) {

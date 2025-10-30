@@ -12,7 +12,9 @@ import com.gorman.fitnessapp.domain.models.Program
 import com.gorman.fitnessapp.domain.models.ProgramExercise
 import com.gorman.fitnessapp.domain.models.ProgramOutput
 import com.gorman.fitnessapp.domain.models.UserProgram
+import com.gorman.fitnessapp.domain.models.UserProgress
 import com.gorman.fitnessapp.domain.models.UsersData
+import com.gorman.fitnessapp.domain.models.WorkoutHistory
 import com.gorman.fitnessapp.domain.repository.FirebaseRepository
 import javax.inject.Inject
 import kotlin.collections.first
@@ -53,8 +55,28 @@ class FirebaseRepositoryImpl @Inject constructor(
         firebaseAPI.insertUserProgram(program.toRemote())
     }
 
+    override suspend fun insertUserProgress(userProgress: UserProgress): String? {
+        return firebaseAPI.insertUserProgress(userProgress.toRemote())
+    }
+
+    override suspend fun updateUserProgress(userProgress: UserProgress) {
+        firebaseAPI.updateUserProgress(userProgress.toRemote())
+    }
+
+    override suspend fun getUserProgress(userId: String): List<UserProgress>? {
+        return firebaseAPI.getUserProgress(userId)?.map { it.toDomain() }
+    }
+
     override suspend fun insertUser(user: UsersData): String? {
         return firebaseAPI.insertUser(user)
+    }
+
+    override suspend fun deleteUser(user: UsersData) {
+        firebaseAPI.deleteUser(user.toRemote(user.firebaseId))
+    }
+
+    override suspend fun updateUser(user: UsersData) {
+        firebaseAPI.updateUser(user.toRemote(user.firebaseId))
     }
 
     override suspend fun getMeals(): List<Meal> {
@@ -110,5 +132,20 @@ class FirebaseRepositoryImpl @Inject constructor(
             val domainItems = itemsFirebase.map { it.toDomain() }
             domainTemplate to domainItems
         }.toMap()
+    }
+
+    override suspend fun insertWorkoutHistory(workoutHistory: WorkoutHistory): String? {
+        return firebaseAPI.insertWorkoutHistory(workoutHistory.toRemote())
+    }
+
+    override suspend fun updateWorkoutHistory(
+        workoutHistory: WorkoutHistory,
+        userId: String
+    ) {
+        return firebaseAPI.updateWorkoutHistory(workoutHistory.toRemote(), userId)
+    }
+
+    override suspend fun getWorkoutHistory(userId: String): List<WorkoutHistory> {
+        return firebaseAPI.getWorkoutHistory(userId).map { it.toDomain() }
     }
 }

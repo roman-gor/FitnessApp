@@ -9,7 +9,6 @@ import com.gorman.fitnessapp.data.datasource.ai.AiApiClient
 import com.gorman.fitnessapp.data.datasource.ai.GeminiApiClientModel
 import com.gorman.fitnessapp.data.datasource.ai.GeminiGenerator
 import com.gorman.fitnessapp.data.datasource.ai.GeminiGeneratorImpl
-import com.gorman.fitnessapp.data.datasource.local.MySQLService
 import com.gorman.fitnessapp.data.datasource.local.AppDatabase
 import com.gorman.fitnessapp.data.datasource.local.dao.ExerciseDao
 import com.gorman.fitnessapp.data.datasource.local.dao.MealDao
@@ -18,7 +17,9 @@ import com.gorman.fitnessapp.data.datasource.local.dao.MealPlanTemplateDao
 import com.gorman.fitnessapp.data.datasource.local.dao.ProgramDao
 import com.gorman.fitnessapp.data.datasource.local.dao.ProgramExerciseDao
 import com.gorman.fitnessapp.data.datasource.local.dao.UserProgramDao
+import com.gorman.fitnessapp.data.datasource.local.dao.UserProgressDao
 import com.gorman.fitnessapp.data.datasource.local.dao.UsersDataDao
+import com.gorman.fitnessapp.data.datasource.local.dao.WorkoutHistoryDao
 import com.gorman.fitnessapp.data.datasource.remote.FirebaseAPI
 import com.gorman.fitnessapp.data.datasource.remote.FirebaseAPIImpl
 import com.gorman.fitnessapp.data.repository.AiRepositoryImpl
@@ -35,6 +36,7 @@ import com.gorman.fitnessapp.domain.repository.ProgramRepository
 import com.gorman.fitnessapp.domain.repository.SettingsRepository
 import com.gorman.fitnessapp.domain.usecases.GetExercisesUseCase
 import com.gorman.fitnessapp.domain.usecases.GetMealsUseCase
+import com.gorman.fitnessapp.domain.usecases.SetProgramIdUseCase
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -46,36 +48,9 @@ import retrofit2.converter.gson.GsonConverterFactory
 import okhttp3.logging.HttpLoggingInterceptor
 import javax.inject.Singleton
 
-private const val BASE_URL = "https://fitnessapp.42web.io/"
-
 @Module
 @InstallIn(SingletonComponent::class)
 object AppModule {
-    @Provides
-    @Singleton
-    fun provideOkHttpClient(): OkHttpClient {
-        val logging = HttpLoggingInterceptor().apply {
-            level = HttpLoggingInterceptor.Level.BODY
-        }
-        return OkHttpClient.Builder()
-            .addInterceptor(logging)
-            .build()
-    }
-
-    @Provides
-    @Singleton
-    fun provideRetrofitClient(client: OkHttpClient): Retrofit =
-        Retrofit.Builder()
-            .baseUrl(BASE_URL)
-            .client(client)
-            .addConverterFactory(GsonConverterFactory.create())
-            .build()
-
-    @Provides
-    @Singleton
-    fun provideMySQLService(retrofit: Retrofit): MySQLService =
-        retrofit.create(MySQLService::class.java)
-
     @Provides
     @Singleton
     fun provideFirebaseDatabase(): FirebaseDatabase {
@@ -107,8 +82,21 @@ object AppModule {
                                       programDao: ProgramDao,
                                       mealDao: MealDao,
                                       mealPlanTemplateDao: MealPlanTemplateDao,
-                                      mealPlanItemDao: MealPlanItemDao): DatabaseRepository =
-        DatabaseRepositoryImpl(usersDataDao, exerciseDao, userProgramDao, programExerciseDao, programDao, mealDao, mealPlanTemplateDao, mealPlanItemDao)
+                                      mealPlanItemDao: MealPlanItemDao,
+                                      userProgressDao: UserProgressDao,
+                                      workoutHistoryDao: WorkoutHistoryDao): DatabaseRepository {
+        return DatabaseRepositoryImpl(
+            usersDataDao,
+            exerciseDao,
+            userProgramDao,
+            programExerciseDao,
+            programDao,
+            mealDao,
+            mealPlanTemplateDao,
+            mealPlanItemDao,
+            userProgressDao,
+            workoutHistoryDao)
+    }
 
     @Provides
     @Singleton
@@ -154,6 +142,14 @@ object AppModule {
 
     @Provides
     @Singleton
+    fun provideUserProgressDao(db: AppDatabase): UserProgressDao = db.userProgressDao()
+
+    @Provides
+    @Singleton
+    fun provideWorkoutHistoryDao(db: AppDatabase): WorkoutHistoryDao = db.workoutHistoryDao()
+
+    @Provides
+    @Singleton
     fun provideGeminiApiKey(): String =
         BuildConfig.GEMINI_API
 
@@ -177,8 +173,9 @@ object AppModule {
     fun provideProgramRepository(firebaseRepository: FirebaseRepository,
                                  aiRepository: AiRepository,
                                  databaseRepository: DatabaseRepository,
-                                 getExercisesUseCase: GetExercisesUseCase): ProgramRepository =
-        ProgramRepositoryImpl(firebaseRepository, aiRepository, databaseRepository, getExercisesUseCase)
+                                 getExercisesUseCase: GetExercisesUseCase,
+                                 setProgramIdUseCase: SetProgramIdUseCase): ProgramRepository =
+        ProgramRepositoryImpl(firebaseRepository, aiRepository, databaseRepository, getExercisesUseCase, setProgramIdUseCase)
 
     @Provides
     @Singleton

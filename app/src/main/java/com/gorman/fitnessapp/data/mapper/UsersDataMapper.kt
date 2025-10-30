@@ -22,6 +22,7 @@ fun UsersDataEntity.toDomain(): UsersData =
 fun UsersData.toEntity(userId: Int = 0): UsersDataEntity =
     UsersDataEntity(
         id = userId,
+        firebaseId = firebaseId,
         name = name,
         email = email,
         birthday = birthday,

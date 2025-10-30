@@ -10,7 +10,9 @@ import com.gorman.fitnessapp.data.datasource.local.dao.MealPlanTemplateDao
 import com.gorman.fitnessapp.data.datasource.local.dao.ProgramDao
 import com.gorman.fitnessapp.data.datasource.local.dao.ProgramExerciseDao
 import com.gorman.fitnessapp.data.datasource.local.dao.UserProgramDao
+import com.gorman.fitnessapp.data.datasource.local.dao.UserProgressDao
 import com.gorman.fitnessapp.data.datasource.local.dao.UsersDataDao
+import com.gorman.fitnessapp.data.datasource.local.dao.WorkoutHistoryDao
 import com.gorman.fitnessapp.data.models.room.ExerciseEntity
 import com.gorman.fitnessapp.data.models.room.MealEntity
 import com.gorman.fitnessapp.data.models.room.MealPlanItemEntity
@@ -42,6 +44,8 @@ abstract class AppDatabase: RoomDatabase() {
     abstract fun userProgramDao(): UserProgramDao
     abstract fun mealDao(): MealDao
     abstract fun mealPlanItemDao(): MealPlanItemDao
+    abstract fun userProgressDao(): UserProgressDao
+    abstract fun workoutHistoryDao(): WorkoutHistoryDao
     abstract fun mealPlanTemplateDao(): MealPlanTemplateDao
     companion object {
         val MIGRATION_CALLBACK = object : Callback() {

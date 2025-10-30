@@ -9,7 +9,9 @@ import com.gorman.fitnessapp.data.datasource.local.dao.MealPlanTemplateDao
 import com.gorman.fitnessapp.data.datasource.local.dao.ProgramDao
 import com.gorman.fitnessapp.data.datasource.local.dao.ProgramExerciseDao
 import com.gorman.fitnessapp.data.datasource.local.dao.UserProgramDao
+import com.gorman.fitnessapp.data.datasource.local.dao.UserProgressDao
 import com.gorman.fitnessapp.data.datasource.local.dao.UsersDataDao
+import com.gorman.fitnessapp.data.datasource.local.dao.WorkoutHistoryDao
 import com.gorman.fitnessapp.data.mapper.toDomain
 import com.gorman.fitnessapp.data.mapper.toEntity
 import com.gorman.fitnessapp.domain.models.Exercise
@@ -18,7 +20,9 @@ import com.gorman.fitnessapp.domain.models.MealPlan
 import com.gorman.fitnessapp.domain.models.Program
 import com.gorman.fitnessapp.domain.models.ProgramExercise
 import com.gorman.fitnessapp.domain.models.UserProgram
+import com.gorman.fitnessapp.domain.models.UserProgress
 import com.gorman.fitnessapp.domain.models.UsersData
+import com.gorman.fitnessapp.domain.models.WorkoutHistory
 import com.gorman.fitnessapp.domain.repository.DatabaseRepository
 import javax.inject.Inject
 
@@ -30,13 +34,10 @@ class DatabaseRepositoryImpl @Inject constructor(
     private val programDao: ProgramDao,
     private val mealDao: MealDao,
     private val mealPlanTemplateDao: MealPlanTemplateDao,
-    private val mealPlanItemDao: MealPlanItemDao
+    private val mealPlanItemDao: MealPlanItemDao,
+    private val userProgressDao: UserProgressDao,
+    private val workoutHistoryDao: WorkoutHistoryDao
 ): DatabaseRepository {
-
-    override suspend fun getAllUsers(): List<UsersData> {
-        return usersDataDao.getAllUsers().map { it.toDomain() }
-    }
-
     override suspend fun getUserProgramById(programId: Int): UserProgram {
         return userProgramDao.getUserProgramById(programId = programId).toDomain()
     }
@@ -45,16 +46,14 @@ class DatabaseRepositoryImpl @Inject constructor(
         return programExerciseDao.getListOfProgramExercise(programId).map { it.toDomain() }
     }
 
-    override suspend fun getUser(email: String?): UsersData {
-        return usersDataDao.getUserByEmail(email).toDomain()
+    override suspend fun getUser(): UsersData {
+        return usersDataDao.getUser().toDomain()
     }
 
     override suspend fun addUser(user: UsersData) {
+        if (usersDataDao.getUsersCount() > 0)
+            usersDataDao.deleteUser()
         return usersDataDao.addUser(user.toEntity())
-    }
-
-    override suspend fun deleteUser(user: UsersData, id: Int) {
-        return usersDataDao.deleteUser(user.toEntity(id))
     }
 
     override suspend fun updateUser(user: UsersData, id: Int): Int {
@@ -89,6 +88,18 @@ class DatabaseRepositoryImpl @Inject constructor(
         Log.d("UserProgram Count", userProgramDao.getUserProgramsCount().toString())
     }
 
+    override suspend fun insertUserProgress(userProgress: UserProgress) {
+        userProgressDao.insertUserProgress(userProgress.toEntity())
+    }
+
+    override suspend fun updateUserProgress(userProgress: UserProgress) {
+        userProgressDao.updateUserProgress(userProgress.toEntity())
+    }
+
+    override suspend fun getUserProgress(): List<UserProgress> {
+        return userProgressDao.getUserProgress().map { it.toDomain() }
+    }
+
     override suspend fun getMeals(): List<Meal> {
         return mealDao.getMeals().map { it.toDomain() }
     }
@@ -108,11 +119,19 @@ class DatabaseRepositoryImpl @Inject constructor(
         Log.d("MealsPlansCount", mealPlanTemplateDao.getMealsTemplateCount().toString())
     }
 
-    override suspend fun getList(): List<ProgramExercise> {
-        return programExerciseDao.getList().map { it.toDomain() }
-    }
-
     override suspend fun getProgramList(): List<Program> {
         return programDao.getList().map{ it.toDomain() }
+    }
+
+    override suspend fun insertWorkoutHistory(workoutHistory: WorkoutHistory) {
+        workoutHistoryDao.insertWorkoutHistory(workoutHistory.toEntity())
+    }
+
+    override suspend fun updateWorkoutHistory(workoutHistory: WorkoutHistory) {
+        workoutHistoryDao.updateWorkoutHistory(workoutHistory.toEntity())
+    }
+
+    override suspend fun getWorkoutHistory(): List<WorkoutHistory> {
+        return workoutHistoryDao.getWorkoutHistory().map { it.toDomain() }
     }
 }

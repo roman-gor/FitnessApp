@@ -1,5 +1,6 @@
 package com.gorman.fitnessapp.domain.usecases
 
+import android.util.Log
 import com.gorman.fitnessapp.domain.models.UsersData
 import com.gorman.fitnessapp.domain.repository.DatabaseRepository
 import com.gorman.fitnessapp.domain.repository.FirebaseRepository
@@ -13,6 +14,7 @@ class SaveNewUserUseCase @Inject constructor(
 ) {
     suspend operator fun invoke(user: UsersData) {
         val firebaseId = firebaseRepository.insertUser(user)
+        Log.d("USER", firebaseId.toString())
         firebaseId?.let {
             databaseRepository.addUser(user.copy(firebaseId = it))
             settingsRepository.setUserId(it)

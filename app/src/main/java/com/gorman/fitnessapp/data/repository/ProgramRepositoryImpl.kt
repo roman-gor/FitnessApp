@@ -9,6 +9,7 @@ import com.gorman.fitnessapp.domain.repository.DatabaseRepository
 import com.gorman.fitnessapp.domain.repository.FirebaseRepository
 import com.gorman.fitnessapp.domain.repository.ProgramRepository
 import com.gorman.fitnessapp.domain.usecases.GetExercisesUseCase
+import com.gorman.fitnessapp.domain.usecases.SetProgramIdUseCase
 import java.time.Instant
 import javax.inject.Inject
 
@@ -16,7 +17,8 @@ class ProgramRepositoryImpl @Inject constructor(
     private val firebaseRepository: FirebaseRepository,
     private val aiRepository: AiRepository,
     private val databaseRepository: DatabaseRepository,
-    private val getExercisesUseCase: GetExercisesUseCase
+    private val getExercisesUseCase: GetExercisesUseCase,
+    private val setProgramIdUseCase: SetProgramIdUseCase
 ): ProgramRepository {
     @Transaction
     override suspend fun generateAndSyncProgram(
@@ -56,6 +58,7 @@ class ProgramRepositoryImpl @Inject constructor(
                 )
                 databaseRepository.insertUserProgram(userProgram)
                 firebaseRepository.insertUserProgram(userProgram)
+                setProgramIdUseCase(firebaseProgramId)
             }
             Log.d("ProgramExercise", selectedProgram.firebaseId)
         }

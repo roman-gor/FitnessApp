@@ -8,22 +8,12 @@ import androidx.room.PrimaryKey
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
-@Entity(tableName = "UserProgress",
-    indices = [
-        Index(value = ["userId"])
-    ],
-    foreignKeys = [
-        ForeignKey(
-            entity = UsersDataEntity::class,
-            parentColumns = ["id"],
-            childColumns = ["userId"],
-            onDelete = ForeignKey.CASCADE
-        )
-    ])
+@Entity(tableName = "UserProgress")
 data class UserProgressEntity(
     @PrimaryKey(autoGenerate = true)
     val id: Int = 0,
-    val userId: Int,
+    val firebaseId: String = "",
+    val userId: String,
     val date: Long,
     val weight: Float? = null,
     val caloriesBurned: Float? = null,
