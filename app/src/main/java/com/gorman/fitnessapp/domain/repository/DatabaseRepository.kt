@@ -26,7 +26,6 @@ interface DatabaseRepository {
     suspend fun getMeals(): List<Meal>
     suspend fun insertMeals(meals: List<Meal>)
     suspend fun insertMealsItems(meal: MealPlan)
-    suspend fun getList(): List<ProgramExercise>
     suspend fun getProgramList(): List<Program>
     suspend fun insertWorkoutHistory(workoutHistory: WorkoutHistory)
     suspend fun updateWorkoutHistory(workoutHistory: WorkoutHistory)

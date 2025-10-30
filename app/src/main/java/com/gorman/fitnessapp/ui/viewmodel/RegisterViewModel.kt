@@ -80,7 +80,7 @@ class RegisterViewModel @Inject constructor(
 //                        weight = 120f
 //                    ))
 //                }
-                //saveNewUserUseCase(testUserData)
+                saveNewUserUseCase(testUserData)
                 val list = daoM.getUserProgress()
                 val pList = daoU.getUser()
                 Log.d("ViewModelListRoom", "${daoU.getUsersCount()}")

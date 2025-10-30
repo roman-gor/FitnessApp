@@ -122,10 +122,6 @@ class DatabaseRepositoryImpl @Inject constructor(
         Log.d("MealsPlansCount", mealPlanTemplateDao.getMealsTemplateCount().toString())
     }
 
-    override suspend fun getList(): List<ProgramExercise> {
-        return programExerciseDao.getList().map { it.toDomain() }
-    }
-
     override suspend fun getProgramList(): List<Program> {
         return programDao.getList().map{ it.toDomain() }
     }

@@ -6,6 +6,7 @@ data class WorkoutHistory(
     val remoteUserId: Int,
     val exerciseId: Int,
     val programId: Int? = null,
+    val remoteProgramId: Int? = null,
     val date: Long,
     val setsCompleted: Int,
     val repsCompleted: Int,

@@ -1,6 +1,5 @@
 package com.gorman.fitnessapp.data.datasource.remote
 
-import android.util.Log
 import com.gorman.fitnessapp.data.models.postgresql.ExerciseSupabase
 import com.gorman.fitnessapp.data.models.postgresql.MealPlanFullSupabase
 import com.gorman.fitnessapp.data.models.postgresql.MealSupabase
@@ -57,187 +56,178 @@ class PostgreSQLServiceImpl @Inject constructor(
         }
     }
     override suspend fun getMeals(): List<MealSupabase> {
-        return try {
-            val meals = client.postgrest["meal"]
+        return executeListRequest(
+            tag = "SUPABASE Meals",
+            operationName = "Получен список блюд"
+        ) {
+            client.postgrest["meal"]
                 .select()
                 .decodeList<MealSupabase>()
-            Log.d("SUPABASE Meals", "Получен список упражнений $meals")
-            meals
-        } catch (e: Exception) {
-            Log.e("SUPABASE Meals", "Ошибка при получении списка рационов ${e.message}")
-            emptyList()
         }
     }
 
     override suspend fun findUserPrograms(userId: Int): List<UserProgramSupabase> {
-        return try {
-            val programs = client.postgrest["userprogram"]
+        return executeListRequest(
+            tag = "SUPABASE UserPrograms",
+            operationName = "Найдены программы для пользователя"
+        ) {
+            client.postgrest["userprogram"]
                 .select {
                     filter {
                         eq("userid_usersdata", userId)
                     }
                 }
                 .decodeList<UserProgramSupabase>()
-            Log.d("SUPABASE", "Найдены программы для пользователя $userId: $programs")
-            programs
-        } catch (e: Exception) {
-            Log.e("SUPABASE", "Ошибка при поиске программ пользователя $userId: ${e.message}")
-            emptyList()
         }
     }
 
     override suspend fun deleteAllUserPrograms(userPrograms: List<UserProgramSupabase>) {
         if (userPrograms.isEmpty()) return
-        try {
+        executeRequest(
+            tag = "SupabaseAPI",
+            operationName = "Удаление программ пользователя"
+        ) {
             val programIds = userPrograms.map { it.programId }
-            Log.d("ProgramId", programIds.first().toString())
-            val result = client.postgrest.rpc(
+            logger.d("ProgramId", programIds.first().toString())
+            client.postgrest.rpc(
                 function = "delete_user_program_atomic",
                 parameters = mapOf(
                     "program_id" to programIds.first()
                 )
             )
-            Log.d("SupabaseAPI", "Успешно вызвана атомарная функция удаления программ. $result")
-        } catch (e: Exception) {
-            Log.e("SupabaseAPI", "Ошибка при удалении программ: ${e.message}")
         }
     }
 
     override suspend fun insertProgram(program: ProgramSupabase): Int? {
-        return try {
+        return executeRequest(
+            tag = "SUPABASE Insert",
+            operationName = "Вставка программы тренировок"
+        ) {
             val insertedProgram = client.postgrest["program"]
                 .insert(program) {
                     select()
                 }
                 .decodeSingle<ProgramSupabase>()
-            Log.d("InsertProgramId", insertedProgram.id.toString())
             insertedProgram.id
-        } catch (e: Exception) {
-            Log.e("SupabaseAPI", "Ошибка при вставке программы: ${e.message}")
-            null
         }
     }
 
     override suspend fun insertProgramExercise(programExercises: List<ProgramExerciseSupabase>?, programId: Int?) {
         if (programId == null || programExercises.isNullOrEmpty()) {
-            Log.e("SupabaseAPI", "Program ID null или список упражнений пуст. Вставка невозможна.")
+            logger.e("SupabaseAPI", "Program ID null или список упражнений пуст. Вставка невозможна.")
             return
         }
-        try {
-            val insertedData = client.postgrest["programexercise"]
+        executeRequest(
+            tag = "ProgramExercise",
+            operationName = "Успешно вставлено ${programExercises.size} упражнений для программы $programId"
+        ) {
+            client.postgrest["programexercise"]
                 .insert(programExercises) {
                     select()
                 }
                 .decodeList<ProgramExerciseSupabase>()
-
-            Log.d("ProgramExercise", "Успешно вставлено ${insertedData.size} упражнений для программы $programId")
-        } catch (e: Exception) {
-            Log.e("SupabaseAPI", "Ошибка при вставке упражнений: ${e.message}")
         }
     }
 
     override suspend fun insertUserProgram(program: UserProgramSupabase) {
-        try {
+        executeRequest(
+            tag = "SupabaseAPI",
+            operationName = "Успешно вставлена программа пользователя."
+        ) {
             client.postgrest["userprogram"]
                 .insert(program)
-            Log.d("SupabaseAPI", "Успешно вставлена программа пользователя.")
-        } catch (e: Exception) {
-            Log.e("SupabaseAPI", "Ошибка при вставке программы пользователя: ${e.message}")
         }
     }
 
     override suspend fun insertUserProgress(userProgress: UserProgressSupabase): Int? {
-        return try {
+        return executeRequest(
+            tag = "SupabaseAPI",
+            operationName = "Успешно добавлена запись прогресса пользователя."
+        ) {
             val progressId = client.postgrest["userprogress"]
                 .insert(userProgress) {
                     select()
                 }
                 .decodeSingle<UserProgressSupabase>()
-            Log.d("SupabaseAPI", "Успешно добавлена запись прогресса пользователя.")
             progressId.id
-        } catch (e: Exception) {
-            Log.e("SupabaseAPI", "Ошибка при добавлении записи прогресса пользователя: ${e.message}")
-            null
         }
     }
 
     override suspend fun updateUserProgress(userProgress: UserProgressSupabase) {
-        try {
+        executeRequest(
+            tag = "SUPABASE Update",
+            operationName = "Запись прогресса успешно обновлена"
+        ) {
             client.postgrest["userprogress"]
                 .update(userProgress)
-            Log.e("SUPABASE Delete", "Запись прогресса успешно обновлена")
-        } catch (e: Exception) {
-            Log.e("SUPABASE Delete", "Ошибка при обновлении записи прогресса: ${e.message}")
         }
     }
 
     override suspend fun getUserProgress(userId: Int): List<UserProgressSupabase> {
-        return try {
-            val queries = client.postgrest["userprogress"]
+        return executeListRequest(
+            tag = "SupabaseAPI",
+            operationName = "Извлечение записи прогресса пользователя"
+        ) {
+            client.postgrest["userprogress"]
                 .select {
                     filter {
                         eq("userid_usersdata", userId)
                     }
                 }
                 .decodeList<UserProgressSupabase>()
-            queries
-        } catch (e: Exception) {
-            Log.e("SupabaseAPI", "Ошибка при извлечении записи прогресса пользователя: ${e.message}")
-            emptyList()
         }
     }
 
     override suspend fun getUser(email: String): UserSupabase? {
-        return try {
-            val user = client.postgrest["usersdata"]
+        return executeRequest(
+            tag = "SUPABASE User",
+            operationName = "Найден пользователь с email $email"
+        ) {
+            client.postgrest["usersdata"]
                 .select {
                     filter {
                         eq("email", email)
                     }
                 }
                 .decodeSingleOrNull<UserSupabase>()
-            Log.d("SUPABASE User", "Найден пользователь с email $email: $user")
-            user
-        } catch (e: Exception) {
-            Log.e("SUPABASE User", "Ошибка при получении пользователя $email: ${e.message}")
-            null
         }
     }
 
     override suspend fun insertUser(user: UserSupabase): Int? {
-        return try {
+        return executeRequest(
+            tag = "SUPABASE Insert",
+            operationName = "Успешно вставлен пользователь"
+        ) {
             val insertedUser = client.postgrest["usersdata"]
                 .insert(user) {
                     select()
                 }
                 .decodeSingle<UserSupabase>()
-            Log.d("SUPABASE Insert", "Успешно вставлен пользователь с ID ${insertedUser.userId}")
             insertedUser.userId
-        } catch (e: Exception) {
-            Log.e("SUPABASE Insert", "Ошибка при вставке пользователя: ${e.message}")
-            null
         }
     }
 
     override suspend fun deleteUser(user: UserSupabase) {
-        try {
+        executeRequest(
+            tag = "SUPABASE Delete",
+            operationName = "Удаление пользователя: ${user.userId}"
+        ) {
             client.postgrest["usersdata"]
                 .delete{
                     filter {
                         eq("userId", user.userId)
                     }
                 }
-        } catch (e: Exception) {
-            Log.e("SUPABASE Delete", "Ошибка при удалении пользователя: ${user.userId}, ${e.message}")
         }
     }
 
     override suspend fun updateUser(user: UserSupabase) {
-        try {
+        executeRequest(
+            tag = "SUPABASE Update",
+            operationName = "Обновление пользователя: ${user.userId}"
+        ) {
             client.postgrest["usersdata"]
                 .update(user)
-        } catch (e: Exception) {
-            Log.e("SUPABASE Delete", "Ошибка при обновлении пользователя: ${user.userId}, ${e.message}")
         }
     }
 
@@ -246,7 +236,10 @@ class PostgreSQLServiceImpl @Inject constructor(
         mealPlanTemplateSupabase: MealPlanTemplateSupabase,
         userId: Int
     ): Int? {
-        return try {
+        return executeRequest(
+            tag = "SUPABASE MealPlan",
+            operationName = "Вставка плана питания"
+        ) {
             val templateToInsert = mealPlanTemplateSupabase.copy(userId = userId)
 
             val insertedTemplate = client.postgrest["mealplantemplate"]
@@ -264,17 +257,79 @@ class PostgreSQLServiceImpl @Inject constructor(
                         select()
                     }
                     .decodeList<MealPlanItemSupabase>()
-                Log.d("SUPABASE MealPlan", "Вставлено $templateId и ${insertedItems.size} элементов.")
+                logger.d("SUPABASE MealPlan", "Вставлено $templateId и ${insertedItems.size} элементов.")
             }
             templateId
-        } catch (e: Exception) {
-            Log.e("SUPABASE MealPlan", "Ошибка при вставке плана питания: ${e.message}")
-            null
         }
     }
 
     override suspend fun findUserMealPlanTemplate(userId: Int): Map<Int, MealPlanTemplateSupabase> {
-        return try {
+        return executeRequest(
+            tag = "SUPABASE Templates",
+            operationName = "Найдены шаблоны для пользователя $userId"
+        ) {
+            client.postgrest["mealplantemplate"]
+                .select {
+                    filter {
+                        eq("userid_usersdata", userId)
+                    }
+                }
+                .decodeList<MealPlanTemplateSupabase>()
+                .associateBy { it.templateId }
+        } ?: emptyMap()
+    }
+
+    override suspend fun getProgram(programId: Int): ProgramSupabase? {
+        return executeRequest(
+            tag = "SUPABASE Program",
+            operationName = "Найдена программа $programId"
+        ) {
+            client.postgrest["program"]
+                .select {
+                    filter {
+                        eq("id_program", programId)
+                    }
+                }
+                .decodeSingleOrNull<ProgramSupabase>()
+        }
+    }
+
+    override suspend fun getProgramExercises(programId: Int): List<ProgramExerciseSupabase> {
+        return executeListRequest(
+            tag = "SUPABASE Exercises",
+            operationName = "Найдено упражнений для программы $programId"
+        ) {
+            client.postgrest["programexercise"]
+                .select {
+                    filter {
+                        eq("programid_program", programId)
+                    }
+                }
+                .decodeList<ProgramExerciseSupabase>()
+        }
+    }
+
+    override suspend fun getUserProgram(userId: Int): UserProgramSupabase? {
+        return executeRequest(
+            tag = "SUPABASE UserProgram",
+            operationName = "Найдена программа пользователя $userId"
+        ) {
+            client.postgrest["userprogram"]
+                .select {
+                    filter {
+                        eq("userid_usersdata", userId)
+                    }
+                    limit(1)
+                }
+                .decodeSingleOrNull<UserProgramSupabase>()
+        }
+    }
+
+    override suspend fun getMealPlans(userId: Int): List<MealPlanFullSupabase> {
+        return executeListRequest(
+            tag = "SUPABASE",
+            operationName = "Получение планов питания для пользователя $userId"
+        ) {
             val templates = client.postgrest["mealplantemplate"]
                 .select {
                     filter {
@@ -283,151 +338,77 @@ class PostgreSQLServiceImpl @Inject constructor(
                 }
                 .decodeList<MealPlanTemplateSupabase>()
 
-            Log.d("SUPABASE Templates", "Найдены шаблоны для пользователя $userId: ${templates.size}")
-            templates.associateBy { it.templateId }
-        } catch (e: Exception) {
-            Log.e("SUPABASE Templates", "Ошибка при поиске шаблонов: ${e.message}")
-            emptyMap()
-        }
-    }
-
-    override suspend fun getProgram(programId: Int): ProgramSupabase? {
-        return try {
-            val program = client.postgrest["program"]
-                .select {
-                    filter {
-                        eq("id_program", programId)
-                    }
-                }
-                .decodeSingleOrNull<ProgramSupabase>()
-            Log.d("SUPABASE Program", "Найдена программа $programId: $program")
-            program
-        } catch (e: Exception) {
-            Log.e("SUPABASE Program", "Ошибка при получении программы $programId: ${e.message}")
-            null
-        }
-    }
-
-    override suspend fun getProgramExercises(programId: Int): List<ProgramExerciseSupabase> {
-        return try {
-            val exercises = client.postgrest["programexercise"]
-                .select {
-                    filter {
-                        eq("programid_program", programId)
-                    }
-                }
-                .decodeList<ProgramExerciseSupabase>()
-            Log.d("SUPABASE Exercises", "Найдено ${exercises.size} упражнений для программы $programId")
-            exercises
-        } catch (e: Exception) {
-            Log.e("SUPABASE Exercises", "Ошибка при получении упражнений программы $programId: ${e.message}")
-            emptyList()
-        }
-    }
-
-    override suspend fun getUserProgram(userId: Int): UserProgramSupabase? {
-        return try {
-            val userProgram = client.postgrest["userprogram"]
-                .select {
-                    filter {
-                        eq("userid_usersdata", userId)
-                    }
-                    limit(1)
-                }
-                .decodeSingleOrNull<UserProgramSupabase>()
-
-            Log.d("SUPABASE UserProgram", "Найдена программа пользователя $userId: $userProgram")
-            userProgram
-        } catch (e: Exception) {
-            Log.e("SUPABASE UserProgram", "Ошибка при получении программы пользователя $userId: ${e.message}")
-            null
-        }
-    }
-
-    override suspend fun getMealPlans(userId: Int): List<MealPlanFullSupabase> {
-        val templates = client.postgrest["mealplantemplate"]
-            .select {
-                filter {
-                    eq("userid_usersdata", userId)
-                }
+            if (templates.isEmpty()) {
+                logger.d("SUPABASE", "Шаблоны планов питания для пользователя $userId не найдены.")
+                return@executeListRequest emptyList()
             }
-            .decodeList<MealPlanTemplateSupabase>()
 
-        if (templates.isEmpty()) {
-            Log.d("SUPABASE", "Шаблоны планов питания для пользователя $userId не найдены.")
-            return emptyList()
-        }
+            val mealPlans = mutableListOf<MealPlanFullSupabase>()
 
-        val mealPlans = mutableListOf<MealPlanFullSupabase>()
-
-        for (template in templates) {
-            val items = client.postgrest["mealplanitem"]
-                .select {
-                    filter {
-                        eq("templateid_mealplantemplate", template.templateId)
+            for (template in templates) {
+                val items = client.postgrest["mealplanitem"]
+                    .select {
+                        filter {
+                            eq("templateid_mealplantemplate", template.templateId)
+                        }
                     }
-                }
-                .decodeList<MealPlanItemSupabase>()
-            mealPlans.add(MealPlanFullSupabase(template, items))
+                    .decodeList<MealPlanItemSupabase>()
+                mealPlans.add(MealPlanFullSupabase(template, items))
+            }
+            mealPlans
         }
-
-        return mealPlans
     }
 
     override suspend fun insertWorkoutHistory(workoutHistorySupabase: WorkoutHistorySupabase): Int? {
-        return try {
+        return executeRequest(
+            tag = "SupabaseAPI",
+            operationName = "Успешно добавлена запись тренировки."
+        ) {
             val workoutHistory = client.postgrest["workouthistory"]
                 .insert(workoutHistorySupabase) {
                     select()
                 }
                 .decodeSingle<WorkoutHistorySupabase>()
-            Log.d("SupabaseAPI", "Успешно добавлена запись тренировки.")
             workoutHistory.id
-        } catch (e: Exception) {
-            Log.e("SupabaseAPI", "Ошибка при добавлении записи тренировки пользователя: ${e.message}")
-            null
         }
     }
 
     override suspend fun updateWorkoutHistory(workoutHistorySupabase: WorkoutHistorySupabase) {
-        try {
+        executeRequest(
+            tag = "SUPABASE Update",
+            operationName = "Запись истории тренировки успешно обновлена"
+        ) {
             client.postgrest["workouthistory"]
                 .update(workoutHistorySupabase)
-            Log.e("SUPABASE Delete", "Запись истории тренировки успешно обновлена")
-        } catch (e: Exception) {
-            Log.e("SUPABASE Delete", "Ошибка при обновлении записи истории тренировки: ${e.message}")
         }
     }
 
     override suspend fun getWorkoutHistory(userId: Int): List<WorkoutHistorySupabase> {
-        return try {
-            val workoutHistory = client.postgrest["workouthistory"]
+        return executeListRequest(
+            tag = "SupabaseAPI",
+            operationName = "Получение истории тренировок"
+        ) {
+            client.postgrest["workouthistory"]
                 .select {
                     filter {
                         eq("userid_usersdata", userId)
                     }
                 }
                 .decodeList<WorkoutHistorySupabase>()
-            Log.d("SupabaseAPI", "Успешно добавлена запись тренировки.")
-            workoutHistory
-        } catch (e: Exception) {
-            Log.e("SupabaseAPI", "Ошибка при добавлении записи тренировки пользователя: ${e.message}")
-            emptyList()
         }
     }
 
     override suspend fun deleteMealPlan(templateId: Int) {
-        try {
+        executeRequest(
+            tag = "SUPABASE",
+            operationName = "План питания с id=$templateId успешно удалён."
+        ) {
             client.postgrest.rpc(
                 function = "delete_meal_plan",
                 parameters = mapOf(
                     "template_id" to templateId
                 )
             )
-            Log.d("SUPABASE", "План питания с id=$templateId успешно удалён.")
-        } catch (e: Exception) {
-            Log.e("SUPABASE", "Ошибка при удалении плана питания: ${e.message}")
-            throw e
         }
     }
 }
