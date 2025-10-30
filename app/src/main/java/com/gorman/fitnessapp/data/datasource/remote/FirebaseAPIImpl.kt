@@ -1,9 +1,5 @@
 package com.gorman.fitnessapp.data.datasource.remote
 
-import android.util.Log
-import androidx.compose.animation.core.copy
-import androidx.compose.ui.input.key.key
-import androidx.room.util.query
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.getValue
 import com.gorman.fitnessapp.data.mapper.toRemote
@@ -17,8 +13,8 @@ import com.gorman.fitnessapp.data.models.firebase.UserFirebase
 import com.gorman.fitnessapp.data.models.firebase.UserProgramFirebase
 import com.gorman.fitnessapp.data.models.firebase.UserProgressFirebase
 import com.gorman.fitnessapp.data.models.firebase.WorkoutHistoryFirebase
-import com.gorman.fitnessapp.domain.models.ProgramExercise
 import com.gorman.fitnessapp.domain.models.UsersData
+import com.gorman.fitnessapp.logger.AppLogger
 import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
 import kotlin.collections.component1
@@ -26,20 +22,29 @@ import kotlin.collections.component2
 import kotlin.collections.forEach
 
 class FirebaseAPIImpl @Inject constructor(
-    private val database: DatabaseReference
+    private val database: DatabaseReference,
+    private val logger: AppLogger
 ) : FirebaseAPI {
-    override suspend fun getExercises(): List<ExerciseFirebase> {
-        val exerciseRef = database.child("exercises")
-        val dataSnapshot = exerciseRef.get().await()
-        val exerciseList = mutableListOf<ExerciseFirebase>()
-        for (exerciseSnapshot in dataSnapshot.children) {
-            val exercise = exerciseSnapshot.getValue<ExerciseFirebase>()
-            if (exercise != null) {
-                exerciseList.add(exercise.copy(id = exerciseSnapshot.key ?: ""))
-            }
+    private suspend fun <T> executeRequest(
+        operationName: String,
+        block: suspend () -> T
+    ): T? {
+        return try {
+            val result = block()
+            logger.d("FirebaseAPI", "$operationName успешно выполнено")
+            result
+        } catch (e: Exception) {
+            logger.e("FirebaseAPI", "Ошибка при выполнении $operationName: ${e.message}")
+            null
         }
-        return exerciseList
     }
+
+    override suspend fun getExercises(): List<ExerciseFirebase> = executeRequest("Получение упражнений") {
+        val snapshot = database.child("exercises").get().await()
+        snapshot.children.mapNotNull { snap ->
+            snap.getValue<ExerciseFirebase>()?.copy(id = snap.key ?: "")
+        }
+    } ?: emptyList()
 
     override suspend fun findUserPrograms(userId: String): Map<String, UserProgramFirebase> {
         val userProgramsRef = database.child("user_program")
@@ -65,7 +70,7 @@ class FirebaseAPIImpl @Inject constructor(
             updates["/program_exercise/${userProgramValue.programId}"] = null
         }
         database.updateChildren(updates).await()
-        Log.d("FirebaseAPI", "Успешно удалены старые программы и связанные данные.")
+        logger.d("FirebaseAPI", "Успешно удалены старые программы и связанные данные.")
     }
 
     override suspend fun insertProgram(program: ProgramFirebase): String? {
@@ -78,7 +83,7 @@ class FirebaseAPIImpl @Inject constructor(
 
     override suspend fun insertProgramExercise(programExercise: List<ProgramExerciseFirebase>?, programId: String?) {
         if (programId.isNullOrBlank()) {
-            Log.e("FirebaseAPI", "Program ID is null. Cannot insert exercises.")
+            logger.e("FirebaseAPI", "Program ID is null. Cannot insert exercises.")
             return
         }
         val programExerciseRef = database.child("program_exercise").child(programId)
@@ -90,7 +95,7 @@ class FirebaseAPIImpl @Inject constructor(
         if (exercisesMap.isNotEmpty()) {
             programExerciseRef.updateChildren(exercisesMap).await()
         }
-        Log.d("ProgramExercise", "$exercisesMap")
+        logger.d("ProgramExercise", "$exercisesMap")
     }
 
     override suspend fun insertUserProgram(program: UserProgramFirebase) {
@@ -102,14 +107,14 @@ class FirebaseAPIImpl @Inject constructor(
         val userProgressRef = database.child("user_progress").push()
         val newProgressKey = userProgressRef.key
         if (newProgressKey == null) {
-            Log.e("FirebaseAPI", "Не удалось сгенерировать ключ для user_progress")
+            logger.e("FirebaseAPI", "Не удалось сгенерировать ключ для user_progress")
             return null
         }
         val updates = mutableMapOf<String, Any?>()
         updates["/user_progress/$newProgressKey"] = userProgress
         updates["/users/${userProgress.userId}/weight"] = userProgress.weight
         database.updateChildren(updates).await()
-        Log.d("FirebaseAPI", "Прогресс для пользователя ${userProgress.userId} добавлен, вес в профиле обновлен.")
+        logger.d("FirebaseAPI", "Прогресс для пользователя ${userProgress.userId} добавлен, вес в профиле обновлен.")
         return newProgressKey
     }
 
@@ -162,27 +167,27 @@ class FirebaseAPIImpl @Inject constructor(
 
     override suspend fun deleteUser(user: UserFirebase) {
         if (user.userId.isBlank()) {
-            Log.e("FirebaseAPI", "Не указан userId для удаления пользователя.")
+            logger.e("FirebaseAPI", "Не указан userId для удаления пользователя.")
             return
         }
         try {
             database.child("users").child(user.userId).setValue(null).await()
-            Log.d("FirebaseAPI", "Успешно удален пользователь с ID: ${user.userId}")
+            logger.d("FirebaseAPI", "Успешно удален пользователь с ID: ${user.userId}")
         } catch (e: Exception) {
-            Log.e("FirebaseAPI", "Ошибка при удалении пользователя ${user.userId}: ${e.message}")
+            logger.e("FirebaseAPI", "Ошибка при удалении пользователя ${user.userId}: ${e.message}")
         }
     }
 
     override suspend fun updateUser(user: UserFirebase) {
         if (user.userId.isBlank()) {
-            Log.e("FirebaseAPI", "Не указан userId для обновления пользователя.")
+            logger.e("FirebaseAPI", "Не указан userId для обновления пользователя.")
             return
         }
         try {
             database.child("users").child(user.userId).setValue(user).await()
-            Log.d("FirebaseAPI", "Успешно обновлен пользователь с ID: ${user.userId}")
+            logger.d("FirebaseAPI", "Успешно обновлен пользователь с ID: ${user.userId}")
         } catch (e: Exception) {
-            Log.e("FirebaseAPI", "Ошибка при обновлении пользователя ${user.userId}: ${e.message}")
+            logger.e("FirebaseAPI", "Ошибка при обновлении пользователя ${user.userId}: ${e.message}")
         }
     }
 
@@ -240,7 +245,7 @@ class FirebaseAPIImpl @Inject constructor(
         updates["/meal_plan_templates/$templateId"] = null
         updates["/meal_plan_items/$templateId"] = null
         database.updateChildren(updates).await()
-        Log.d("FirebaseAPI", "Успешно удален старый план питания: $templateId")
+        logger.d("FirebaseAPI", "Успешно удален старый план питания: $templateId")
     }
 
     override suspend fun getProgram(programId: String): ProgramFirebase? {
@@ -274,7 +279,7 @@ class FirebaseAPIImpl @Inject constructor(
         val templateSnapshot = templateQuery.get().await()
 
         if (!templateSnapshot.exists()) {
-            Log.d("FirebaseAPI", "Шаблоны планов питания для пользователя $userId не найдены.")
+            logger.d("FirebaseAPI", "Шаблоны планов питания для пользователя $userId не найдены.")
             return null
         }
 
@@ -283,7 +288,7 @@ class FirebaseAPIImpl @Inject constructor(
         val template = userTemplateSnapshot.getValue(MealPlanTemplateFirebase::class.java)
 
         if (templateId == null || template == null) {
-            Log.e("FirebaseAPI", "Не удалось получить ID или данные шаблона.")
+            logger.e("FirebaseAPI", "Не удалось получить ID или данные шаблона.")
             return null
         }
 
@@ -304,22 +309,22 @@ class FirebaseAPIImpl @Inject constructor(
         val workoutHistoryRef = database.child("workout_history").push()
         val newHistoryKey = workoutHistoryRef.key
         if (newHistoryKey == null) {
-            Log.e("FirebaseAPI", "Не удалось сгенерировать ключ для workout_history")
+            logger.e("FirebaseAPI", "Не удалось сгенерировать ключ для workout_history")
             return null
         }
         workoutHistoryRef.setValue(workoutHistoryFirebase).await()
-        Log.d("FirebaseAPI", "Успешно добавлена запись тренировки: $newHistoryKey")
+        logger.d("FirebaseAPI", "Успешно добавлена запись тренировки: $newHistoryKey")
         return newHistoryKey
     }
 
     override suspend fun updateWorkoutHistory(workoutHistoryFirebase: WorkoutHistoryFirebase, userId: String) {
         if (workoutHistoryFirebase.id.isBlank()) {
-            Log.e("FirebaseAPI", "Не указан ID для обновления истории тренировки.")
+            logger.e("FirebaseAPI", "Не указан ID для обновления истории тренировки.")
             return
         }
         val workoutHistoryRef = database.child("workout_history").child(userId).child(workoutHistoryFirebase.id)
         workoutHistoryRef.setValue(workoutHistoryFirebase).await()
-        Log.d("FirebaseAPI", "Запись истории тренировки ${workoutHistoryFirebase.id} успешно обновлена")
+        logger.d("FirebaseAPI", "Запись истории тренировки ${workoutHistoryFirebase.id} успешно обновлена")
     }
 
     override suspend fun getWorkoutHistory(userId: String): List<WorkoutHistoryFirebase> {
@@ -335,7 +340,7 @@ class FirebaseAPIImpl @Inject constructor(
                 historyList.add(workoutHistory.copy(id = historySnapshot.key ?: ""))
             }
         }
-        Log.d("FirebaseAPI", "Найдено ${historyList.size} записей истории тренировок для пользователя $userId")
+        logger.d("FirebaseAPI", "Найдено ${historyList.size} записей истории тренировок для пользователя $userId")
         return historyList
     }
 

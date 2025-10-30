@@ -37,6 +37,8 @@ import com.gorman.fitnessapp.domain.repository.SettingsRepository
 import com.gorman.fitnessapp.domain.usecases.GetExercisesUseCase
 import com.gorman.fitnessapp.domain.usecases.GetMealsUseCase
 import com.gorman.fitnessapp.domain.usecases.SetProgramIdUseCase
+import com.gorman.fitnessapp.logger.AppLogger
+import com.gorman.fitnessapp.logger.AppLoggerImpl
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -65,8 +67,8 @@ object AppModule {
 
     @Provides
     @Singleton
-    fun provideFirebaseAPI(db: DatabaseReference): FirebaseAPI =
-        FirebaseAPIImpl(db)
+    fun provideFirebaseAPI(db: DatabaseReference, logger: AppLogger): FirebaseAPI =
+        FirebaseAPIImpl(db, logger)
 
     @Provides
     @Singleton
@@ -190,4 +192,8 @@ object AppModule {
     fun provideSettingRepository(@ApplicationContext context: Context): SettingsRepository {
         return SettingsRepositoryImpl(context)
     }
+
+    @Provides
+    @Singleton
+    fun provideAppLogger(): AppLogger = AppLoggerImpl()
 }
