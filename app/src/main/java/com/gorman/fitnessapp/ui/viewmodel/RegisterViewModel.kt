@@ -80,7 +80,7 @@ class RegisterViewModel @Inject constructor(
 //                        )
 //                    )
 //                }
-                //saveNewUserUseCase(testUserData)
+                saveNewUserUseCase(testUserData)
                 val list = dao.getList()
                 val pList = daoM.getUser()
                 Log.d("ViewModelListRoom", "${dao.getProgramsExerciseCount()}")
