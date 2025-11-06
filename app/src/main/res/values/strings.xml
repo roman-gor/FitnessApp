@@ -1,3 +1,8 @@
 <resources>
-    <string name="app_name">FitnessApp</string>
+    <string name="app_name" translatable="false">FitnessApp</string>
+    <string name="meet_text">Последовательность — это ключ к прогрессу. Не сдавайтесь!</string>
+    <string name="next">Далее</string>
+    <string name="continue_string">Продолжить</string>
+    <string name="back">Назад</string>
+    <string name="choose_gender">Выбери свой пол</string>
 </resources>

@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="meet_text">Consistency Is the Key To progress. Don\'t Give Up!</string>
+    <string name="next">Next</string>
+    <string name="continue_string">Continue</string>
+    <string name="back">Back</string>
+    <string name="choose_gender">What’s Your Gender</string>
+</resources>
