@@ -7,7 +7,6 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -17,8 +16,6 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -41,13 +38,13 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.gorman.fitnessapp.R
 import com.gorman.fitnessapp.domain.models.UsersData
+import com.gorman.fitnessapp.ui.components.SetupBackButton
 import com.gorman.fitnessapp.ui.components.SetupNextButton
 import com.gorman.fitnessapp.ui.fonts.mulishFont
 
 @Composable
 fun GenderScreen(onNextPage: (UsersData) -> Unit,
                  onBackPage: () -> Unit) {
-
     var isMale by remember { mutableStateOf(true) }
     val malePainterResource =
         if (isMale) painterResource(R.drawable.male_on) else
@@ -67,28 +64,12 @@ fun GenderScreen(onNextPage: (UsersData) -> Unit,
             horizontalArrangement = Arrangement.Start,
             verticalAlignment = Alignment.CenterVertically
         ){
-            Row (
-                modifier = Modifier
-                    .wrapContentSize()
-                    .clip(RoundedCornerShape(20.dp))
-                    .clickable(onClick = {onBackPage()}),
-                verticalAlignment = Alignment.CenterVertically
-            ){
-                Icon(painter = painterResource(R.drawable.arrow_left),
-                    contentDescription = "Arrow Back",
-                    tint = colorResource(R.color.meet_text),
-                    modifier = Modifier.height(40.dp))
-                Spacer(modifier = Modifier.width(8.dp))
-                Text(text = stringResource(R.string.back),
-                    fontFamily = mulishFont(),
-                    fontSize = 18.sp,
-                    color = colorResource(R.color.meet_text),
-                    modifier = Modifier.padding(2.dp))
-            }
+            SetupBackButton { onBackPage() }
         }
+        Spacer(modifier = Modifier.weight(1f))
         Text(text = stringResource(R.string.choose_gender),
             fontFamily = mulishFont(),
-            fontSize = 26.sp,
+            fontSize = 30.sp,
             fontWeight = FontWeight.Bold,
             color = Color.White,
             modifier = Modifier.padding(16.dp))

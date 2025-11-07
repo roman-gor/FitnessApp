@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
@@ -79,7 +80,7 @@ fun AgePickerWheel(
         }
     }
     Box(
-        modifier = Modifier.fillMaxWidth(),
+        modifier = Modifier.fillMaxWidth().wrapContentHeight(),
         contentAlignment = Alignment.Center
     ) {
         LazyRow(
@@ -129,14 +130,14 @@ fun AgeItem(age: Int, isSelected: Boolean, width: Dp) {
 }
 
 /**
- * Декорации: центральные линии и треугольник
+ * Центральные линии
  */
 @Composable
 fun AgePickerDecoration(itemWidth: Dp) {
     Box(
         modifier = Modifier
             .width(itemWidth)
-            .height(180.dp),
+            .height(110.dp),
         contentAlignment = Alignment.Center
     ) {
         Row(
@@ -146,11 +147,11 @@ fun AgePickerDecoration(itemWidth: Dp) {
         ) {
             Spacer(modifier = Modifier
                 .width(2.dp)
-                .fillMaxHeight(0.6f)
+                .fillMaxHeight(1f)
                 .background(Color.White.copy(alpha = 0.8f)))
             Spacer(modifier = Modifier
                 .width(2.dp)
-                .fillMaxHeight(0.6f)
+                .fillMaxHeight(1f)
                 .background(Color.White.copy(alpha = 0.8f)))
         }
     }

@@ -6,6 +6,7 @@ sealed class Screen() {
         object Gender: SetupScreen("gender")
         object Age: SetupScreen("age")
         object Weight: SetupScreen("weight")
+        object DesiredWeight: SetupScreen("desired_weight")
         object Height: SetupScreen("height")
         object Goal: SetupScreen("goal")
         object ActivityLevel: SetupScreen("activity_level")

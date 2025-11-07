@@ -1,10 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="meet_text">Consistency Is the Key To progress. Don\'t Give Up!</string>
+    <string name="meet_text">Consistency Is the Key To progress.\nDon\'t Give Up!</string>
     <string name="next">Next</string>
     <string name="continue_string">Continue</string>
     <string name="back">Back</string>
     <string name="choose_gender">What’s Your Gender</string>
     <string name="choose_age">How old are you?</string>
     <string name="choose_weight">What Is Your Weight?</string>
+    <string name="choose_desired_weight">What Is Your Desired Weight?</string>
+    <string name="choose_height">What Is Your Height?</string>
+    <string name="choose_goal">What Is Your Goal?</string>
+    <string name="choose_level">Physical Activity Level</string>
+    <string name="kg">Kg</string>
+    <string name="lose_weight">Lose Weight</string>
+    <string name="gain_weight">Gain Weight</string>
+    <string name="muscle_muss_gain">Muscle Muss Gain</string>
+    <string name="shape_body">Shape Body</string>
+    <string name="for_soul">For Soul</string>
 </resources>

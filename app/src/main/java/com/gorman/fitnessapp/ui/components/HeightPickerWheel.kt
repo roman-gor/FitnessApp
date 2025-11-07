@@ -6,14 +6,14 @@ import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.snapping.rememberSnapFlingBehavior
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.layout.wrapContentWidth
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.MaterialTheme
@@ -30,6 +30,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
@@ -40,19 +41,18 @@ import com.gorman.fitnessapp.ui.fonts.mulishFont
 @SuppressLint("ConfigurationScreenWidthHeight")
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun WeightPickerWheel(
+fun HeightPickerWheel(
     initialValue: Int,
     range: IntRange,
     onValueSelected: (Float) -> Unit
 ) {
     val values = range.toList()
     val subdivisions = 5
-
-    val itemWidth = 90.dp
-    val numberHeight = 40.dp
-    val rulerHeight = 80.dp
-    val screenWidth = LocalConfiguration.current.screenWidthDp.dp
-    val contentPadding = (screenWidth / 2) - (itemWidth / 2)
+    val itemHeight = 90.dp
+    val numberWidth = 90.dp
+    val rulerWidth = 100.dp
+    val screenHeight = LocalConfiguration.current.screenHeightDp.dp
+    val contentPadding = (screenHeight / 2) - (itemHeight / 2)
 
     val initialIndex = values.indexOf(initialValue).coerceAtLeast(0)
     val listState = rememberLazyListState(initialFirstVisibleItemIndex = initialIndex)
@@ -65,7 +65,7 @@ fun WeightPickerWheel(
             if (visibleItems.isEmpty()) {
                 -1
             } else {
-                val viewportCenter = layoutInfo.viewportStartOffset + layoutInfo.viewportSize.width / 2
+                val viewportCenter = layoutInfo.viewportStartOffset + layoutInfo.viewportSize.height / 2
                 visibleItems.minByOrNull {
                     kotlin.math.abs((it.offset + it.size / 2) - viewportCenter)
                 }?.index ?: -1
@@ -77,43 +77,39 @@ fun WeightPickerWheel(
         if (centerIndex != -1 && centerIndex < values.size) {
             val selectedValue = values[centerIndex]
             onValueSelected(selectedValue.toFloat())
-
-            if (listState.firstVisibleItemIndex != centerIndex) {
-                listState.animateScrollToItem(centerIndex)
-            }
         }
     }
 
     Box(
-        modifier = Modifier.fillMaxWidth(),
+        modifier = Modifier.wrapContentWidth(),
         contentAlignment = Alignment.Center
     ) {
-        LazyRow(
+        LazyColumn (
             state = listState,
             flingBehavior = snapBehavior,
-            contentPadding = PaddingValues(horizontal = contentPadding),
+            contentPadding = PaddingValues(vertical = contentPadding),
             modifier = Modifier
-                .fillMaxWidth()
-                .height(numberHeight + rulerHeight),
-            verticalAlignment = Alignment.CenterVertically
+                .width(numberWidth + rulerWidth)
+                .height(309.dp),
+            horizontalAlignment = Alignment.Start
         ) {
             itemsIndexed(values) { index, value ->
-                RulerItem(
+                HeightRulerItem(
                     number = value,
                     isSelected = (index == centerIndex),
-                    width = itemWidth,
-                    rulerHeight = rulerHeight,
-                    numberHeight = numberHeight,
+                    height = itemHeight,
+                    rulerWidth = rulerWidth,
+                    numberWidth = numberWidth,
                     subdivisions = subdivisions
                 )
             }
         }
-        val indicatorYOffset = numberHeight / 2
+        val indicatorXOffset = rulerWidth / 2
         Spacer(
             modifier = Modifier
-                .width(3.dp)
-                .height(rulerHeight)
-                .offset(y = indicatorYOffset)
+                .width(rulerWidth * 0.6f)
+                .height(3.dp)
+                .offset(x = indicatorXOffset + 3.dp)
                 .background(colorResource(R.color.meet_text))
         )
     }
@@ -124,20 +120,21 @@ fun WeightPickerWheel(
  * Элемент списка (Число + блок с рисками)
  */
 @Composable
-fun RulerItem(
+fun HeightRulerItem(
     number: Int,
     isSelected: Boolean,
-    width: Dp,
-    rulerHeight: Dp,
-    numberHeight: Dp,
+    height: Dp,
+    rulerWidth: Dp,
+    numberWidth: Dp,
     subdivisions: Int
 ) {
     val numberColor = if (isSelected) Color.White else Color.White.copy(alpha = 0.7f)
-    val fontSize = if (isSelected) 32.sp else 24.sp
+    val fontSize = if (isSelected) 38.sp else 26.sp
 
-    Column(
-        horizontalAlignment = Alignment.CenterHorizontally,
-        modifier = Modifier.width(width)
+    Row (
+        verticalAlignment = Alignment.CenterVertically,
+        modifier = Modifier
+            .height(height)
     ) {
         Text(
             text = number.toString(),
@@ -145,35 +142,37 @@ fun RulerItem(
             fontFamily = mulishFont(),
             fontWeight = FontWeight.ExtraBold,
             fontSize = fontSize,
-            modifier = Modifier.height(numberHeight)
+            modifier = Modifier.width(numberWidth),
+            textAlign = TextAlign.End
         )
-        Spacer(modifier = Modifier.height(5.dp))
+        Spacer(modifier = Modifier.width(15.dp))
         Canvas(
             modifier = Modifier
-                .width(width)
-                .height(rulerHeight)
+                .width(rulerWidth)
+                .height(height)
                 .background(colorResource(R.color.picker_wheel_bg))
         ) {
-            val tickWidthPx = size.width / subdivisions
-            val smallTickHeight = size.height * 0.3f
-            val largeTickHeight = size.height * 0.6f
+            val tickHeightPx = size.height / subdivisions
+            val smallTickWidth = size.width * 0.3f
+            val largeTickWidth = size.width * 0.6f
             val tickColor = Color.White
-            val largeTickYStart = (size.height - largeTickHeight) / 2
-            val smallTickYStart = (size.height - smallTickHeight) / 2
+
+            val largeTickXStart = (size.width - largeTickWidth) / 2
+            val smallTickXStart = (size.width - smallTickWidth) / 2
 
             for (i in 0 until subdivisions) {
-                val x = i * tickWidthPx + tickWidthPx/2
+                val y = i * tickHeightPx + tickHeightPx / 2
                 drawLine(
                     color = tickColor.copy(alpha = 0.5f),
-                    start = Offset(x = x, y = smallTickYStart),
-                    end = Offset(x = x, y = smallTickYStart + smallTickHeight),
+                    start = Offset(x = smallTickXStart, y = y),
+                    end = Offset(x = smallTickXStart + smallTickWidth, y = y),
                     strokeWidth = 1.dp.toPx()
                 )
                 if (i == 2)
                     drawLine(
                         color = tickColor,
-                        start = Offset(x = x, y = largeTickYStart),
-                        end = Offset(x = x, y = largeTickYStart + largeTickHeight),
+                        start = Offset(x = largeTickXStart, y = y),
+                        end = Offset(x = largeTickXStart + largeTickWidth, y = y),
                         strokeWidth = 2.dp.toPx()
                     )
             }
@@ -183,8 +182,8 @@ fun RulerItem(
 
 @Preview(showBackground = true)
 @Composable
-fun WeightWheel() {
+fun HeightWheel() {
     MaterialTheme {
-        WeightPickerWheel(initialValue = 50, range = IntRange(10,200)) { }
+        HeightPickerWheel(initialValue = 150, range = IntRange(120,250)) { }
     }
 }

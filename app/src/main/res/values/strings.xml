@@ -1,10 +1,22 @@
 <resources>
     <string name="app_name" translatable="false">FitnessApp</string>
-    <string name="meet_text">Последовательность — это ключ к прогрессу. Не сдавайтесь!</string>
+    <string name="meet_text">Последовательность – это ключ к прогрессу.\nНе сдавайтесь!</string>
     <string name="next">Далее</string>
     <string name="continue_string">Продолжить</string>
     <string name="back">Назад</string>
     <string name="choose_gender">Выбери свой пол</string>
     <string name="choose_age">Сколько тебе лет?</string>
-    <string name="choose_weight">Какой твой вес?</string>
+    <string name="choose_weight">Выбери свой вес</string>
+    <string name="choose_desired_weight">Твой желаемый вес</string>
+    <string name="choose_height">Выбери свой рост</string>
+    <string name="choose_goal">Выбери цель</string>
+    <string name="choose_level">Уровень физической активности</string>
+    <string name="kg">Кг</string>
+    <string name="cm" translatable="false">Cm</string>
+    <string name="lb" translatable="false">Lb</string>
+    <string name="lose_weight">Сбросить вес</string>
+    <string name="gain_weight">Набрать вес</string>
+    <string name="muscle_muss_gain">Набрать мышечную массу</string>
+    <string name="shape_body">Улучшить форму тела</string>
+    <string name="for_soul">Для души</string>
 </resources>

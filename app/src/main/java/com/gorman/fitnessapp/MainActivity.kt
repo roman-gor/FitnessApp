@@ -16,6 +16,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.gorman.fitnessapp.ui.navigation.SetupNavigation
 import com.gorman.fitnessapp.ui.theme.FitnessAppTheme
 import com.gorman.fitnessapp.ui.viewmodel.RegisterViewModel
 import dagger.hilt.android.AndroidEntryPoint
@@ -26,30 +27,12 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
-            val registerViewModel: RegisterViewModel = hiltViewModel()
-            val users = registerViewModel.usersState.value
-            val json = registerViewModel.json.value
-            LaunchedEffect(Unit) {
-                registerViewModel.prompt()
-            }
             FitnessAppTheme {
                 Surface (
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ){
-                    Column(modifier = Modifier
-                        .fillMaxSize()
-                        .verticalScroll(rememberScrollState())){
-                        SelectionContainer {
-                            Text(json)
-                        }
-                    }
-                    //RegisterScreen()
-                    if (users.isNotEmpty()) {
-                        Log.d("Room", users[1].toString())
-                    } else {
-                        Log.d("Room", "Users list is empty or still loading.")
-                    }
+                    SetupNavigation()
                 }
             }
         }

@@ -42,7 +42,7 @@ import com.gorman.fitnessapp.ui.components.WeightPickerWheel
 import com.gorman.fitnessapp.ui.fonts.mulishFont
 
 @Composable
-fun WeightScreen(
+fun DesiredWeightScreen(
     usersData: UsersData? = null,
     onNextPage: (UsersData) -> Unit,
     onBackPage: () -> Unit
@@ -69,7 +69,7 @@ fun WeightScreen(
             SetupBackButton { onBackPage() }
         }
         Spacer(modifier = Modifier.weight(1f))
-        Text(text = stringResource(R.string.choose_weight),
+        Text(text = stringResource(R.string.choose_desired_weight),
             fontFamily = mulishFont(),
             fontSize = 30.sp,
             fontWeight = FontWeight.Bold,
@@ -151,7 +151,7 @@ fun WeightScreen(
                         if (weightUnit == "lb")
                             weight = weight / 2.205f
                         onNextPage(
-                            it.copy(weight = weight)
+                            it.copy(desiredWeight = weight)
                         )
                     }},
                 text = stringResource(R.string.continue_string)
@@ -162,8 +162,8 @@ fun WeightScreen(
 
 @Preview(showBackground = true)
 @Composable
-fun WeightPreview() {
+fun DesiredWeightPreview() {
     MaterialTheme {
-        WeightScreen(onBackPage = {}, onNextPage = {})
+        DesiredWeightScreen(onBackPage = {}, onNextPage = {})
     }
 }

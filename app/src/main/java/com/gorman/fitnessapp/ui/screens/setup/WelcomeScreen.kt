@@ -63,9 +63,9 @@ fun WelcomeScreen(onNextPage: () -> Unit) {
                 text = stringResource(R.string.meet_text),
                 textAlign = TextAlign.Center,
                 fontFamily = mulishFont(),
-                fontSize = 26.sp,
-                lineHeight = 34.sp,
-                fontWeight = FontWeight.Medium,
+                fontSize = 28.sp,
+                lineHeight = 35.sp,
+                fontWeight = FontWeight.ExtraBold,
                 color = colorResource(R.color.meet_text)
             )
         }
