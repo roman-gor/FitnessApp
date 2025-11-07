@@ -4,7 +4,7 @@ data class UserFirebase(
     val userId: String = "",
     val name: String? = null,
     val email: String? = null,
-    val birthday: Long? = null,
+    val age: Long? = null,
     val goal: String? = null,
     val weight: Float? = null,
     val desiredWeight: Float? = null,

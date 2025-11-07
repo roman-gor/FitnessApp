@@ -5,4 +5,6 @@
     <string name="continue_string">Продолжить</string>
     <string name="back">Назад</string>
     <string name="choose_gender">Выбери свой пол</string>
+    <string name="choose_age">Сколько тебе лет?</string>
+    <string name="choose_weight">Какой твой вес?</string>
 </resources>

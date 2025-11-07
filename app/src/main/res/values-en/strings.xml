@@ -5,4 +5,6 @@
     <string name="continue_string">Continue</string>
     <string name="back">Back</string>
     <string name="choose_gender">What’s Your Gender</string>
+    <string name="choose_age">How old are you?</string>
+    <string name="choose_weight">What Is Your Weight?</string>
 </resources>
