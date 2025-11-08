@@ -11,10 +11,16 @@
     <string name="choose_height">What Is Your Height?</string>
     <string name="choose_goal">What Is Your Goal?</string>
     <string name="choose_level">Physical Activity Level</string>
+    <string name="fill_profile">Fill Your Profile</string>
     <string name="kg">Kg</string>
     <string name="lose_weight">Lose Weight</string>
     <string name="gain_weight">Gain Weight</string>
     <string name="muscle_muss_gain">Muscle Muss Gain</string>
     <string name="shape_body">Shape Body</string>
     <string name="for_soul">For Soul</string>
+    <string name="beginner">Beginner</string>
+    <string name="intermediate">Intermediate</string>
+    <string name="advanced">Advanced</string>
+    <string name="name">Name</string>
+    <string name="start">Start</string>
 </resources>

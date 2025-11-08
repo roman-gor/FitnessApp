@@ -2,8 +2,11 @@ package com.gorman.fitnessapp.di
 
 import android.content.Context
 import androidx.room.Room
+import com.google.firebase.Firebase
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.storage.FirebaseStorage
+import com.google.firebase.storage.storage
 import com.gorman.fitnessapp.BuildConfig
 import com.gorman.fitnessapp.data.datasource.ai.AiApiClient
 import com.gorman.fitnessapp.data.datasource.ai.GeminiApiClientModel
@@ -22,18 +25,22 @@ import com.gorman.fitnessapp.data.datasource.local.dao.UsersDataDao
 import com.gorman.fitnessapp.data.datasource.local.dao.WorkoutHistoryDao
 import com.gorman.fitnessapp.data.datasource.remote.FirebaseAPI
 import com.gorman.fitnessapp.data.datasource.remote.FirebaseAPIImpl
+import com.gorman.fitnessapp.data.datasource.remote.Storage
+import com.gorman.fitnessapp.data.datasource.remote.StorageImpl
 import com.gorman.fitnessapp.data.repository.AiRepositoryImpl
 import com.gorman.fitnessapp.data.repository.DatabaseRepositoryImpl
 import com.gorman.fitnessapp.data.repository.FirebaseRepositoryImpl
 import com.gorman.fitnessapp.data.repository.MealRepositoryImpl
 import com.gorman.fitnessapp.data.repository.ProgramRepositoryImpl
 import com.gorman.fitnessapp.data.repository.SettingsRepositoryImpl
+import com.gorman.fitnessapp.data.repository.StorageRepositoryImpl
 import com.gorman.fitnessapp.domain.repository.AiRepository
 import com.gorman.fitnessapp.domain.repository.DatabaseRepository
 import com.gorman.fitnessapp.domain.repository.FirebaseRepository
 import com.gorman.fitnessapp.domain.repository.MealRepository
 import com.gorman.fitnessapp.domain.repository.ProgramRepository
 import com.gorman.fitnessapp.domain.repository.SettingsRepository
+import com.gorman.fitnessapp.domain.repository.StorageRepository
 import com.gorman.fitnessapp.domain.usecases.GetExercisesUseCase
 import com.gorman.fitnessapp.domain.usecases.GetMealsUseCase
 import com.gorman.fitnessapp.domain.usecases.SetProgramIdUseCase
@@ -57,6 +64,12 @@ object AppModule {
 
     @Provides
     @Singleton
+    fun provideFirebaseStorage(): FirebaseStorage {
+        return Firebase.storage
+    }
+
+    @Provides
+    @Singleton
     fun provideDatabaseReference(database: FirebaseDatabase): DatabaseReference {
         return database.getReference("FitnessApp")
     }
@@ -68,8 +81,18 @@ object AppModule {
 
     @Provides
     @Singleton
+    fun provideStorage(storage: FirebaseStorage, logger: AppLogger): Storage =
+        StorageImpl(storage, logger)
+
+    @Provides
+    @Singleton
     fun provideFirebaseRepositoryImpl(api: FirebaseAPI): FirebaseRepository =
         FirebaseRepositoryImpl(api)
+
+    @Provides
+    @Singleton
+    fun provideStorageRepository(storage: Storage): StorageRepository =
+        StorageRepositoryImpl(storage)
 
     @Provides
     @Singleton

@@ -12,11 +12,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -33,6 +29,7 @@ import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -70,6 +67,8 @@ fun GenderScreen(onNextPage: (UsersData) -> Unit,
         Text(text = stringResource(R.string.choose_gender),
             fontFamily = mulishFont(),
             fontSize = 30.sp,
+            lineHeight = 30.sp,
+            textAlign = TextAlign.Center,
             fontWeight = FontWeight.Bold,
             color = Color.White,
             modifier = Modifier.padding(16.dp))
@@ -107,6 +106,8 @@ fun GenderScreen(onNextPage: (UsersData) -> Unit,
                             gender = if (isMale) "M" else "F"
                         )
                     ) },
+                textColor = Color.White,
+                containerColor = Color.White.copy(alpha = 0.1f),
                 text = stringResource(R.string.continue_string)
             )
         }

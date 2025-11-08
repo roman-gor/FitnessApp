@@ -9,11 +9,13 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.gorman.fitnessapp.domain.models.UsersData
+import com.gorman.fitnessapp.ui.screens.setup.ActivityLevelScreen
 import com.gorman.fitnessapp.ui.screens.setup.AgeScreen
 import com.gorman.fitnessapp.ui.screens.setup.DesiredWeightScreen
 import com.gorman.fitnessapp.ui.screens.setup.GenderScreen
 import com.gorman.fitnessapp.ui.screens.setup.GoalScreen
 import com.gorman.fitnessapp.ui.screens.setup.HeightScreen
+import com.gorman.fitnessapp.ui.screens.setup.ProfileSetupScreen
 import com.gorman.fitnessapp.ui.screens.setup.WeightScreen
 import com.gorman.fitnessapp.ui.screens.setup.WelcomeScreen
 import kotlinx.serialization.encodeToString
@@ -142,6 +144,50 @@ fun SetupNavigation() {
                 onNextPage = { usersData ->
                     val json = Uri.encode(Json.encodeToString(usersData))
                     navController.navigate("${Screen.SetupScreen.ActivityLevel.route}/$json") {
+                        launchSingleTop = true
+                    } },
+                onBackPage = {
+                    navController.navigateUp()
+                }
+            )
+        }
+        composable(
+            route = "${Screen.SetupScreen.ActivityLevel.route}/{usersDataJson}",
+            arguments = listOf(
+                navArgument("usersDataJson") {
+                    type = NavType.StringType
+                }
+            )) { backStackEntry ->
+            val usersDataJson = backStackEntry.arguments?.getString("usersDataJson")
+            val usersData = usersDataJson?.let { Json.decodeFromString<UsersData>(it) }
+            Log.d("UsersData", usersData.toString())
+            ActivityLevelScreen(
+                usersData = usersData,
+                onNextPage = { usersData ->
+                    val json = Uri.encode(Json.encodeToString(usersData))
+                    navController.navigate("${Screen.SetupScreen.ProfileSetup.route}/$json") {
+                        launchSingleTop = true
+                    } },
+                onBackPage = {
+                    navController.navigateUp()
+                }
+            )
+        }
+        composable(
+            route = "${Screen.SetupScreen.ProfileSetup.route}/{usersDataJson}",
+            arguments = listOf(
+                navArgument("usersDataJson") {
+                    type = NavType.StringType
+                }
+            )) { backStackEntry ->
+            val usersDataJson = backStackEntry.arguments?.getString("usersDataJson")
+            val usersData = usersDataJson?.let { Json.decodeFromString<UsersData>(it) }
+            Log.d("UsersData", usersData.toString())
+            ProfileSetupScreen(
+                usersData = usersData,
+                onNextPage = { usersData ->
+                    val json = Uri.encode(Json.encodeToString(usersData))
+                    navController.navigate("${Screen.SetupScreen.ProfileSetup.route}/$json") {
                         launchSingleTop = true
                     } },
                 onBackPage = {

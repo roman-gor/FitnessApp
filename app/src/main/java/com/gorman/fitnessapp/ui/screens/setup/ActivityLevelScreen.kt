@@ -2,7 +2,6 @@ package com.gorman.fitnessapp.ui.screens.setup
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -31,19 +30,18 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.gorman.fitnessapp.R
 import com.gorman.fitnessapp.domain.models.UsersData
-import com.gorman.fitnessapp.ui.components.GoalItem
+import com.gorman.fitnessapp.ui.components.ActivityLevelItem
 import com.gorman.fitnessapp.ui.components.SetupBackButton
 import com.gorman.fitnessapp.ui.components.SetupNextButton
 import com.gorman.fitnessapp.ui.fonts.mulishFont
 
 @Composable
-fun GoalScreen(
+fun ActivityLevelScreen(
     usersData: UsersData? = null,
     onBackPage: () -> Unit,
     onNextPage: (UsersData) -> Unit
 ) {
-    var goal by remember { mutableStateOf("") }
-
+    var level by remember { mutableStateOf("") }
     Column (
         modifier = Modifier.fillMaxSize()
             .background(colorResource(R.color.bg_color)),
@@ -59,7 +57,7 @@ fun GoalScreen(
         }
         Spacer(modifier = Modifier.weight(1f))
         Text(
-            text = stringResource(R.string.choose_goal),
+            text = stringResource(R.string.choose_level),
             fontFamily = mulishFont(),
             fontSize = 30.sp,
             fontWeight = FontWeight.Bold,
@@ -69,32 +67,23 @@ fun GoalScreen(
             modifier = Modifier.padding(16.dp)
         )
         Spacer(modifier = Modifier.weight(1f))
-        Box(
-            modifier = Modifier.fillMaxWidth()
-                .background(colorResource(R.color.picker_wheel_bg)),
-            contentAlignment = Alignment.Center
-        ) {
-            LazyColumn (
-                modifier = Modifier.fillMaxWidth().padding(horizontal = 24.dp, vertical = 40.dp)
-            ) {
-                itemsIndexed(listOf(
-                    R.string.lose_weight,
-                    R.string.gain_weight,
-                    R.string.muscle_muss_gain,
-                    R.string.shape_body,
-                    R.string.for_soul
-                )) { index, item ->
-                    val goalName = stringResource(item)
-                    GoalItem(
-                        goalName = goalName,
-                        onClick = {
-                            goal = it
-                        },
-                        isSelected = goal == goalName
-                    )
-                    if (index != 4)
-                        Spacer(modifier = Modifier.height(16.dp))
-                }
+        LazyColumn (
+            modifier = Modifier.fillMaxWidth().padding(horizontal = 24.dp, vertical = 40.dp)
+        ){
+            itemsIndexed(
+                listOf(
+                    R.string.beginner,
+                    R.string.intermediate,
+                    R.string.advanced)
+            ) { index, item ->
+                val levelName = stringResource(item)
+                ActivityLevelItem(
+                    title = levelName,
+                    onClick = { level = levelName },
+                    isSelected = level == levelName
+                )
+                if (index != 2)
+                    Spacer(modifier = Modifier.height(15.dp))
             }
         }
         Spacer(modifier = Modifier.weight(1f))
@@ -106,9 +95,9 @@ fun GoalScreen(
             SetupNextButton(
                 onClick = {
                     usersData?.let {
-                        if (goal.isNotBlank())
+                        if (level.isNotBlank())
                             onNextPage(
-                                it.copy(goal = goal)
+                                it.copy(activityLevel = level)
                             )
                     }},
                 textColor = Color.White,
@@ -119,10 +108,10 @@ fun GoalScreen(
     }
 }
 
-@Preview(showBackground = false)
+@Preview(showBackground = true)
 @Composable
-fun GoalScreenPreview() {
+fun ActivityLevelPreview() {
     MaterialTheme {
-        GoalScreen(onBackPage = {}, onNextPage = {})
+        ActivityLevelScreen(onBackPage = {}, onNextPage = {})
     }
 }
