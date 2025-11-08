@@ -35,7 +35,7 @@ class FirebaseAPIImpl @Inject constructor(
             result
         } catch (e: Exception) {
             logger.e("FirebaseAPI", "Ошибка при выполнении $operationName: ${e.message}")
-            null
+            throw e
         }
     }
 
@@ -162,6 +162,14 @@ class FirebaseAPIImpl @Inject constructor(
 
     override suspend fun insertUser(user: UsersData): String? = executeRequest("Вставка нового пользователя") {
         val usersRef = database.child("users")
+        val existingUserSnapshot = usersRef
+            .orderByChild("email")
+            .equalTo(user.email)
+            .get()
+            .await()
+        if (existingUserSnapshot.exists()) {
+            throw IllegalStateException("Пользователь с таким email уже существует")
+        }
         val userIdRef = usersRef.push()
         val userId = userIdRef.key
             ?: throw IllegalStateException("Не удалось сгенерировать ключ для пользователя")

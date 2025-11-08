@@ -1,10 +1,13 @@
 package com.gorman.fitnessapp.ui.screens.setup
 
+import android.net.Uri
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -17,6 +20,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
@@ -28,6 +33,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.blur
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
@@ -41,38 +47,95 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
+import com.airbnb.lottie.compose.LottieAnimation
+import com.airbnb.lottie.compose.LottieCompositionSpec
+import com.airbnb.lottie.compose.LottieConstants
+import com.airbnb.lottie.compose.animateLottieCompositionAsState
+import com.airbnb.lottie.compose.rememberLottieComposition
 import com.gorman.fitnessapp.R
 import com.gorman.fitnessapp.domain.models.UsersData
 import com.gorman.fitnessapp.ui.components.SetupBackButton
 import com.gorman.fitnessapp.ui.components.SetupNextButton
 import com.gorman.fitnessapp.ui.fonts.mulishFont
+import com.gorman.fitnessapp.ui.states.RegisterUiState
+import com.gorman.fitnessapp.ui.viewmodel.RegisterViewModel
 
 @Composable
 fun ProfileSetupScreen(
     usersData: UsersData? = null,
     onBackPage: () -> Unit,
-    onNextPage: (UsersData) -> Unit
+    onNextPage: () -> Unit
 ) {
-    /**val registerViewModel: RegisterViewModel = hiltViewModel()*/
+    val registerViewModel: RegisterViewModel = hiltViewModel()
+    val uiState by registerViewModel.registerUiState
+    DefaultProfileScreen(
+        uiState = uiState,
+        onBackPage = onBackPage,
+        usersData = usersData,
+        registerViewModel = registerViewModel
+    )
+    when(val state = uiState){
+        is RegisterUiState.Idle -> {}
+        is RegisterUiState.Loading -> {
+            LoadingStub()
+        }
+
+        is RegisterUiState.Success -> {
+            //onNextPage()
+        }
+
+        is RegisterUiState.Error -> {
+            ErrorMessage(
+                message = state.message,
+                onDismiss = {
+                    registerViewModel.resetState()
+                }
+            )
+        }
+    }
+}
+
+@Composable
+fun DefaultProfileScreen(
+    uiState: RegisterUiState,
+    onBackPage: () -> Unit,
+    usersData: UsersData?,
+    registerViewModel: RegisterViewModel
+) {
     var name by remember { mutableStateOf("") }
     var email by remember { mutableStateOf("") }
-    var imageUrl by remember { mutableStateOf("") }
+    var isDataError by remember { mutableStateOf(false) }
+    val placeholderTextColor =
+        if (!isDataError)
+            colorResource(R.color.bg_color).copy(alpha = 0.3f)
+        else
+            Color.Red.copy(alpha = 0.3f)
     var uriImage by remember { mutableStateOf("") }
+    var uriPath by remember { mutableStateOf<Uri?>(null) }
     val pickImage = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.GetContent(),
         onResult = { uri ->
             uri?.let {
+                uriPath = uri
                 uriImage = uri.toString()
-                /**uploadImageToFirebase(it)*/
             }
         }
     )
     Column (
-        modifier = Modifier.fillMaxSize()
-            .background(colorResource(R.color.bg_color)),
-        horizontalAlignment = Alignment.CenterHorizontally
+        modifier = if (uiState != RegisterUiState.Loading)
+            Modifier.fillMaxSize()
+                .background(colorResource(R.color.bg_color))
+        else
+            Modifier.fillMaxSize()
+                .background(colorResource(R.color.bg_color))
+                .blur(20.dp),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement =
+            if (uiState is RegisterUiState.Error) Arrangement.Bottom
+            else Arrangement.Center
     ) {
         Row(
             modifier = Modifier.fillMaxWidth()
@@ -102,7 +165,7 @@ fun ProfileSetupScreen(
                             .data(uriImage)
                             .crossfade(true)
                             .build()
-                        else null,
+                    else null,
                     contentDescription = "Firebase Image",
                     placeholder = painterResource(R.drawable.placeholder_ava),
                     error = painterResource(R.drawable.placeholder_ava),
@@ -138,12 +201,21 @@ fun ProfileSetupScreen(
                 Spacer(modifier = Modifier.padding(bottom = 4.dp))
                 OutlinedTextField(
                     value = name,
-                    onValueChange = {name = it},
+                    onValueChange = {
+                        name = it
+                        isDataError = false },
+                    placeholder = { Text(
+                        text = stringResource(R.string.enter_name),
+                        fontFamily = mulishFont(),
+                        fontWeight = FontWeight.Medium,
+                        color = placeholderTextColor,
+                        fontSize = 18.sp
+                    )},
                     modifier = Modifier.fillMaxWidth(),
                     singleLine = true,
                     textStyle = TextStyle(
                         fontFamily = mulishFont(),
-                        fontWeight = FontWeight.ExtraBold,
+                        fontWeight = FontWeight.Medium,
                         color = colorResource(R.color.bg_color),
                         fontSize = 18.sp
                     ),
@@ -169,12 +241,21 @@ fun ProfileSetupScreen(
                 Spacer(modifier = Modifier.padding(bottom = 4.dp))
                 OutlinedTextField(
                     value = email,
-                    onValueChange = {email = it},
+                    onValueChange = {
+                        email = it
+                        isDataError = false },
+                    placeholder = { Text(
+                        text = stringResource(R.string.enter_email),
+                        fontFamily = mulishFont(),
+                        fontWeight = FontWeight.Medium,
+                        color = placeholderTextColor,
+                        fontSize = 18.sp
+                    )},
                     modifier = Modifier.fillMaxWidth(),
                     singleLine = true,
                     textStyle = TextStyle(
                         fontFamily = mulishFont(),
-                        fontWeight = FontWeight.Bold,
+                        fontWeight = FontWeight.Medium,
                         color = colorResource(R.color.bg_color),
                         fontSize = 18.sp
                     ),
@@ -194,17 +275,90 @@ fun ProfileSetupScreen(
                 SetupNextButton(
                     onClick = {
                         usersData?.let {
-                            onNextPage(
-                                it.copy(
-                                    name = name,
-                                    email = email,
-                                    photoUrl = imageUrl
-                                )
-                            )
-                        }},
+                            if (name.isNotBlank() && email.isNotBlank())
+                                registerViewModel.registerUser(
+                                    uri = uriPath,
+                                    usersData = it.copy(
+                                        name = name,
+                                        email = email
+                                    ))
+                            else
+                                isDataError = true
+                        }
+                    },
                     textColor = colorResource(R.color.bg_color),
                     containerColor = colorResource(R.color.meet_text),
                     text = stringResource(R.string.start)
+                )
+            }
+        }
+    }
+}
+
+@Composable
+fun LoadingStub() {
+    val composition by rememberLottieComposition(
+        LottieCompositionSpec.RawRes(R.raw.loading_animation))
+    val progress by animateLottieCompositionAsState(
+        composition = composition,
+        iterations = LottieConstants.IterateForever
+    )
+    Box(
+        modifier = Modifier.fillMaxSize()
+            .background(colorResource(R.color.bg_color).copy(alpha = 0.6f)),
+        contentAlignment = Alignment.Center
+    ) {
+        LottieAnimation(
+            composition = composition,
+            progress = { progress },
+            modifier = Modifier.size(160.dp)
+        )
+    }
+}
+
+@Composable
+fun ErrorMessage(
+    message: String,
+    onDismiss: () -> Unit
+) {
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(Color.Black.copy(alpha = 0.5f))
+            .clickable(
+                onClick = { onDismiss() },
+                indication = null,
+                interactionSource = remember { MutableInteractionSource() }
+            ),
+        contentAlignment = Alignment.BottomCenter
+    ) {
+        Card(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(36.dp)
+                .clickable(
+                    onClick = {},
+                    indication = null,
+                    interactionSource = remember { MutableInteractionSource() }
+                ),
+            colors = CardDefaults.cardColors(
+                containerColor = colorResource(R.color.bg_color)
+            ),
+            border = BorderStroke(4.dp, colorResource(R.color.meet_text)),
+            shape = RoundedCornerShape(24.dp)
+        ) {
+            Box(
+                modifier = Modifier
+                    .padding(36.dp),
+                contentAlignment = Alignment.Center
+            ) {
+                Text(
+                    text = message,
+                    color = Color.White,
+                    fontSize = 18.sp,
+                    fontFamily = mulishFont(),
+                    fontWeight = FontWeight.ExtraBold,
+                    textAlign = TextAlign.Center
                 )
             }
         }
@@ -215,6 +369,7 @@ fun ProfileSetupScreen(
 @Composable
 fun ProfilePreview() {
     MaterialTheme {
-        ProfileSetupScreen(onBackPage = {}, onNextPage = {})
+        //ProfileSetupScreen(onBackPage = {}, onNextPage = {})
+        //LoadingStub()
     }
 }

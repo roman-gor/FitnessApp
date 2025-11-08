@@ -23,4 +23,6 @@
     <string name="advanced">Advanced</string>
     <string name="name">Name</string>
     <string name="start">Start</string>
+    <string name="enter_name">Enter Name</string>
+    <string name="enter_email">Enter Email</string>
 </resources>

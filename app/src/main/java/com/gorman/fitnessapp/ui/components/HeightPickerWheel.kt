@@ -91,7 +91,8 @@ fun HeightPickerWheel(
             modifier = Modifier
                 .width(numberWidth + rulerWidth)
                 .height(309.dp),
-            horizontalAlignment = Alignment.Start
+            horizontalAlignment = Alignment.Start,
+            reverseLayout = true
         ) {
             itemsIndexed(values) { index, value ->
                 HeightRulerItem(

@@ -185,9 +185,8 @@ fun SetupNavigation() {
             Log.d("UsersData", usersData.toString())
             ProfileSetupScreen(
                 usersData = usersData,
-                onNextPage = { usersData ->
-                    val json = Uri.encode(Json.encodeToString(usersData))
-                    navController.navigate("${Screen.SetupScreen.ProfileSetup.route}/$json") {
+                onNextPage = {
+                    navController.navigate(Screen.SetupScreen.ProfileSetup.route) {
                         launchSingleTop = true
                     } },
                 onBackPage = {

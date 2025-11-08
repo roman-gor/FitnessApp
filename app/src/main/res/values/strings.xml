@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name" translatable="false">FitnessApp</string>
+    <string name="app_name" translatable="false">FitBody</string>
     <string name="meet_text">Последовательность – это ключ к прогрессу.\nНе сдавайтесь!</string>
     <string name="next">Далее</string>
     <string name="continue_string">Продолжить</string>
@@ -26,4 +26,6 @@
     <string name="name">Имя</string>
     <string name="start">Начать</string>
     <string name="email" translatable="false">Email</string>
+    <string name="enter_name">Введите имя</string>
+    <string name="enter_email">Введите Email</string>
 </resources>

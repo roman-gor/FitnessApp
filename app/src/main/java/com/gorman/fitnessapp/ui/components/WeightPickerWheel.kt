@@ -77,10 +77,6 @@ fun WeightPickerWheel(
         if (centerIndex != -1 && centerIndex < values.size) {
             val selectedValue = values[centerIndex]
             onValueSelected(selectedValue.toFloat())
-
-            if (listState.firstVisibleItemIndex != centerIndex) {
-                listState.animateScrollToItem(centerIndex)
-            }
         }
     }
 

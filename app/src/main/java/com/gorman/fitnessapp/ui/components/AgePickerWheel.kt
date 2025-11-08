@@ -76,7 +76,6 @@ fun AgePickerWheel(
         if (centerIndex != -1 && centerIndex < ages.size) {
             val selectedAge = ages[centerIndex]
             onAgeSelected(selectedAge.toLong())
-            haptic.performHapticFeedback(HapticFeedbackType.TextHandleMove)
         }
     }
     Box(
