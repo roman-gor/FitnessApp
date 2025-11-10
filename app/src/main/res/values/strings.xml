@@ -25,7 +25,12 @@
     <string name="advanced">Продвинутый</string>
     <string name="name">Имя</string>
     <string name="start">Начать</string>
+    <string name="get_started">Вперед</string>
+    <string name="tap_for_next">Коснитесь экрана для продолжения</string>
     <string name="email" translatable="false">Email</string>
     <string name="enter_name">Введите имя</string>
     <string name="enter_email">Введите Email</string>
+    <string name="info_screen1">Начните свой путь к более активному образу жизни</string>
+    <string name="info_screen2">Найдите советы по питанию, которые соответствуют вашему образу жизни</string>
+    <string name="info_screen3">Сообщество для вас, бросьте себе вызов</string>
 </resources>

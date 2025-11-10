@@ -49,6 +49,7 @@ android {
 dependencies {
 
     val room_version = "2.7.2"
+    implementation("androidx.compose.foundation:foundation:1.7.0")
     implementation("com.airbnb.android:lottie-compose:6.4.0")
     implementation("com.google.firebase:firebase-storage")
     implementation("androidx.datastore:datastore-preferences:1.0.0")

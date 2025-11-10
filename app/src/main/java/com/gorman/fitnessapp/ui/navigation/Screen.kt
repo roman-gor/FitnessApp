@@ -2,6 +2,8 @@ package com.gorman.fitnessapp.ui.navigation
 
 sealed class Screen() {
     sealed class SetupScreen(val route: String): Screen() {
+        object Start: SetupScreen("start")
+        object Info: SetupScreen("info")
         object Welcome: SetupScreen("welcome")
         object Gender: SetupScreen("gender")
         object Age: SetupScreen("age")

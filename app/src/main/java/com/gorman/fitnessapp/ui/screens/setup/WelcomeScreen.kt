@@ -2,6 +2,7 @@ package com.gorman.fitnessapp.ui.screens.setup
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -43,19 +44,20 @@ fun WelcomeScreen(onNextPage: () -> Unit) {
         }
         Column(
             modifier = Modifier.fillMaxWidth()
-                .weight(0.6f)
+                .weight(0.7f)
                 .padding(36.dp),
-            horizontalAlignment = Alignment.CenterHorizontally
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center
         ) {
-            Text(
-                text = stringResource(R.string.meet_text),
-                textAlign = TextAlign.Center,
-                fontFamily = mulishFont(),
-                fontSize = 28.sp,
-                lineHeight = 35.sp,
-                fontWeight = FontWeight.ExtraBold,
-                color = colorResource(R.color.meet_text)
-            )
+                Text(
+                    text = stringResource(R.string.meet_text),
+                    textAlign = TextAlign.Center,
+                    fontFamily = mulishFont(),
+                    fontSize = 26.sp,
+                    lineHeight = 35.sp,
+                    fontWeight = FontWeight.ExtraBold,
+                    color = colorResource(R.color.meet_text)
+                )
         }
         Column (
             modifier = Modifier.fillMaxWidth(),

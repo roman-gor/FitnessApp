@@ -2,6 +2,7 @@
 <resources>
 
     <style name="Theme.FitnessApp" parent="android:Theme.Material.Light.NoActionBar" />
+
     <style name="Theme.FitnessApp.Splash" parent="Theme.SplashScreen">
         <item name="windowSplashScreenAnimatedIcon">@mipmap/ic_launcher</item>
         <item name="windowSplashScreenBackground">@color/bg_color</item>

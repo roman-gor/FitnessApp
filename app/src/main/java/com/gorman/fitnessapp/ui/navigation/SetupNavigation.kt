@@ -9,6 +9,8 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.gorman.fitnessapp.domain.models.UsersData
+import com.gorman.fitnessapp.ui.screens.onboarding.InfoScreen
+import com.gorman.fitnessapp.ui.screens.onboarding.StartOnBoardingScreen
 import com.gorman.fitnessapp.ui.screens.setup.ActivityLevelScreen
 import com.gorman.fitnessapp.ui.screens.setup.AgeScreen
 import com.gorman.fitnessapp.ui.screens.setup.DesiredWeightScreen
@@ -24,7 +26,15 @@ import kotlinx.serialization.json.Json
 @Composable
 fun SetupNavigation() {
     val navController = rememberNavController()
-    NavHost(navController = navController, startDestination = "welcome") {
+    NavHost(navController = navController, startDestination = "start") {
+        composable(Screen.SetupScreen.Start.route) {
+            StartOnBoardingScreen(navController = navController)
+        }
+        composable(Screen.SetupScreen.Info.route) {
+            InfoScreen {
+                navController.navigate(Screen.SetupScreen.Welcome.route)
+            }
+        }
         composable(Screen.SetupScreen.Welcome.route) {
             WelcomeScreen {
                 navController.navigate(Screen.SetupScreen.Gender.route)
