@@ -3,6 +3,7 @@ package com.gorman.fitnessapp.domain.repository
 import com.gorman.fitnessapp.data.models.firebase.UserFirebase
 import com.gorman.fitnessapp.data.models.firebase.UserProgressFirebase
 import com.gorman.fitnessapp.data.models.firebase.WorkoutHistoryFirebase
+import com.gorman.fitnessapp.domain.models.Article
 import com.gorman.fitnessapp.domain.models.Exercise
 import com.gorman.fitnessapp.domain.models.Meal
 import com.gorman.fitnessapp.domain.models.MealPlanItem
@@ -40,4 +41,5 @@ interface FirebaseRepository {
     suspend fun insertWorkoutHistory(workoutHistory: WorkoutHistory): String?
     suspend fun updateWorkoutHistory(workoutHistory: WorkoutHistory, userId: String)
     suspend fun getWorkoutHistory(userId: String): List<WorkoutHistory>
+    suspend fun getArticles(): List<Article>
 }

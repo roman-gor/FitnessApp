@@ -7,7 +7,7 @@ import javax.inject.Inject
 class GetUserFromLocalUseCase @Inject constructor(
     private val databaseRepository: DatabaseRepository
 ) {
-    suspend operator fun invoke(): UsersData? {
+    suspend operator fun invoke(): UsersData {
         return databaseRepository.getUser()
     }
 }

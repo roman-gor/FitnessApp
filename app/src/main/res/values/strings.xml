@@ -33,4 +33,15 @@
     <string name="info_screen1">Начните свой путь к более активному образу жизни</string>
     <string name="info_screen2">Найдите советы по питанию, которые соответствуют вашему образу жизни</string>
     <string name="info_screen3">Сообщество для вас, бросьте себе вызов</string>
+    <string name="home">Главная</string>
+    <string name="res">Контент</string>
+    <string name="header_text">Пришло время бросить себе вызов</string>
+    <string name="program_header_text">Программа</string>
+    <string name="workout_program">Программа тренировок</string>
+    <string name="workout">Тренировка</string>
+    <string name="progress">Прогресс</string>
+    <string name="nutrition">Питание</string>
+    <string name="articles">Статьи и советы</string>
+    <string name="program_desc_text">**Описание программы**</string>
+    <string name="program_gen_description_text">Давайте сгенерируем вашу персональную программу</string>
 </resources>

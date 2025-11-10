@@ -4,6 +4,7 @@ import android.util.Log
 import com.gorman.fitnessapp.data.datasource.remote.FirebaseAPI
 import com.gorman.fitnessapp.data.mapper.toDomain
 import com.gorman.fitnessapp.data.mapper.toRemote
+import com.gorman.fitnessapp.domain.models.Article
 import com.gorman.fitnessapp.domain.models.Exercise
 import com.gorman.fitnessapp.domain.models.Meal
 import com.gorman.fitnessapp.domain.models.MealPlanItem
@@ -121,10 +122,7 @@ class FirebaseRepositoryImpl @Inject constructor(
     }
 
     override suspend fun getMealPlans(userId: String): Map<MealPlanTemplate, List<MealPlanItem>>? {
-        val remoteData = firebaseAPI.getMealPlans(userId)
-        if (remoteData == null) {
-            return null
-        }
+        val remoteData = firebaseAPI.getMealPlans(userId) ?: return null
         return remoteData.map { (templateId, dataPair) ->
             val templateFirebase = dataPair.first
             val itemsFirebase = dataPair.second
@@ -147,5 +145,9 @@ class FirebaseRepositoryImpl @Inject constructor(
 
     override suspend fun getWorkoutHistory(userId: String): List<WorkoutHistory> {
         return firebaseAPI.getWorkoutHistory(userId).map { it.toDomain() }
+    }
+
+    override suspend fun getArticles(): List<Article> {
+        return firebaseAPI.getArticles().map { it.toDomain() }
     }
 }

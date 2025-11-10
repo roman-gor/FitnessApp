@@ -3,6 +3,7 @@ package com.gorman.fitnessapp.data.datasource.remote
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.getValue
 import com.gorman.fitnessapp.data.mapper.toRemote
+import com.gorman.fitnessapp.data.models.firebase.ArticleFirebase
 import com.gorman.fitnessapp.data.models.firebase.ExerciseFirebase
 import com.gorman.fitnessapp.data.models.firebase.MealFirebase
 import com.gorman.fitnessapp.data.models.firebase.MealPlanItemFirebase
@@ -345,4 +346,11 @@ class FirebaseAPIImpl @Inject constructor(
             }
         } ?: emptyList()
 
+    override suspend fun getArticles(): List<ArticleFirebase> = executeRequest("Получение статей") {
+        val articlesRef = database.child("article")
+        val articlesSnapshot = articlesRef.get().await()
+        articlesSnapshot.children.mapNotNull { articleSnap ->
+            articleSnap.getValue<ArticleFirebase>()
+        }
+    } ?: throw IllegalStateException("Не удалось загрузить статьи")
 }

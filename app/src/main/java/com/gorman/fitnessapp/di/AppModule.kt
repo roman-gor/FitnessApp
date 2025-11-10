@@ -13,6 +13,7 @@ import com.gorman.fitnessapp.data.datasource.ai.GeminiApiClientModel
 import com.gorman.fitnessapp.data.datasource.ai.GeminiGenerator
 import com.gorman.fitnessapp.data.datasource.ai.GeminiGeneratorImpl
 import com.gorman.fitnessapp.data.datasource.local.AppDatabase
+import com.gorman.fitnessapp.data.datasource.local.dao.ArticleDao
 import com.gorman.fitnessapp.data.datasource.local.dao.ExerciseDao
 import com.gorman.fitnessapp.data.datasource.local.dao.MealDao
 import com.gorman.fitnessapp.data.datasource.local.dao.MealPlanItemDao
@@ -105,7 +106,8 @@ object AppModule {
                                       mealPlanTemplateDao: MealPlanTemplateDao,
                                       mealPlanItemDao: MealPlanItemDao,
                                       userProgressDao: UserProgressDao,
-                                      workoutHistoryDao: WorkoutHistoryDao): DatabaseRepository {
+                                      workoutHistoryDao: WorkoutHistoryDao,
+                                      articleDao: ArticleDao): DatabaseRepository {
         return DatabaseRepositoryImpl(
             usersDataDao,
             exerciseDao,
@@ -116,7 +118,8 @@ object AppModule {
             mealPlanTemplateDao,
             mealPlanItemDao,
             userProgressDao,
-            workoutHistoryDao)
+            workoutHistoryDao,
+            articleDao)
     }
 
     @Provides
@@ -168,6 +171,10 @@ object AppModule {
     @Provides
     @Singleton
     fun provideWorkoutHistoryDao(db: AppDatabase): WorkoutHistoryDao = db.workoutHistoryDao()
+
+    @Provides
+    @Singleton
+    fun provideArticleDao(db: AppDatabase): ArticleDao = db.articleDao()
 
     @Provides
     @Singleton

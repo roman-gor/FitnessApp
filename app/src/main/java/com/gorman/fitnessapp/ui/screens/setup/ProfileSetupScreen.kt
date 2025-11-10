@@ -57,6 +57,7 @@ import com.airbnb.lottie.compose.animateLottieCompositionAsState
 import com.airbnb.lottie.compose.rememberLottieComposition
 import com.gorman.fitnessapp.R
 import com.gorman.fitnessapp.domain.models.UsersData
+import com.gorman.fitnessapp.ui.components.LoadingStub
 import com.gorman.fitnessapp.ui.components.SetupBackButton
 import com.gorman.fitnessapp.ui.components.SetupNextButton
 import com.gorman.fitnessapp.ui.fonts.mulishFont
@@ -84,7 +85,7 @@ fun ProfileSetupScreen(
         }
 
         is RegisterUiState.Success -> {
-            //onNextPage()
+            onNextPage()
         }
 
         is RegisterUiState.Error -> {
@@ -292,27 +293,6 @@ fun DefaultProfileScreen(
                 )
             }
         }
-    }
-}
-
-@Composable
-fun LoadingStub() {
-    val composition by rememberLottieComposition(
-        LottieCompositionSpec.RawRes(R.raw.loading_animation))
-    val progress by animateLottieCompositionAsState(
-        composition = composition,
-        iterations = LottieConstants.IterateForever
-    )
-    Box(
-        modifier = Modifier.fillMaxSize()
-            .background(colorResource(R.color.bg_color).copy(alpha = 0.6f)),
-        contentAlignment = Alignment.Center
-    ) {
-        LottieAnimation(
-            composition = composition,
-            progress = { progress },
-            modifier = Modifier.size(160.dp)
-        )
     }
 }
 

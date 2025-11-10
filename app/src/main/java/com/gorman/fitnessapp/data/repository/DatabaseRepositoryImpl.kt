@@ -2,6 +2,7 @@ package com.gorman.fitnessapp.data.repository
 
 import android.util.Log
 import androidx.room.Transaction
+import com.gorman.fitnessapp.data.datasource.local.dao.ArticleDao
 import com.gorman.fitnessapp.data.datasource.local.dao.ExerciseDao
 import com.gorman.fitnessapp.data.datasource.local.dao.MealDao
 import com.gorman.fitnessapp.data.datasource.local.dao.MealPlanItemDao
@@ -36,7 +37,8 @@ class DatabaseRepositoryImpl @Inject constructor(
     private val mealPlanTemplateDao: MealPlanTemplateDao,
     private val mealPlanItemDao: MealPlanItemDao,
     private val userProgressDao: UserProgressDao,
-    private val workoutHistoryDao: WorkoutHistoryDao
+    private val workoutHistoryDao: WorkoutHistoryDao,
+    private val articleDao: ArticleDao
 ): DatabaseRepository {
     override suspend fun getUserProgramById(programId: Int): UserProgram {
         return userProgramDao.getUserProgramById(programId = programId).toDomain()

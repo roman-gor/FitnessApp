@@ -19,6 +19,7 @@ class SaveNewUserUseCase @Inject constructor(
         firebaseId?.let {
             databaseRepository.addUser(user.copy(firebaseId = it))
             settingsRepository.setUserId(it)
+            settingsRepository.setProgramId("")
         }
     }
 }

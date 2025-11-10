@@ -1,5 +1,6 @@
 package com.gorman.fitnessapp.data.datasource.remote
 
+import com.gorman.fitnessapp.data.models.firebase.ArticleFirebase
 import com.gorman.fitnessapp.data.models.firebase.ExerciseFirebase
 import com.gorman.fitnessapp.data.models.firebase.MealFirebase
 import com.gorman.fitnessapp.data.models.firebase.MealPlanItemFirebase
@@ -39,4 +40,5 @@ interface FirebaseAPI {
     suspend fun insertWorkoutHistory(workoutHistoryFirebase: WorkoutHistoryFirebase): String?
     suspend fun updateWorkoutHistory(workoutHistoryFirebase: WorkoutHistoryFirebase, userId: String)
     suspend fun getWorkoutHistory(userId: String): List<WorkoutHistoryFirebase>
+    suspend fun getArticles(): List<ArticleFirebase>
 }
