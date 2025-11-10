@@ -22,31 +22,31 @@ Depending on the branch:
 ## Tech Stack
 
 - **Kotlin**  
-- **Jetpack Compose** — declarative UI  
+- **Jetpack Compose** – declarative UI  
 - **MVVM + Clean Architecture**  
-- **Hilt** — dependency injection  
-- **Coroutines & Flow** — asynchronous and reactive processing  
-- **Room** — local data storage  
-- **Firebase / Supabase** — cloud database and storage  
-- **Material 3** — modern Android design system  
+- **Hilt** – dependency injection  
+- **Coroutines & Flow** – asynchronous and reactive processing  
+- **Room** – local data storage  
+- **Firebase / Supabase** – cloud database and storage  
+- **Material 3** – modern Android design system  
 
 ## Architecture Overview
 
 The app is structured with a clear separation of layers:
-- **UI Layer (Compose)** — presents data reactively from the ViewModel  
-- **Domain Layer** — contains **use cases** that encapsulate business logic  
-- **Data Layer** — handles repositories, data sources, and mapping between entities  
+- **UI Layer (Compose)** – presents data reactively from the ViewModel  
+- **Domain Layer** – contains **use cases** that encapsulate business logic  
+- **Data Layer** – handles repositories, data sources, and mapping between entities  
 
 This structure provides a clean and maintainable project that adheres to modern Android development standards.
 
 ## Future Improvements
 
 Planned enhancements to make the app more interactive and user-friendly:
-- **Push Notifications** — personalized reminders for workouts and achievements  
-- **Community Section** — connect with other users, share goals, and progress  
-- **Support Chat** — real-time communication with fitness experts or app support  
-- **Workout Analytics** — detailed progress tracking and statistics  
-- **Music Sync Mode** — adaptive lighting and visuals reacting to music rhythm (DMX integration)
+- **Push Notifications** – personalized reminders for workouts and achievements  
+- **Community Section** – connect with other users, share goals, and progress  
+- **Support Chat** – real-time communication with fitness experts or app support  
+- **Workout Analytics** – detailed progress tracking and statistics  
+- **Music Sync Mode** – adaptive lighting and visuals reacting to music rhythm (DMX integration)
 
 ## Design
 <p align="center">
