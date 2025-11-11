@@ -10,11 +10,13 @@ class GetUserFromFirebaseUseCase @Inject constructor(
     private val firebaseRepository: FirebaseRepository,
     private val settingsRepository: SettingsRepository
 ) {
-    suspend operator fun invoke(email: String) {
+    suspend operator fun invoke(email: String): Boolean {
         val user = firebaseRepository.getUser(email)
         user?.let {
             databaseRepository.addUser(it)
             settingsRepository.setUserId(it.firebaseId)
+            return true
         }
+        return false
     }
 }

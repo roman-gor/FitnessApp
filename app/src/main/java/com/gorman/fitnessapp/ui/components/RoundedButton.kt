@@ -24,8 +24,8 @@ fun RoundedButton(onClick: () -> Unit, modifier: Modifier, color: Color, text: I
         Text(text = stringResource(text),
             fontFamily = mulishFont(),
             fontWeight = FontWeight.Bold,
-            fontSize = 14.sp,
+            fontSize = 12.sp,
             color = textColor,
-            modifier = Modifier.padding(8.dp))
+            modifier = Modifier.padding(4.dp))
     }
 }

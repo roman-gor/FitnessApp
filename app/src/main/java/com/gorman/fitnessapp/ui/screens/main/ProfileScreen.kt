@@ -1,9 +1,6 @@
 package com.gorman.fitnessapp.ui.screens.main
 
 import android.annotation.SuppressLint
-import android.net.Uri
-import androidx.activity.compose.rememberLauncherForActivityResult
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -30,13 +27,11 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
-import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.OutlinedTextFieldDefaults
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SheetState
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -45,19 +40,18 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.rotate
-import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.gorman.fitnessapp.R
@@ -68,27 +62,28 @@ import com.gorman.fitnessapp.ui.components.RoundedButton
 import com.gorman.fitnessapp.ui.fonts.mulishFont
 import com.gorman.fitnessapp.ui.navigation.Screen
 import com.gorman.fitnessapp.ui.navigation.Screen.Companion.pItems
+import com.gorman.fitnessapp.ui.states.RegisterUiState
+import com.gorman.fitnessapp.ui.viewmodel.ProfileViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ProfileScreen(
     userData: UsersData,
     onBackPage: () -> Unit,
-    onSettingsClick: () -> Unit
+    onSettingsClick: (UsersData) -> Unit,
+    onNavigateToStart: () -> Unit
 ) {
-    val editSheetState = rememberModalBottomSheetState()
-    var showSheet by remember { mutableStateOf(false) }
-    var uriImage by remember { mutableStateOf("") }
-    var uriPath by remember { mutableStateOf<Uri?>(null) }
-    val pickImage = rememberLauncherForActivityResult(
-        contract = ActivityResultContracts.GetContent(),
-        onResult = { uri ->
-            uri?.let {
-                uriPath = uri
-                uriImage = uri.toString()
+    val profileViewModel: ProfileViewModel = hiltViewModel()
+    LaunchedEffect(Unit) {
+        profileViewModel.uiEvent.collect {
+            when(it) {
+                is RegisterUiState.Logout -> onNavigateToStart()
+                else -> {}
             }
         }
-    )
+    }
+    val editSheetState = rememberModalBottomSheetState()
+    var showSheet by remember { mutableStateOf(false) }
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -135,14 +130,6 @@ fun ProfileScreen(
                         .clip(CircleShape)
                         .size(140.dp),
                     contentScale = ContentScale.Crop)
-                Image(painter = painterResource(R.drawable.edit_ava),
-                    contentDescription = "Edit Avatar",
-                    modifier = Modifier
-                        .align(Alignment.BottomEnd)
-                        .size(36.dp)
-                        .clickable(onClick = {
-                            pickImage.launch("image/*")
-                        }, indication = null, interactionSource = null))
             }
             userData.name?.let {
                 Text(
@@ -163,10 +150,10 @@ fun ProfileScreen(
                             showSheet = !showSheet
                         }
                         R.string.settings -> {
-                            onSettingsClick()
+                            onSettingsClick(userData)
                         }
                         R.string.logout -> {
-
+                            profileViewModel.logoutFromDevice()
                         }
                     }
                 })
@@ -178,7 +165,7 @@ fun ProfileScreen(
                 sheetState = editSheetState,
                 user = userData,
                 onSave = { newUserData ->
-
+                    profileViewModel.updateUserData(newUserData)
                 })
         }
     }
@@ -362,7 +349,7 @@ fun BottomSheetDialog(onDismiss: () -> Unit,
                 Text(text = stringResource(R.string.enter_name),
                     fontSize = 12.sp,
                     fontFamily = mulishFont(),
-                    color = colorResource(R.color.font_purple_color),
+                    color = colorResource(R.color.picker_wheel_bg),
                     fontWeight = FontWeight.Bold,
                     modifier = Modifier.padding(start = 8.dp, end = 8.dp, top = 8.dp, bottom = 4.dp))
                 DefaultOutlinedTextField(
@@ -379,7 +366,7 @@ fun BottomSheetDialog(onDismiss: () -> Unit,
                 Text(text = stringResource(R.string.enter_email),
                     fontSize = 12.sp,
                     fontFamily = mulishFont(),
-                    color = colorResource(R.color.font_purple_color),
+                    color = colorResource(R.color.picker_wheel_bg),
                     fontWeight = FontWeight.Bold,
                     modifier = Modifier.padding(start = 8.dp, end = 8.dp, top = 8.dp, bottom = 4.dp))
                 DefaultOutlinedTextField(
@@ -397,7 +384,7 @@ fun BottomSheetDialog(onDismiss: () -> Unit,
                 Text(text = stringResource(R.string.enter_age),
                     fontSize = 12.sp,
                     fontFamily = mulishFont(),
-                    color = colorResource(R.color.font_purple_color),
+                    color = colorResource(R.color.picker_wheel_bg),
                     fontWeight = FontWeight.Bold,
                     modifier = Modifier.padding(start = 8.dp, end = 8.dp, top = 8.dp, bottom = 4.dp))
                 DefaultOutlinedTextField(
@@ -415,7 +402,7 @@ fun BottomSheetDialog(onDismiss: () -> Unit,
                 Text(text = stringResource(R.string.enter_weight),
                     fontSize = 12.sp,
                     fontFamily = mulishFont(),
-                    color = colorResource(R.color.font_purple_color),
+                    color = colorResource(R.color.picker_wheel_bg),
                     fontWeight = FontWeight.Bold,
                     modifier = Modifier.padding(start = 8.dp, end = 8.dp, top = 8.dp, bottom = 4.dp))
                 DefaultOutlinedTextField(
@@ -433,7 +420,7 @@ fun BottomSheetDialog(onDismiss: () -> Unit,
                 Text(text = stringResource(R.string.enter_desired_weight),
                     fontSize = 12.sp,
                     fontFamily = mulishFont(),
-                    color = colorResource(R.color.font_purple_color),
+                    color = colorResource(R.color.picker_wheel_bg),
                     fontWeight = FontWeight.Bold,
                     modifier = Modifier.padding(start = 8.dp, end = 8.dp, top = 8.dp, bottom = 4.dp))
                 DefaultOutlinedTextField(
@@ -445,6 +432,7 @@ fun BottomSheetDialog(onDismiss: () -> Unit,
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                     modifier = Modifier.fillMaxWidth())
             }
+            Spacer(modifier = Modifier.height(8.dp))
             Row (
                 modifier = Modifier.fillMaxWidth().padding(16.dp),
                 horizontalArrangement = Arrangement.spacedBy(20.dp)

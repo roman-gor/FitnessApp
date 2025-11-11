@@ -6,6 +6,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.gorman.fitnessapp.domain.models.UsersData
+import com.gorman.fitnessapp.domain.usecases.GetUserFromFirebaseUseCase
 import com.gorman.fitnessapp.domain.usecases.SaveNewUserUseCase
 import com.gorman.fitnessapp.domain.usecases.SetUserIdUseCase
 import com.gorman.fitnessapp.domain.usecases.UploadImageProfileUseCase
@@ -18,6 +19,7 @@ import javax.inject.Inject
 @HiltViewModel
 class RegisterViewModel @Inject constructor(
     private val saveNewUserUseCase: SaveNewUserUseCase,
+    private val getUserFromFirebaseUseCase: GetUserFromFirebaseUseCase,
     private val uploadImageProfileUseCase: UploadImageProfileUseCase,
     private val logger: AppLogger
 ): ViewModel() {
@@ -50,6 +52,24 @@ class RegisterViewModel @Inject constructor(
             } catch (e: Exception) {
                 logger.e("REGISTER", "Неожиданная ошибка: ${e.message}")
                 _registerUiState.value = RegisterUiState.Error("Что-то пошло не так: ${e.message}")
+            }
+        }
+    }
+
+    fun signInUser(email: String) {
+        viewModelScope.launch {
+            _registerUiState.value = RegisterUiState.Loading
+            try {
+                val isUser = getUserFromFirebaseUseCase(email)
+                _registerUiState.value = if (isUser) {
+                    RegisterUiState.Success
+                } else {
+                    RegisterUiState.Error("Пользователь не найден")
+                }
+            } catch (e: Exception) {
+                _registerUiState.value = RegisterUiState.Error(
+                    e.message ?: "Ошибка при авторизации"
+                )
             }
         }
     }

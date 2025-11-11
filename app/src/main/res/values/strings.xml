@@ -2,6 +2,9 @@
     <string name="app_name" translatable="false">FitBody</string>
     <string name="meet_text">Последовательность – это ключ к прогрессу.\nНе сдавайтесь!</string>
     <string name="next">Далее</string>
+    <string name="log_in">Войти</string>
+    <string name="sign_up">Зарегистрироваться</string>
+    <string name="offer_to_register">Нет аккаунта?</string>
     <string name="continue_string">Продолжить</string>
     <string name="back">Назад</string>
     <string name="choose_gender">Выбери свой пол</string>
@@ -35,6 +38,9 @@
     <string name="enter_desired_weight">Введите желаемый вес</string>
     <string name="cancel">Закрыть</string>
     <string name="save">Сохранить</string>
+    <string name="delete_account">Удалить аккаунт</string>
+    <string name="delete_confirm">Вы действительно желаете удалить аккаунт?</string>
+    <string name="confirm">Подтвердить</string>
     <string name="info_screen1">Начните свой путь к более активному образу жизни</string>
     <string name="info_screen2">Найдите советы по питанию, которые соответствуют вашему образу жизни</string>
     <string name="info_screen3">Сообщество для вас, бросьте себе вызов</string>

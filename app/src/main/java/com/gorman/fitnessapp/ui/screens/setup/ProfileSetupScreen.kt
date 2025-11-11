@@ -1,5 +1,6 @@
 package com.gorman.fitnessapp.ui.screens.setup
 
+import android.util.Patterns
 import android.net.Uri
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
@@ -20,6 +21,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
@@ -43,6 +45,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -79,15 +82,12 @@ fun ProfileSetupScreen(
         registerViewModel = registerViewModel
     )
     when(val state = uiState){
-        is RegisterUiState.Idle -> {}
         is RegisterUiState.Loading -> {
             LoadingStub()
         }
-
         is RegisterUiState.Success -> {
             onNextPage()
         }
-
         is RegisterUiState.Error -> {
             ErrorMessage(
                 message = state.message,
@@ -96,6 +96,7 @@ fun ProfileSetupScreen(
                 }
             )
         }
+        else -> {}
     }
 }
 
@@ -260,6 +261,7 @@ fun DefaultProfileScreen(
                         color = colorResource(R.color.bg_color),
                         fontSize = 18.sp
                     ),
+                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
                     shape = RoundedCornerShape(24.dp),
                     colors = OutlinedTextFieldDefaults.colors(
                         unfocusedContainerColor = Color.White,
@@ -277,12 +279,13 @@ fun DefaultProfileScreen(
                     onClick = {
                         usersData?.let {
                             if (name.isNotBlank() && email.isNotBlank())
-                                registerViewModel.registerUser(
-                                    uri = uriPath,
-                                    usersData = it.copy(
-                                        name = name,
-                                        email = email
-                                    ))
+                                if (isValidEmail(email))
+                                    registerViewModel.registerUser(
+                                        uri = uriPath,
+                                        usersData = it.copy(
+                                            name = name,
+                                            email = email
+                                        ))
                             else
                                 isDataError = true
                         }
@@ -343,6 +346,10 @@ fun ErrorMessage(
             }
         }
     }
+}
+
+fun isValidEmail(email: String): Boolean {
+    return email.isNotEmpty() && Patterns.EMAIL_ADDRESS.matcher(email).matches()
 }
 
 @Preview(showBackground = true)

@@ -10,6 +10,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.colorResource
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavController
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -21,13 +22,14 @@ import com.gorman.fitnessapp.ui.components.BottomNavigationBar
 import com.gorman.fitnessapp.ui.screens.main.HomeScreen
 import com.gorman.fitnessapp.ui.screens.main.ProfileScreen
 import com.gorman.fitnessapp.ui.screens.main.ResourcesScreen
+import com.gorman.fitnessapp.ui.screens.main.SettingsScreen
 import com.gorman.fitnessapp.ui.states.HomeUiState
 import com.gorman.fitnessapp.ui.viewmodel.HomeViewModel
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 
 @Composable
-fun BottomNavigation() {
+fun BottomNavigation(navController: NavController) {
     val nestedNavController = rememberNavController()
     val homeViewModel: HomeViewModel = hiltViewModel()
     val state by homeViewModel.homeUiState
@@ -69,8 +71,7 @@ fun BottomNavigation() {
                 arguments = listOf(
                     navArgument("usersDataJson") {
                         type = NavType.StringType
-                    }))
-            { backStackEntry ->
+                    })) { backStackEntry ->
                 val usersDataJson = backStackEntry.arguments?.getString("usersDataJson")
                 val usersData = usersDataJson?.let { Json.decodeFromString<UsersData>(it) }
                 usersData?.let {
@@ -79,7 +80,31 @@ fun BottomNavigation() {
                         onBackPage = {
                             nestedNavController.navigateUp()
                         },
-                        onSettingsClick = {}
+                        onSettingsClick = { user->
+                            val json = Uri.encode(Json.encodeToString(user))
+                            nestedNavController.navigate("settings/$json")
+                        },
+                        onNavigateToStart = {
+                            navController.navigate(Screen.SetupScreen.Start.route) {
+                                popUpTo(0)
+                                launchSingleTop = true
+                            }
+                        }
+                    )
+                }
+            }
+            composable(
+                route = "settings/{usersDataJson}",
+                arguments = listOf(
+                    navArgument("usersDataJson") {
+                        type = NavType.StringType
+                    })) { backStackEntry ->
+                val usersDataJson = backStackEntry.arguments?.getString("usersDataJson")
+                val usersData = usersDataJson?.let { Json.decodeFromString<UsersData>(it) }
+                usersData?.let {
+                    SettingsScreen (
+                        usersData = usersData,
+                        onBackPage = {nestedNavController.navigateUp()}
                     )
                 }
             }

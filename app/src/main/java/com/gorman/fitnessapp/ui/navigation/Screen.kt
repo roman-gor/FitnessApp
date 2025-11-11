@@ -4,6 +4,7 @@ import com.gorman.fitnessapp.R
 
 sealed class Screen() {
     sealed class SetupScreen(val route: String): Screen() {
+        object SignIn: SetupScreen("sign_in")
         object Start: SetupScreen("start")
         object Info: SetupScreen("info")
         object Welcome: SetupScreen("welcome")

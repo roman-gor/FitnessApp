@@ -21,6 +21,7 @@ import com.gorman.fitnessapp.ui.screens.setup.GenderScreen
 import com.gorman.fitnessapp.ui.screens.setup.GoalScreen
 import com.gorman.fitnessapp.ui.screens.setup.HeightScreen
 import com.gorman.fitnessapp.ui.screens.setup.ProfileSetupScreen
+import com.gorman.fitnessapp.ui.screens.setup.SignInScreen
 import com.gorman.fitnessapp.ui.screens.setup.WeightScreen
 import com.gorman.fitnessapp.ui.screens.setup.WelcomeScreen
 import kotlinx.serialization.encodeToString
@@ -38,10 +39,20 @@ fun SetupNavigation() {
         }
         composable(Screen.SetupScreen.Info.route) {
             InfoScreen {
-                navController.navigate(Screen.SetupScreen.Welcome.route) {
+                navController.navigate(Screen.SetupScreen.SignIn.route) {
                     popUpTo(Screen.SetupScreen.Info.route) { inclusive = true }
                 }
             }
+        }
+        composable(Screen.SetupScreen.SignIn.route) {
+            SignInScreen(
+                onSignUpScreen = {
+                    navController.navigate(Screen.SetupScreen.Welcome.route) },
+                onHomePage = {
+                    navController.navigate("main_screen") {
+                        popUpTo(Screen.SetupScreen.SignIn.route) {inclusive = true}
+                        launchSingleTop = true
+                    } })
         }
         composable(Screen.SetupScreen.Welcome.route) {
             WelcomeScreen {
@@ -147,7 +158,7 @@ fun SetupNavigation() {
             )
         }
         composable("main_screen") {
-            BottomNavigation()
+            BottomNavigation(navController)
         }
     }
 }

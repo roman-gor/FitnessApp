@@ -2,6 +2,9 @@
 <resources>
     <string name="meet_text">Consistency Is the Key To progress.\nDon\'t Give Up!</string>
     <string name="next">Next</string>
+    <string name="log_in">Log In</string>
+    <string name="sign_up">Sign Up</string>
+    <string name="offer_to_register">Don’t have an account?</string>
     <string name="continue_string">Continue</string>
     <string name="back">Back</string>
     <string name="choose_gender">What’s Your Gender</string>
@@ -32,6 +35,9 @@
     <string name="enter_desired_weight">Desired Weight</string>
     <string name="cancel">Close</string>
     <string name="save">Save</string>
+    <string name="delete_account">Delete Account</string>
+    <string name="delete_confirm">Are you sure you want to delete your account?</string>
+    <string name="confirm">Confirm</string>
     <string name="info_screen1">Start your journey towards a more active lifestyle</string>
     <string name="info_screen2">Find nutrition tips that fit your lifestyle</string>
     <string name="info_screen3">A community for you, challenge yourself</string>
