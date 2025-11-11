@@ -4,6 +4,7 @@ import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -30,6 +31,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -46,7 +48,6 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.gorman.fitnessapp.R
@@ -61,13 +62,13 @@ import kotlin.math.max
 
 @Composable
 fun HomeScreen(
+    homeViewModel: HomeViewModel,
     onProfileClick: (UsersData) -> Unit,
     onWorkoutClick: () -> Unit,
     onProgressClick: () -> Unit,
     onNutritionClick: () -> Unit
 ) {
     val context = LocalContext.current
-    val homeViewModel: HomeViewModel = hiltViewModel()
     LaunchedEffect(Unit) {
         homeViewModel.prepareData()
     }
@@ -135,13 +136,12 @@ fun GeneralScreen(
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Header(onProfileClick = onProfileClick, userData)
-                Spacer(modifier = Modifier.height(26.dp))
+                Spacer(modifier = Modifier.height(20.dp))
                 HomeNavigation(
                     onWorkoutClick = { onWorkoutClick() },
                     onProgressClick = { onProgressClick() },
                     onNutritionClick = { onNutritionClick() })
             }
-            Spacer(modifier = Modifier.height(16.dp))
             ProgramCard(isProgramExists = isProgramExisting)
             Spacer(modifier = Modifier.height(16.dp))
             ArticleList(items = articlesList)
@@ -170,7 +170,7 @@ fun Header(
                     text = "Привет, $it",
                     fontFamily = mulishFont(),
                     fontSize = 22.sp,
-                    color = colorResource(R.color.font_purple_color),
+                    color = colorResource(R.color.picker_wheel_bg),
                     fontWeight = FontWeight.ExtraBold,
                     textAlign = TextAlign.Start
                 )
@@ -179,8 +179,8 @@ fun Header(
             Text(
                 text = stringResource(R.string.header_text),
                 fontFamily = mulishFont(),
-                fontSize = 14.sp,
-                color = colorResource(R.color.font_purple_color),
+                fontSize = 12.sp,
+                color = colorResource(R.color.picker_wheel_bg),
                 fontWeight = FontWeight.Bold,
                 textAlign = TextAlign.Start
             )
@@ -194,7 +194,7 @@ fun Header(
             Icon(
                 painter = painterResource(R.drawable.profile_icon),
                 contentDescription = "Profile Icon",
-                tint = colorResource(R.color.font_purple_color),
+                tint = colorResource(R.color.picker_wheel_bg),
                 modifier = Modifier
                     .scale(1.4f)
                     .padding(8.dp))
@@ -216,9 +216,10 @@ fun HomeNavigation(
         verticalAlignment = Alignment.CenterVertically
     ) {
         Column(
-            modifier = Modifier.clickable(onClick = {
-                onWorkoutClick()
-            }),
+            modifier = Modifier.clickable(
+                indication = null,
+                interactionSource = remember { MutableInteractionSource() },
+                onClick = { onWorkoutClick() }),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
         ) {
@@ -244,9 +245,10 @@ fun HomeNavigation(
             .width(2.dp)
             .background(Color.White.copy(alpha = 0.5f)))
         Column(
-            modifier = Modifier.clickable(onClick = {
-                onProgressClick()
-            }),
+            modifier = Modifier.clickable(
+                indication = null,
+                interactionSource = remember { MutableInteractionSource() },
+                onClick = { onProgressClick() }),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
         ) {
@@ -272,9 +274,10 @@ fun HomeNavigation(
             .width(2.dp)
             .background(Color.White.copy(alpha = 0.5f)))
         Column(
-            modifier = Modifier.clickable(onClick = {
-                onNutritionClick()
-            }),
+            modifier = Modifier.clickable(
+                indication = null,
+                interactionSource = remember { MutableInteractionSource() },
+                onClick = { onNutritionClick() }),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
         ) {
@@ -446,7 +449,7 @@ fun ArticleListItem(
         Text(
             text = article.title,
             fontFamily = mulishFont(),
-            fontSize = 18.sp,
+            fontSize = 14.sp,
             fontWeight = FontWeight.Medium,
             color = Color.White,
             maxLines = 2,

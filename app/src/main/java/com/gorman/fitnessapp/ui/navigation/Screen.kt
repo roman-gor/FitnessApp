@@ -22,10 +22,27 @@ sealed class Screen() {
         object Resources: BottomScreen("res", R.drawable.res_bottom_icon, R.string.res)
     }
 
+    sealed class GeneralHomeScreen(val route: String): Screen() {
+        object Profile: GeneralHomeScreen("profile")
+        object Workout: GeneralHomeScreen("workout")
+        object Progress: GeneralHomeScreen("progress")
+        object Nutrition: GeneralHomeScreen("nutrition")
+    }
+
+    sealed class ProfileItemsScreen(val icon: Int, val title: Int): Screen() {
+        object Edit: ProfileItemsScreen(R.drawable.profile_edit_icon, R.string.edit)
+        object Settings: ProfileItemsScreen(R.drawable.settings_icon, R.string.settings)
+        object Logout: ProfileItemsScreen(R.drawable.logout_icon, R.string.logout)
+    }
     companion object {
         val bItems = listOf(
             BottomScreen.Home,
             BottomScreen.Resources
+        )
+        val pItems = listOf(
+            ProfileItemsScreen.Edit,
+            ProfileItemsScreen.Settings,
+            ProfileItemsScreen.Logout
         )
     }
 }

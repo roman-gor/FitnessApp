@@ -11,6 +11,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.gorman.fitnessapp.domain.models.UsersData
+import com.gorman.fitnessapp.ui.screens.main.PreLoadingScreen
 import com.gorman.fitnessapp.ui.screens.onboarding.InfoScreen
 import com.gorman.fitnessapp.ui.screens.onboarding.StartOnBoardingScreen
 import com.gorman.fitnessapp.ui.screens.setup.ActivityLevelScreen
@@ -28,8 +29,10 @@ import kotlinx.serialization.json.Json
 @Composable
 fun SetupNavigation() {
     val navController = rememberNavController()
-    //TODO("Change startDestination")
-    NavHost(navController = navController, startDestination = "start") {
+    NavHost(navController = navController, startDestination = "pre_loading") {
+        composable("pre_loading") {
+            PreLoadingScreen(navController = navController)
+        }
         composable(Screen.SetupScreen.Start.route) {
             StartOnBoardingScreen(navController = navController)
         }

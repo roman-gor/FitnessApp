@@ -27,6 +27,11 @@
     <string name="tap_for_next">Tap the screen to continue</string>
     <string name="enter_name">Enter Name</string>
     <string name="enter_email">Enter Email</string>
+    <string name="enter_age">Age</string>
+    <string name="enter_weight">Weight</string>
+    <string name="enter_desired_weight">Desired Weight</string>
+    <string name="cancel">Close</string>
+    <string name="save">Save</string>
     <string name="info_screen1">Start your journey towards a more active lifestyle</string>
     <string name="info_screen2">Find nutrition tips that fit your lifestyle</string>
     <string name="info_screen3">A community for you, challenge yourself</string>
@@ -40,5 +45,12 @@
     <string name="nutrition">Nutrition</string>
     <string name="articles">Articles &amp; Tips</string>
     <string name="program_desc_text">**Program Description**</string>
+    <string name="profile_title">My profile</string>
+    <string name="edit">Edit profile</string>
+    <string name="settings">Settings</string>
+    <string name="logout">Logout</string>
+    <string name="weight">Weight</string>
+    <string name="years_old">Years Old</string>
+    <string name="height">Height</string>
     <string name="program_gen_description_text">Let’s generate your personality Program</string>
 </resources>

@@ -30,6 +30,11 @@
     <string name="email" translatable="false">Email</string>
     <string name="enter_name">Введите имя</string>
     <string name="enter_email">Введите Email</string>
+    <string name="enter_age">Введите возраст</string>
+    <string name="enter_weight">Введите вес</string>
+    <string name="enter_desired_weight">Введите желаемый вес</string>
+    <string name="cancel">Закрыть</string>
+    <string name="save">Сохранить</string>
     <string name="info_screen1">Начните свой путь к более активному образу жизни</string>
     <string name="info_screen2">Найдите советы по питанию, которые соответствуют вашему образу жизни</string>
     <string name="info_screen3">Сообщество для вас, бросьте себе вызов</string>
@@ -43,5 +48,14 @@
     <string name="nutrition">Питание</string>
     <string name="articles">Статьи и советы</string>
     <string name="program_desc_text">**Описание программы**</string>
+    <string name="profile_title">Мой профиль</string>
+    <string name="edit">Профиль</string>
+    <string name="settings">Настройки</string>
+    <string name="logout">Выход</string>
+    <string name="weight">Вес</string>
+    <string name="years_old">Лет</string>
+    <string name="years_old1" translatable="false">Год</string>
+    <string name="years_old2" translatable="false">Года</string>
+    <string name="height">Рост</string>
     <string name="program_gen_description_text">Давайте сгенерируем вашу персональную программу</string>
 </resources>
