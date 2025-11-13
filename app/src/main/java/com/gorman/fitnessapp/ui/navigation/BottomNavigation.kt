@@ -3,10 +3,13 @@ package com.gorman.fitnessapp.ui.navigation
 import android.net.Uri
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.colorResource
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -19,12 +22,15 @@ import androidx.navigation.navArgument
 import com.gorman.fitnessapp.R
 import com.gorman.fitnessapp.domain.models.UsersData
 import com.gorman.fitnessapp.ui.components.BottomNavigationBar
+import com.gorman.fitnessapp.ui.components.LoadingStub
 import com.gorman.fitnessapp.ui.screens.main.HomeScreen
 import com.gorman.fitnessapp.ui.screens.main.ProfileScreen
 import com.gorman.fitnessapp.ui.screens.main.ResourcesScreen
 import com.gorman.fitnessapp.ui.screens.main.SettingsScreen
+import com.gorman.fitnessapp.ui.screens.workout.WorkoutScreen
 import com.gorman.fitnessapp.ui.states.HomeUiState
 import com.gorman.fitnessapp.ui.viewmodel.HomeViewModel
+import kotlinx.coroutines.delay
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 
@@ -33,13 +39,15 @@ fun BottomNavigation(navController: NavController) {
     val nestedNavController = rememberNavController()
     val homeViewModel: HomeViewModel = hiltViewModel()
     val state by homeViewModel.homeUiState
+    var showGeneratingNavigation by remember { mutableStateOf(false) }
     Scaffold(
         modifier = Modifier.fillMaxSize(),
         containerColor = colorResource(R.color.bg_color),
-        bottomBar = {if (state == HomeUiState.Success )
+        bottomBar = {
             BottomNavigationBar(
                 items = Screen.bItems,
-                navController = nestedNavController
+                navController = nestedNavController,
+                enabled = state == HomeUiState.Success && !showGeneratingNavigation
             )
         }
     ) { innerPadding ->
@@ -55,10 +63,21 @@ fun BottomNavigation(navController: NavController) {
                             homeViewModel = homeViewModel,
                             onNutritionClick = {},
                             onProgressClick = {},
-                            onWorkoutClick = {},
+                            onWorkoutClick = { usersData ->
+                                val json = Uri.encode(Json.encodeToString(usersData))
+                                nestedNavController.navigate("${Screen.GeneralHomeScreen.Workout.route}/$json") {
+                                    launchSingleTop = true
+                                }
+                            },
                             onProfileClick = { usersData ->
                                 val json = Uri.encode(Json.encodeToString(usersData))
                                 nestedNavController.navigate("${Screen.GeneralHomeScreen.Profile.route}/$json") {
+                                    launchSingleTop = true
+                                }
+                            },
+                            onNavigateToGenProgram = {
+                                showGeneratingNavigation = true
+                                nestedNavController.navigate(Screen.GeneratingScreen.GenerateProgram.route){
                                     launchSingleTop = true
                                 }
                             })
@@ -107,6 +126,30 @@ fun BottomNavigation(navController: NavController) {
                         onBackPage = {nestedNavController.navigateUp()}
                     )
                 }
+            }
+            composable(
+                route = "${Screen.GeneralHomeScreen.Workout.route}/{usersDataJson}",
+                arguments = listOf(
+                    navArgument("usersDataJson") {
+                        type = NavType.StringType
+                    })) { backStackEntry ->
+                val usersDataJson = backStackEntry.arguments?.getString("usersDataJson")
+                val usersData = usersDataJson?.let { Json.decodeFromString<UsersData>(it) }
+                usersData?.let {
+                    WorkoutScreen(
+                        onBackPage = { nestedNavController.navigateUp() },
+                        onProfileClick = { usersData ->
+                            val json = Uri.encode(Json.encodeToString(usersData))
+                            nestedNavController.navigate("${Screen.GeneralHomeScreen.Profile.route}/$json") {
+                                launchSingleTop = true
+                            }
+                        },
+                        userData = usersData
+                    )
+                }
+            }
+            composable(Screen.GeneratingScreen.GenerateProgram.route) {
+
             }
         }
     }

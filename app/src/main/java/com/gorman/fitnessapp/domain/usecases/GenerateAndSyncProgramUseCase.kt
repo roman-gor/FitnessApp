@@ -11,7 +11,7 @@ class GenerateAndSyncProgramUseCase @Inject constructor(
      * Запускает процесс генерации и полной синхронизации новой программы тренировок для пользователя.
      */
     suspend operator fun invoke(usersData: UsersData,
-                                selectedProgramIndex: Int): String {
+                                selectedProgramIndex: Int = 0): String {
         return programRepository.generateAndSyncProgram(usersData, selectedProgramIndex)
     }
 }

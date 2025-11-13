@@ -35,6 +35,12 @@ sealed class Screen() {
         object Settings: ProfileItemsScreen(R.drawable.settings_icon, R.string.settings)
         object Logout: ProfileItemsScreen(R.drawable.logout_icon, R.string.logout)
     }
+
+    sealed class GeneratingScreen(val route: String): Screen() {
+        object GenerateProgram: GeneratingScreen("gen_program")
+        object GeneratingMeals: GeneratingScreen("gen_meals")
+    }
+
     companion object {
         val bItems = listOf(
             BottomScreen.Home,

@@ -7,6 +7,7 @@ import androidx.lifecycle.viewModelScope
 import com.gorman.fitnessapp.domain.models.Exercise
 import com.gorman.fitnessapp.domain.models.Program
 import com.gorman.fitnessapp.domain.models.ProgramExercise
+import com.gorman.fitnessapp.domain.usecases.GenerateAndSyncProgramUseCase
 import com.gorman.fitnessapp.domain.usecases.GetAndSyncUserProgramsUseCase
 import com.gorman.fitnessapp.domain.usecases.GetExercisesUseCase
 import com.gorman.fitnessapp.domain.usecases.GetProgramFromLocalUseCase
@@ -36,6 +37,7 @@ class ProgramViewModel @Inject constructor(
     val programExercisesState: State<List<ProgramExercise>> = _programExercisesState
 
     fun prepareProgramData() {
+        _programUiState.value = ProgramUiState.Loading
         viewModelScope.launch {
             try {
                 val exerciseList = getExercisesUseCase()

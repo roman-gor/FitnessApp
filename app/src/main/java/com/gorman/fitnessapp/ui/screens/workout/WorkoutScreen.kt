@@ -55,7 +55,7 @@ import kotlin.collections.component1
 import kotlin.collections.component2
 
 @Composable
-fun ProgramInfoScreen(
+fun WorkoutScreen(
     onBackPage: () -> Unit,
     onProfileClick: (UsersData) -> Unit,
     userData: UsersData?

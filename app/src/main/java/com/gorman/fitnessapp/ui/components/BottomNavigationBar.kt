@@ -28,10 +28,26 @@ import com.gorman.fitnessapp.ui.navigation.Screen
 @Composable
 fun BottomNavigationBar(
     navController: NavController,
-    items: List<Screen.BottomScreen>
+    items: List<Screen.BottomScreen>,
+    enabled: Boolean
 ) {
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentRoute = navBackStackEntry?.destination?.route
+    if (enabled) {
+        MainItem(
+            items = items,
+            currentRoute = currentRoute,
+            navController = navController
+        )
+    }
+}
+
+@Composable
+fun MainItem(
+    items: List<Screen.BottomScreen>,
+    currentRoute: String?,
+    navController: NavController
+) {
     Card (
         modifier = Modifier.fillMaxWidth()
             .padding(12.dp),

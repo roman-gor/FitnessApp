@@ -31,6 +31,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -64,9 +65,10 @@ import kotlin.math.max
 fun HomeScreen(
     homeViewModel: HomeViewModel,
     onProfileClick: (UsersData) -> Unit,
-    onWorkoutClick: () -> Unit,
+    onWorkoutClick: (UsersData) -> Unit,
     onProgressClick: () -> Unit,
-    onNutritionClick: () -> Unit
+    onNutritionClick: () -> Unit,
+    onNavigateToGenProgram: () -> Unit
 ) {
     val context = LocalContext.current
     LaunchedEffect(Unit) {
@@ -88,7 +90,8 @@ fun HomeScreen(
                 onNutritionClick = onNutritionClick,
                 isProgramExisting = isProgramExisting,
                 articlesList = articlesList,
-                userData = userData
+                userData = userData,
+                onNavigateToGenProgram = onNavigateToGenProgram
             )
         }
         HomeUiState.Idle -> {
@@ -100,12 +103,16 @@ fun HomeScreen(
         HomeUiState.Success -> {
             GeneralScreen(
                 onProfileClick = onProfileClick,
-                onWorkoutClick = onWorkoutClick,
+                onWorkoutClick = {
+                    if (isProgramExisting)
+                        onWorkoutClick(it)
+                },
                 onProgressClick = onProgressClick,
                 onNutritionClick = onNutritionClick,
                 isProgramExisting = isProgramExisting,
                 articlesList = articlesList,
-                userData = userData
+                userData = userData,
+                onNavigateToGenProgram = onNavigateToGenProgram
             )
         }
     }
@@ -114,12 +121,13 @@ fun HomeScreen(
 @Composable
 fun GeneralScreen(
     onProfileClick: (UsersData) -> Unit,
-    onWorkoutClick: () -> Unit,
+    onWorkoutClick: (UsersData) -> Unit,
     onProgressClick: () -> Unit,
     onNutritionClick: () -> Unit,
     isProgramExisting: Boolean,
     articlesList: List<Article>,
-    userData: UsersData?
+    userData: UsersData?,
+    onNavigateToGenProgram: () -> Unit
 ) {
     Box(modifier = Modifier
         .fillMaxSize()
@@ -138,11 +146,14 @@ fun GeneralScreen(
                 Header(onProfileClick = onProfileClick, userData)
                 Spacer(modifier = Modifier.height(20.dp))
                 HomeNavigation(
-                    onWorkoutClick = { onWorkoutClick() },
+                    onWorkoutClick = { userData?.let { onWorkoutClick(it) } },
                     onProgressClick = { onProgressClick() },
                     onNutritionClick = { onNutritionClick() })
             }
-            ProgramCard(isProgramExists = isProgramExisting)
+            ProgramCard(
+                isProgramExists = isProgramExisting,
+                onGenerateClick = { onNavigateToGenProgram() }
+            )
             Spacer(modifier = Modifier.height(16.dp))
             ArticleList(items = articlesList)
         }
@@ -303,7 +314,8 @@ fun HomeNavigation(
 
 @Composable
 fun ProgramCard(
-    isProgramExists: Boolean
+    isProgramExists: Boolean,
+    onGenerateClick: () -> Unit
 ) {
     val descText = if (isProgramExists) stringResource(R.string.program_desc_text)
         else stringResource(R.string.program_gen_description_text)
@@ -330,7 +342,10 @@ fun ProgramCard(
             contentAlignment = Alignment.Center
         ) {
             Card(
-                modifier = Modifier.padding(horizontal = 24.dp, vertical = 40.dp),
+                modifier = Modifier.padding(horizontal = 24.dp, vertical = 40.dp)
+                    .clickable(
+                        onClick = { onGenerateClick() }
+                    ),
                 colors = CardDefaults.cardColors(
                     containerColor = colorResource(R.color.bg_color)
                 ),
