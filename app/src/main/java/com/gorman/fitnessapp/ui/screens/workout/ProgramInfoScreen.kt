@@ -1,8 +1,10 @@
 package com.gorman.fitnessapp.ui.screens.workout
 
+import android.widget.Toast
 import androidx.annotation.DrawableRes
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -31,6 +33,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -40,10 +43,16 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.gorman.fitnessapp.R
+import com.gorman.fitnessapp.domain.models.Program
+import com.gorman.fitnessapp.domain.models.ProgramExercise
 import com.gorman.fitnessapp.domain.models.UsersData
 import com.gorman.fitnessapp.ui.components.GeneralBackButton
+import com.gorman.fitnessapp.ui.components.LoadingStub
 import com.gorman.fitnessapp.ui.fonts.mulishFont
+import com.gorman.fitnessapp.ui.states.ProgramUiState
 import com.gorman.fitnessapp.ui.viewmodel.ProgramViewModel
+import kotlin.collections.component1
+import kotlin.collections.component2
 
 @Composable
 fun ProgramInfoScreen(
@@ -51,6 +60,7 @@ fun ProgramInfoScreen(
     onProfileClick: (UsersData) -> Unit,
     userData: UsersData?
 ) {
+    val context = LocalContext.current
     val programViewModel: ProgramViewModel = hiltViewModel()
     LaunchedEffect(Unit) {
         programViewModel.prepareProgramData()
@@ -59,6 +69,40 @@ fun ProgramInfoScreen(
     val programExercises by programViewModel.programExercisesState
     val uiState by programViewModel.programUiState
     val groupedByDay = programExercises.groupBy { it.dayOfWeek }
+    when(val state = uiState) {
+        is ProgramUiState.Error -> {
+            LaunchedEffect(state) {
+                Toast.makeText(context, "Ошибка при загрузке данных:\n${state.message}", Toast.LENGTH_LONG).show()
+            }
+            ErrorLoading(
+                onBackPage = onBackPage,
+                onProfileClick = onProfileClick,
+                onAgainClick = { programViewModel.prepareProgramData() },
+                userData = userData
+            )
+        }
+        ProgramUiState.Success -> {
+            ProgramDefaultInfoScreen(
+                onBackPage = onBackPage,
+                onProfileClick = onProfileClick,
+                userData = userData,
+                program = program,
+                groupedByDay = groupedByDay
+            )
+        }
+        ProgramUiState.Loading -> LoadingStub()
+        else -> LoadingStub()
+    }
+}
+
+@Composable
+fun ProgramDefaultInfoScreen(
+    onBackPage: () -> Unit,
+    onProfileClick: (UsersData) -> Unit,
+    userData: UsersData?,
+    program: Program?,
+    groupedByDay: Map<String, List<ProgramExercise>>
+    ) {
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -298,6 +342,56 @@ fun ProgramItemCard(
                     .clip(RoundedCornerShape(24.dp)),
                 contentScale = ContentScale.Crop
             )
+        }
+    }
+}
+
+@Composable
+fun ErrorLoading(
+    onBackPage: () -> Unit,
+    onProfileClick: (UsersData) -> Unit,
+    onAgainClick: () -> Unit,
+    userData: UsersData?
+) {
+    Box(modifier = Modifier.fillMaxSize()
+        .background(colorResource(R.color.bg_color))
+    ) {
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .background(color = colorResource(R.color.bg_color))
+                .verticalScroll(rememberScrollState()),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Header(
+                onBackPage = { onBackPage() },
+                onProfileClick = { onProfileClick(it) },
+                userData = userData
+            )
+            Box(
+                modifier = Modifier.fillMaxSize(),
+                contentAlignment = Alignment.Center
+            ) {
+                Column(
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.Center
+                ) {
+                    Icon(painter = painterResource(R.drawable.no_network_icon),
+                        contentDescription = "No network",
+                        tint = colorResource(R.color.white))
+                    Spacer(modifier = Modifier.height(8.dp))
+                    Text(text = stringResource(R.string.error_text),
+                        fontFamily = mulishFont(),
+                        fontSize = 18.sp,
+                        fontWeight = FontWeight.ExtraBold,
+                        color = colorResource(R.color.white),
+                        modifier = Modifier.fillMaxWidth()
+                            .clickable(onClick = {
+                                onAgainClick()
+                            }),
+                        textAlign = TextAlign.Center)
+                }
+            }
         }
     }
 }
