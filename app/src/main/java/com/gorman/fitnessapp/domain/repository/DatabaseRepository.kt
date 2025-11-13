@@ -16,7 +16,7 @@ interface DatabaseRepository {
     suspend fun getUser(): UsersData
     suspend fun addUser(user: UsersData)
     suspend fun updateUser(user: UsersData, id: Int): Int
-    suspend fun getExercises(): List<Exercise>?
+    suspend fun getExercises(): List<Exercise>
     suspend fun insertExercises(exercises: List<Exercise>)
     suspend fun insertProgramWithExercises(program: Program): Int
     suspend fun insertUserProgram(program: UserProgram)
@@ -26,7 +26,7 @@ interface DatabaseRepository {
     suspend fun getMeals(): List<Meal>
     suspend fun insertMeals(meals: List<Meal>)
     suspend fun insertMealsItems(meal: MealPlan)
-    suspend fun getProgramList(): List<Program>
+    suspend fun getProgram(): Program
     suspend fun insertWorkoutHistory(workoutHistory: WorkoutHistory)
     suspend fun updateWorkoutHistory(workoutHistory: WorkoutHistory)
     suspend fun getWorkoutHistory(): List<WorkoutHistory>

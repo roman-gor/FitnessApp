@@ -107,7 +107,7 @@ fun SignInDefault(
                 textAlign = TextAlign.Center,
                 color = colorResource(R.color.meet_text),
                 fontWeight = FontWeight.ExtraBold,
-                modifier = Modifier.padding(top = 8.dp))
+                modifier = Modifier.padding(top = 32.dp))
             Spacer(modifier = Modifier.height(250.dp))
             Column (
                 modifier = Modifier.padding(start = 16.dp, end = 16.dp, bottom = 8.dp)

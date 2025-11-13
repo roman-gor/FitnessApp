@@ -18,16 +18,13 @@ class MainViewModel @Inject constructor(
 ): ViewModel() {
     private val _userCheckState = mutableStateOf<UserCheckState>(UserCheckState.Idle)
     val userCheckState: State<UserCheckState> = _userCheckState
-    private val _isUserExistsState = mutableStateOf<Boolean?>(false)
-    val isUserExistsState: State<Boolean?> = _isUserExistsState
 
     fun checkUserExisting() {
         _userCheckState.value = UserCheckState.Loading
         viewModelScope.launch {
             try {
-                _isUserExistsState.value = getUserIdUseCase()?.isNotEmpty()
                 _userCheckState.value =
-                    if (_isUserExistsState.value == true) UserCheckState.Success
+                    if (getUserIdUseCase()?.isNotEmpty() == true) UserCheckState.Success
                     else UserCheckState.NotExists
                 logger.d("VIEWMODEL", getUserIdUseCase().toString())
             } catch (e: Exception) {

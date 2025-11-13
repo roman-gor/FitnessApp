@@ -62,7 +62,7 @@ class DatabaseRepositoryImpl @Inject constructor(
         return usersDataDao.updateUser(user.toEntity(id))
     }
 
-    override suspend fun getExercises(): List<Exercise>? {
+    override suspend fun getExercises(): List<Exercise> {
         return exerciseDao.getExercises().map { it.toDomain() }
     }
 
@@ -121,8 +121,8 @@ class DatabaseRepositoryImpl @Inject constructor(
         Log.d("MealsPlansCount", mealPlanTemplateDao.getMealsTemplateCount().toString())
     }
 
-    override suspend fun getProgramList(): List<Program> {
-        return programDao.getList().map{ it.toDomain() }
+    override suspend fun getProgram(): Program {
+        return programDao.getProgram().toDomain()
     }
 
     override suspend fun insertWorkoutHistory(workoutHistory: WorkoutHistory) {

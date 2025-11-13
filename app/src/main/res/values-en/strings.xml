@@ -57,6 +57,19 @@
     <string name="logout">Logout</string>
     <string name="weight">Weight</string>
     <string name="years_old">Years Old</string>
+    <string name="years_old1">Years Old</string>
+    <string name="years_old2">Years Old</string>
     <string name="height">Height</string>
     <string name="program_gen_description_text">Let’s generate your personality Program</string>
+    <string name="monday">Monday</string>
+    <string name="wednesday">Wednesday</string>
+    <string name="friday">Friday</string>
+    <string name="minutes">Minutes</string>
+    <string name="minute">Minutes</string>
+    <string name="minute2">Minutes</string>
+    <string name="calories">Calories</string>
+    <string name="exercises">Exercises</string>
+    <string name="exercise">Exercises</string>
+    <string name="exercise2">Exercises</string>
+    <string name="exercisesPerDay_header">Your program by days of week</string>
 </resources>

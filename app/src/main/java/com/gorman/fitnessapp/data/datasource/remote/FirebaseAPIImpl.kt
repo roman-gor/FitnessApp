@@ -184,7 +184,12 @@ class FirebaseAPIImpl @Inject constructor(
             return
         }
         executeRequest("Удаление пользователя с ID: ${user.userId}") {
-            database.child("users").child(user.userId).setValue(null).await()
+            val updates = mutableMapOf<String, Any?>()
+            updates["/user_program/${user.userId}"] = null
+            updates["/users/${user.userId}"] = null
+            updates["/user_progress/${user.userId}"] = null
+            updates["/workout_history/${user.userId}"] = null
+            database.updateChildren(updates)
         }
     }
 

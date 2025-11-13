@@ -60,8 +60,19 @@
     <string name="logout">Выход</string>
     <string name="weight">Вес</string>
     <string name="years_old">Лет</string>
-    <string name="years_old1" translatable="false">Год</string>
-    <string name="years_old2" translatable="false">Года</string>
+    <string name="years_old1">Год</string>
+    <string name="years_old2">Года</string>
     <string name="height">Рост</string>
     <string name="program_gen_description_text">Давайте сгенерируем вашу персональную программу</string>
+    <string name="monday">Понедельник</string>
+    <string name="wednesday">Среда</string>
+    <string name="friday">Пятница</string>
+    <string name="minutes">Минут</string>
+    <string name="minute">Минута</string>
+    <string name="minute2">Минуты</string>
+    <string name="calories">Калорий</string>
+    <string name="exercises">Упражнений</string>
+    <string name="exercise">Упражнение</string>
+    <string name="exercise2">Упражнения</string>
+    <string name="exercisesPerDay_header">Твоя программа по дням недели</string>
 </resources>

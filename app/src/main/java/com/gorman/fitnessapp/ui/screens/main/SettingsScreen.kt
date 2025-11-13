@@ -108,7 +108,7 @@ fun SettingsScreen(
         if (showDialog) {
             Dialog(
                 onDismiss = {showDialog = !showDialog},
-                onConfirm = {profileViewModel.deleteAccount(usersData.firebaseId)}
+                onConfirm = {profileViewModel.deleteAccount(usersData)}
             )
         }
     }

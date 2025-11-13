@@ -24,9 +24,6 @@
         </DropdownSelection>
         <DialogSelection />
       </SelectionState>
-      <SelectionState runConfigName="GoalScreenPreview">
-        <option name="selectionMode" value="DROPDOWN" />
-      </SelectionState>
       <SelectionState runConfigName="ActivityLevelPreview">
         <option name="selectionMode" value="DROPDOWN" />
         <DropdownSelection timestamp="2025-11-08T14:01:11.988675900Z">
@@ -50,6 +47,9 @@
         <DialogSelection />
       </SelectionState>
       <SelectionState runConfigName="Preview">
+        <option name="selectionMode" value="DROPDOWN" />
+      </SelectionState>
+      <SelectionState runConfigName="PreviewPreview">
         <option name="selectionMode" value="DROPDOWN" />
       </SelectionState>
     </selectionStates>
