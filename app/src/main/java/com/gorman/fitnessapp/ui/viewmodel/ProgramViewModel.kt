@@ -14,15 +14,15 @@ import com.gorman.fitnessapp.domain.usecases.GetProgramFromLocalUseCase
 import com.gorman.fitnessapp.domain.usecases.GetUserIdUseCase
 import com.gorman.fitnessapp.logger.AppLogger
 import com.gorman.fitnessapp.ui.states.ProgramUiState
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
+@HiltViewModel
 class ProgramViewModel @Inject constructor(
     private val logger: AppLogger,
     private val getExercisesUseCase: GetExercisesUseCase,
-    private val getAndSyncUserProgramsUseCase: GetAndSyncUserProgramsUseCase,
-    private val getProgramFromLocalUseCase: GetProgramFromLocalUseCase,
-    private val getUserIdUseCase: GetUserIdUseCase
+    private val getProgramFromLocalUseCase: GetProgramFromLocalUseCase
 ): ViewModel(){
     private val _programUiState = mutableStateOf<ProgramUiState>(ProgramUiState.Idle)
     val programUiState: State<ProgramUiState> = _programUiState
@@ -41,7 +41,6 @@ class ProgramViewModel @Inject constructor(
         viewModelScope.launch {
             try {
                 val exerciseList = getExercisesUseCase()
-                getUserIdUseCase()?.let { getAndSyncUserProgramsUseCase(it) }
                 val programMap = getProgramFromLocalUseCase()
                 exerciseList?.let { _exercisesListState.value = it }
                 _programTemplateState.value = programMap.keys.first()

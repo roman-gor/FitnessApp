@@ -11,9 +11,11 @@ import com.gorman.fitnessapp.domain.usecases.GetProgramFromLocalUseCase
 import com.gorman.fitnessapp.domain.usecases.GetUserFromLocalUseCase
 import com.gorman.fitnessapp.logger.AppLogger
 import com.gorman.fitnessapp.ui.states.GeneratingUiState
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
+@HiltViewModel
 class GeneratingViewModel @Inject constructor(
     private val logger: AppLogger,
     private val generateAndSyncProgramUseCase: GenerateAndSyncProgramUseCase,

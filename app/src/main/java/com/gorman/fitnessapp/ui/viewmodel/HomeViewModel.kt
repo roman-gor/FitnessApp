@@ -10,8 +10,10 @@ import com.gorman.fitnessapp.domain.usecases.GetArticlesUseCase
 import com.gorman.fitnessapp.domain.usecases.GetProgramIdUseCase
 import com.gorman.fitnessapp.domain.usecases.GetUserFromLocalUseCase
 import com.gorman.fitnessapp.logger.AppLogger
+import com.gorman.fitnessapp.ui.states.ArticlesState
 import com.gorman.fitnessapp.ui.states.HomeUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -34,13 +36,23 @@ class HomeViewModel @Inject constructor(
     private val _homeUiState = mutableStateOf<HomeUiState>(HomeUiState.Idle)
     val homeUiState: State<HomeUiState> = _homeUiState
 
+    private val _articlesUiState = mutableStateOf<ArticlesState>(ArticlesState.Loading)
+    val articlesUiState: State<ArticlesState> = _articlesUiState
+
     fun prepareData() {
+        _homeUiState.value = HomeUiState.Loading
         viewModelScope.launch {
             try {
-                _articleListState.value = getArticlesUseCase()
+                val articlesDeferred = async { getArticlesUseCase() }
                 _programExistingState.value = getProgramIdUseCase().isNotEmpty()
                 _userDataState.value = getUserFromLocalUseCase()
                 _homeUiState.value = HomeUiState.Success
+                try {
+                    _articleListState.value = articlesDeferred.await()
+                    _articlesUiState.value = ArticlesState.Success
+                } catch (e: Exception) {
+                    _articlesUiState.value = ArticlesState.Error(e.message ?: "Ошибка загрузки статей")
+                }
                 logger.d("PROGRAM ID", getProgramIdUseCase())
             } catch (e: IllegalStateException) {
                 logger.e("HOME", "Ошибка загрузки статей: ${e.message}")

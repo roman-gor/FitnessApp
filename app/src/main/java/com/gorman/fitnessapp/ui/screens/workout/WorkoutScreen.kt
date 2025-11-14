@@ -17,6 +17,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentSize
+import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
@@ -105,9 +106,8 @@ fun ProgramDefaultInfoScreen(
     ) {
     Column(
         modifier = Modifier
-            .fillMaxSize()
-            .background(color = colorResource(R.color.bg_color))
-            .verticalScroll(rememberScrollState()),
+            .fillMaxWidth()
+            .background(color = colorResource(R.color.bg_color)),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Header(
@@ -115,35 +115,41 @@ fun ProgramDefaultInfoScreen(
             onProfileClick = { onProfileClick(it) },
             userData = userData
         )
-        Spacer(modifier = Modifier.height(25.dp))
-        program?.name?.let { ProgramInfoCard(it) }
-        Text(
-            text = stringResource(R.string.exercisesPerDay_header),
-            fontFamily = mulishFont(),
-            fontSize = 18.sp,
-            textAlign = TextAlign.Start,
-            modifier = Modifier
-                .fillMaxWidth()
-                .wrapContentHeight(),
-            color = colorResource(R.color.meet_text)
-        )
-        groupedByDay.forEach { (day, exercises) ->
-            val totalExercises = exercises.size
-            val duration = exercises.sumOf { it.durationSec } / 60
-            val calories = exercises.sumOf { it.caloriesBurned?.toDouble() ?: 0.0 }.toInt()
-            val iconRes = when (day) {
-                "Понедельник" -> R.drawable.program_item_image1
-                "Вторник" -> R.drawable.program_item_image2
-                "Среда" -> R.drawable.program_item_image3
-                else -> R.drawable.program_item_image1
-            }
-            ProgramItemCard(
-                programDay = day,
-                durationTotal = duration,
-                caloriesTotal = calories,
-                exercisesQuantity = totalExercises,
-                imageBg = iconRes
+        Column(
+            modifier = Modifier.fillMaxSize()
+                .verticalScroll(rememberScrollState()),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            program?.name?.let { ProgramInfoCard(it) }
+            Text(
+                text = stringResource(R.string.exercisesPerDay_header),
+                fontFamily = mulishFont(),
+                fontSize = 18.sp,
+                textAlign = TextAlign.Start,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(start = 26.dp, end = 26.dp, top = 16.dp, bottom = 4.dp)
+                    .wrapContentHeight(),
+                color = colorResource(R.color.meet_text)
             )
+            groupedByDay.forEach { (day, exercises) ->
+                val totalExercises = exercises.size
+                val duration = exercises.sumOf { it.durationSec } / 60
+                val calories = exercises.sumOf { it.caloriesBurned?.toDouble() ?: 0.0 }.toInt()
+                val iconRes = when (day) {
+                    "Понедельник" -> R.drawable.program_item_image1
+                    "Среда" -> R.drawable.program_item_image2
+                    "Пятница" -> R.drawable.program_item_image3
+                    else -> R.drawable.program_item_image1
+                }
+                ProgramItemCard(
+                    programDay = day,
+                    durationTotal = duration,
+                    caloriesTotal = calories,
+                    exercisesQuantity = totalExercises,
+                    imageBg = iconRes
+                )
+            }
         }
     }
 }
@@ -155,13 +161,13 @@ fun Header(
     userData: UsersData?
 ) {
     Row(
-        modifier = Modifier.fillMaxWidth(),
-        verticalAlignment = Alignment.CenterVertically
+        modifier = Modifier.fillMaxWidth()
+            .padding(top = 8.dp, start = 28.dp, end = 20.dp, bottom = 16.dp),
+        verticalAlignment = Alignment.CenterVertically,
     ) {
         Row(
             modifier = Modifier
-                .fillMaxWidth()
-                .padding(top = 32.dp, start = 28.dp, end = 16.dp),
+                .wrapContentWidth(),
             horizontalArrangement = Arrangement.Start
         ) {
             GeneralBackButton(
@@ -170,6 +176,7 @@ fun Header(
                 textColor = colorResource(R.color.picker_wheel_bg)
             )
         }
+        Spacer(modifier = Modifier.weight(1f))
         IconButton (
             onClick = {
                 userData?.let { onProfileClick(it)  } },
@@ -254,7 +261,7 @@ fun ProgramItemCard(
         else -> programDay
     }
     Card(
-        modifier = Modifier.fillMaxWidth().padding(horizontal = 8.dp, vertical = 4.dp),
+        modifier = Modifier.fillMaxWidth().padding(horizontal = 24.dp, vertical = 8.dp),
         shape = RoundedCornerShape(24.dp),
         colors = CardDefaults.cardColors(
             containerColor = colorResource(R.color.white)
@@ -337,8 +344,8 @@ fun ProgramItemCard(
                 painter = painterResource(imageBg),
                 contentDescription = null,
                 modifier = Modifier
-                    .height(145.dp)
-                    .width(185.dp)
+                    .height(135.dp)
+                    .width(165.dp)
                     .clip(RoundedCornerShape(24.dp)),
                 contentScale = ContentScale.Crop
             )

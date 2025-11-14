@@ -33,6 +33,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -56,6 +57,8 @@ import com.gorman.fitnessapp.domain.models.Article
 import com.gorman.fitnessapp.domain.models.UsersData
 import com.gorman.fitnessapp.ui.components.LoadingStub
 import com.gorman.fitnessapp.ui.fonts.mulishFont
+import com.gorman.fitnessapp.ui.screens.setup.ErrorMessage
+import com.gorman.fitnessapp.ui.states.ArticlesState
 import com.gorman.fitnessapp.ui.states.HomeUiState
 import com.gorman.fitnessapp.ui.viewmodel.HomeViewModel
 import kotlin.math.ceil
@@ -78,6 +81,7 @@ fun HomeScreen(
     val articlesList by homeViewModel.articleListState
     val userData by homeViewModel.userDataState
     val uiState by homeViewModel.homeUiState
+    val articlesState by homeViewModel.articlesUiState
     when (val state = uiState) {
         is HomeUiState.Error -> {
             LaunchedEffect(state) {
@@ -91,7 +95,8 @@ fun HomeScreen(
                 isProgramExisting = isProgramExisting,
                 articlesList = articlesList,
                 userData = userData,
-                onNavigateToGenProgram = onNavigateToGenProgram
+                onNavigateToGenProgram = onNavigateToGenProgram,
+                articlesState = articlesState
             )
         }
         HomeUiState.Idle -> {
@@ -112,7 +117,8 @@ fun HomeScreen(
                 isProgramExisting = isProgramExisting,
                 articlesList = articlesList,
                 userData = userData,
-                onNavigateToGenProgram = onNavigateToGenProgram
+                onNavigateToGenProgram = onNavigateToGenProgram,
+                articlesState = articlesState
             )
         }
     }
@@ -127,7 +133,8 @@ fun GeneralScreen(
     isProgramExisting: Boolean,
     articlesList: List<Article>,
     userData: UsersData?,
-    onNavigateToGenProgram: () -> Unit
+    onNavigateToGenProgram: () -> Unit,
+    articlesState: ArticlesState
 ) {
     Box(modifier = Modifier
         .fillMaxSize()
@@ -155,7 +162,9 @@ fun GeneralScreen(
                 onGenerateClick = { onNavigateToGenProgram() }
             )
             Spacer(modifier = Modifier.height(16.dp))
-            ArticleList(items = articlesList)
+            ArticleList(
+                items = articlesList,
+                state = articlesState)
         }
     }
 }
@@ -342,7 +351,8 @@ fun ProgramCard(
             contentAlignment = Alignment.Center
         ) {
             Card(
-                modifier = Modifier.padding(horizontal = 24.dp, vertical = 40.dp)
+                modifier = Modifier
+                    .padding(horizontal = 24.dp, vertical = 40.dp)
                     .clickable(
                         onClick = { onGenerateClick() }
                     ),
@@ -397,39 +407,60 @@ fun ProgramCard(
 }
 
 @Composable
-fun ArticleList(items: List<Article>) {
+fun ArticleList(
+    items: List<Article>,
+    state: ArticlesState
+) {
     val itemHeight = 230.dp
     val gridSpacing = 8.dp
     val rows = ceil(items.size / 2.0).toInt()
     val gridHeight = (itemHeight * rows) + (gridSpacing * max(0, rows - 1))
-    Column(modifier = Modifier
-        .fillMaxWidth()
-        .padding(horizontal = 16.dp),
-        horizontalAlignment = Alignment.CenterHorizontally) {
-        Text(
-            text = stringResource(R.string.articles),
-            fontFamily = mulishFont(),
-            fontSize = 18.sp,
-            textAlign = TextAlign.Start,
-            modifier = Modifier
+    when (state) {
+        is ArticlesState.Error -> {
+            Text(
+                text = "Ошибка загрузки статей: ${state.message}",
+                color = Color.Red,
+                modifier = Modifier.padding(16.dp),
+                fontFamily = mulishFont())
+            return
+        }
+        ArticlesState.Loading -> {
+            LoadingStub(size = 100.dp)
+            return
+        }
+        ArticlesState.Success -> {
+            Column(modifier = Modifier
                 .fillMaxWidth()
-                .wrapContentHeight(),
-            color = colorResource(R.color.meet_text)
-        )
-    }
-    Spacer(modifier = Modifier.height(6.dp))
-    LazyVerticalGrid (
-        columns = GridCells.Fixed(2),
-        modifier = Modifier
-            .fillMaxWidth()
-            .height(gridHeight)
-            .padding(horizontal = 16.dp),
-        userScrollEnabled = false,
-        horizontalArrangement = Arrangement.spacedBy(8.dp),
-        verticalArrangement = Arrangement.spacedBy(8.dp)
-    ) {
-        items(items) { item ->
-            ArticleListItem(item) {  }
+                .padding(horizontal = 16.dp),
+                horizontalAlignment = Alignment.CenterHorizontally) {
+                Text(
+                    text = stringResource(R.string.articles),
+                    fontFamily = mulishFont(),
+                    fontSize = 18.sp,
+                    textAlign = TextAlign.Start,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .wrapContentHeight(),
+                    color = colorResource(R.color.meet_text)
+                )
+            }
+            Spacer(modifier = Modifier.height(6.dp))
+            if (state == ArticlesState.Loading)
+                LoadingStub()
+            LazyVerticalGrid (
+                columns = GridCells.Fixed(2),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(gridHeight)
+                    .padding(horizontal = 16.dp),
+                userScrollEnabled = false,
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                verticalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                items(items) { item ->
+                    ArticleListItem(item) {  }
+                }
+            }
         }
     }
 }

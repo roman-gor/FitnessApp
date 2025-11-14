@@ -9,6 +9,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.airbnb.lottie.compose.LottieAnimation
 import com.airbnb.lottie.compose.LottieCompositionSpec
@@ -18,7 +19,7 @@ import com.airbnb.lottie.compose.rememberLottieComposition
 import com.gorman.fitnessapp.R
 
 @Composable
-fun LoadingStub() {
+fun LoadingStub(size: Dp = 160.dp) {
     val composition by rememberLottieComposition(
         LottieCompositionSpec.RawRes(R.raw.loading_animation))
     val progress by animateLottieCompositionAsState(
@@ -33,7 +34,7 @@ fun LoadingStub() {
         LottieAnimation(
             composition = composition,
             progress = { progress },
-            modifier = Modifier.size(160.dp)
+            modifier = Modifier.size(size)
         )
     }
 }

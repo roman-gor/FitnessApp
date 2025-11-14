@@ -15,6 +15,7 @@ import com.gorman.fitnessapp.domain.usecases.GenerateAndSyncMealPlansUseCase
 import com.gorman.fitnessapp.domain.usecases.GenerateAndSyncProgramUseCase
 import com.gorman.fitnessapp.domain.usecases.GetAndSyncMealPlansUseCase
 import com.gorman.fitnessapp.domain.usecases.GetAndSyncUserProgramsUseCase
+import com.gorman.fitnessapp.domain.usecases.GetExercisesUseCase
 import com.gorman.fitnessapp.domain.usecases.GetMealsUseCase
 import com.gorman.fitnessapp.domain.usecases.GetUserIdUseCase
 import com.gorman.fitnessapp.domain.usecases.InsertUserProgressLocalAndRemoteUseCase
@@ -34,6 +35,7 @@ class TestViewModel @Inject constructor(
     private val daoM: UsersDataDao,
     private val getAndSyncUserProgramsUseCase: GetAndSyncUserProgramsUseCase,
     private val getMealsUseCase: GetMealsUseCase,
+    private val getExercisesUseCase: GetExercisesUseCase,
     private val getAndSyncMealPlansUseCase: GetAndSyncMealPlansUseCase,
     private val insertUserProgressLocalAndRemoteUseCase: InsertUserProgressLocalAndRemoteUseCase,
     private val getUserIdUseCase: GetUserIdUseCase
@@ -55,16 +57,18 @@ class TestViewModel @Inject constructor(
         viewModelScope.launch {
             try {
                 Log.d("PromptCall", "Начинаем вызов Gemini...")
-                getUserIdUseCase()?.let {
-                    _json.value = generateAndSyncProgramUseCase(testUserData.copy(firebaseId = it), 1)
-                    _json.value = generateAndSyncMealPlansUseCase(
-                        usersData = testUserData.copy(firebaseId = it),
-                        goal = testUserData.goal!!,
-                        exceptionProducts = listOf("Молоко")
-                    )
-                }
+//                getUserIdUseCase()?.let {
+//                    _json.value = generateAndSyncProgramUseCase(testUserData.copy(firebaseId = it), 1)
+//                    _json.value = generateAndSyncMealPlansUseCase(
+//                        usersData = testUserData.copy(firebaseId = it),
+//                        goal = testUserData.goal!!,
+//                        exceptionProducts = listOf("Молоко")
+//                    )
+//                }
 //                getMealsUseCase()
-//                getAndSyncMealPlansUseCase(testUserData.firebaseId)
+                getExercisesUseCase()
+                getAndSyncUserProgramsUseCase("-OdorLNj2815IFDbXNMz")
+//                getAndSyncMealPlansUseCase("0")
 //                val userId = getUserIdUseCase()
 //                userId?.let {
 //                    insertUserProgressLocalAndRemoteUseCase(
@@ -75,11 +79,10 @@ class TestViewModel @Inject constructor(
 //                        )
 //                    )
 //                }
-                saveNewUserUseCase(testUserData)
                 val list = dao.getList()
                 val pList = daoM.getUser()
                 Log.d("ViewModelListRoom", "${dao.getProgramsExerciseCount()}")
-                Log.d("ViewModelListRoom", "$pList")
+                Log.d("ViewModelListRoom", "$list")
                 Log.d("PromptCall", "Вызов Gemini завершен успешно.")
             } catch (e: Exception) {
                 Log.e("PROMPT_CRASH", "Критическая ошибка: ${e.message}", e)
