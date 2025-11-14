@@ -16,6 +16,7 @@
     <string name="choose_level">Уровень физической активности</string>
     <string name="fill_profile">Заполни профиль</string>
     <string name="kg">Кг</string>
+    <string name="hello">Привет</string>
     <string name="cm" translatable="false">Cm</string>
     <string name="lb" translatable="false">Lb</string>
     <string name="lose_weight">Сбросить вес</string>
@@ -76,4 +77,5 @@
     <string name="exercise2">Упражнения</string>
     <string name="exercisesPerDay_header">Твоя программа по дням недели</string>
     <string name="error_text">Попробовать снова</string>
+    <string name="repetitions_text">Повторений:</string>
 </resources>

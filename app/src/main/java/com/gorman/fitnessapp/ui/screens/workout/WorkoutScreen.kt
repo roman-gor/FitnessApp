@@ -16,15 +16,12 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
-import androidx.compose.foundation.layout.wrapContentSize
-import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -47,7 +44,7 @@ import com.gorman.fitnessapp.R
 import com.gorman.fitnessapp.domain.models.Program
 import com.gorman.fitnessapp.domain.models.ProgramExercise
 import com.gorman.fitnessapp.domain.models.UsersData
-import com.gorman.fitnessapp.ui.components.GeneralBackButton
+import com.gorman.fitnessapp.ui.components.Header
 import com.gorman.fitnessapp.ui.components.LoadingStub
 import com.gorman.fitnessapp.ui.fonts.mulishFont
 import com.gorman.fitnessapp.ui.states.ProgramUiState
@@ -58,8 +55,7 @@ import kotlin.collections.component2
 @Composable
 fun WorkoutScreen(
     onBackPage: () -> Unit,
-    onProfileClick: (UsersData) -> Unit,
-    userData: UsersData?
+    onItemClick: (String) -> Unit
 ) {
     val context = LocalContext.current
     val programViewModel: ProgramViewModel = hiltViewModel()
@@ -77,18 +73,15 @@ fun WorkoutScreen(
             }
             ErrorLoading(
                 onBackPage = onBackPage,
-                onProfileClick = onProfileClick,
-                onAgainClick = { programViewModel.prepareProgramData() },
-                userData = userData
+                onAgainClick = { programViewModel.prepareProgramData() }
             )
         }
         ProgramUiState.Success -> {
             ProgramDefaultInfoScreen(
                 onBackPage = onBackPage,
-                onProfileClick = onProfileClick,
-                userData = userData,
                 program = program,
-                groupedByDay = groupedByDay
+                groupedByDay = groupedByDay,
+                onItemClick = onItemClick
             )
         }
         ProgramUiState.Loading -> LoadingStub()
@@ -99,11 +92,10 @@ fun WorkoutScreen(
 @Composable
 fun ProgramDefaultInfoScreen(
     onBackPage: () -> Unit,
-    onProfileClick: (UsersData) -> Unit,
-    userData: UsersData?,
     program: Program?,
-    groupedByDay: Map<String, List<ProgramExercise>>
-    ) {
+    groupedByDay: Map<String, List<ProgramExercise>>,
+    onItemClick: (String) -> Unit
+) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -112,8 +104,7 @@ fun ProgramDefaultInfoScreen(
     ) {
         Header(
             onBackPage = { onBackPage() },
-            onProfileClick = { onProfileClick(it) },
-            userData = userData
+            text = stringResource(R.string.workout)
         )
         Column(
             modifier = Modifier.fillMaxSize()
@@ -147,48 +138,10 @@ fun ProgramDefaultInfoScreen(
                     durationTotal = duration,
                     caloriesTotal = calories,
                     exercisesQuantity = totalExercises,
-                    imageBg = iconRes
+                    imageBg = iconRes,
+                    onItemClick = onItemClick
                 )
             }
-        }
-    }
-}
-
-@Composable
-fun Header(
-    onBackPage: () -> Unit,
-    onProfileClick: (UsersData) -> Unit,
-    userData: UsersData?
-) {
-    Row(
-        modifier = Modifier.fillMaxWidth()
-            .padding(top = 8.dp, start = 28.dp, end = 20.dp, bottom = 16.dp),
-        verticalAlignment = Alignment.CenterVertically,
-    ) {
-        Row(
-            modifier = Modifier
-                .wrapContentWidth(),
-            horizontalArrangement = Arrangement.Start
-        ) {
-            GeneralBackButton(
-                onClick = { onBackPage() },
-                text = stringResource(R.string.workout),
-                textColor = colorResource(R.color.picker_wheel_bg)
-            )
-        }
-        Spacer(modifier = Modifier.weight(1f))
-        IconButton (
-            onClick = {
-                userData?.let { onProfileClick(it)  } },
-            modifier = Modifier.wrapContentSize()
-        ) {
-            Icon(
-                painter = painterResource(R.drawable.profile_icon),
-                contentDescription = "Profile Icon",
-                tint = colorResource(R.color.picker_wheel_bg),
-                modifier = Modifier
-                    .scale(1.4f)
-                    .padding(8.dp))
         }
     }
 }
@@ -248,11 +201,12 @@ fun ProgramInfoCard(
 
 @Composable
 fun ProgramItemCard(
-    programDay: String = "Понедельник",
+    programDay: String,
     durationTotal: Int = 60,
     caloriesTotal: Int = 150,
     exercisesQuantity: Int = 5,
-    @DrawableRes imageBg: Int
+    @DrawableRes imageBg: Int,
+    onItemClick: (String) -> Unit
 ) {
     val dayOfWeek = when (programDay) {
         "Понедельник" -> stringResource(R.string.monday)
@@ -261,7 +215,11 @@ fun ProgramItemCard(
         else -> programDay
     }
     Card(
-        modifier = Modifier.fillMaxWidth().padding(horizontal = 24.dp, vertical = 8.dp),
+        modifier = Modifier.fillMaxWidth()
+            .padding(horizontal = 24.dp, vertical = 8.dp)
+            .clickable(onClick = {
+                onItemClick(programDay)
+            }),
         shape = RoundedCornerShape(24.dp),
         colors = CardDefaults.cardColors(
             containerColor = colorResource(R.color.white)
@@ -356,9 +314,7 @@ fun ProgramItemCard(
 @Composable
 fun ErrorLoading(
     onBackPage: () -> Unit,
-    onProfileClick: (UsersData) -> Unit,
-    onAgainClick: () -> Unit,
-    userData: UsersData?
+    onAgainClick: () -> Unit
 ) {
     Box(modifier = Modifier.fillMaxSize()
         .background(colorResource(R.color.bg_color))
@@ -372,8 +328,7 @@ fun ErrorLoading(
         ) {
             Header(
                 onBackPage = { onBackPage() },
-                onProfileClick = { onProfileClick(it) },
-                userData = userData
+                text = stringResource(R.string.workout)
             )
             Box(
                 modifier = Modifier.fillMaxSize(),

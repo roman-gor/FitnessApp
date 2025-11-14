@@ -5,7 +5,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -22,15 +21,14 @@ import androidx.navigation.navArgument
 import com.gorman.fitnessapp.R
 import com.gorman.fitnessapp.domain.models.UsersData
 import com.gorman.fitnessapp.ui.components.BottomNavigationBar
-import com.gorman.fitnessapp.ui.components.LoadingStub
 import com.gorman.fitnessapp.ui.screens.main.HomeScreen
 import com.gorman.fitnessapp.ui.screens.main.ProfileScreen
 import com.gorman.fitnessapp.ui.screens.main.ResourcesScreen
 import com.gorman.fitnessapp.ui.screens.main.SettingsScreen
+import com.gorman.fitnessapp.ui.screens.workout.ProgramByDayScreen
 import com.gorman.fitnessapp.ui.screens.workout.WorkoutScreen
 import com.gorman.fitnessapp.ui.states.HomeUiState
 import com.gorman.fitnessapp.ui.viewmodel.HomeViewModel
-import kotlinx.coroutines.delay
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 
@@ -63,9 +61,8 @@ fun BottomNavigation(navController: NavController) {
                             homeViewModel = homeViewModel,
                             onNutritionClick = {},
                             onProgressClick = {},
-                            onWorkoutClick = { usersData ->
-                                val json = Uri.encode(Json.encodeToString(usersData))
-                                nestedNavController.navigate("${Screen.GeneralHomeScreen.Workout.route}/$json") {
+                            onWorkoutClick = {
+                                nestedNavController.navigate(Screen.GeneralHomeScreen.Workout.route) {
                                     launchSingleTop = true
                                 }
                             },
@@ -127,24 +124,28 @@ fun BottomNavigation(navController: NavController) {
                     )
                 }
             }
+            composable(Screen.GeneralHomeScreen.Workout.route) {
+                WorkoutScreen(
+                    onBackPage = { nestedNavController.navigateUp() },
+                    onItemClick = { day->
+                        nestedNavController.navigate("${Screen.WorkoutScreen.ProgramByDay.route}/$day")
+                    }
+                )
+            }
             composable(
-                route = "${Screen.GeneralHomeScreen.Workout.route}/{usersDataJson}",
+                route = "${Screen.WorkoutScreen.ProgramByDay.route}/{dayData}",
                 arguments = listOf(
-                    navArgument("usersDataJson") {
+                    navArgument("dayData") {
                         type = NavType.StringType
-                    })) { backStackEntry ->
-                val usersDataJson = backStackEntry.arguments?.getString("usersDataJson")
-                val usersData = usersDataJson?.let { Json.decodeFromString<UsersData>(it) }
-                usersData?.let {
-                    WorkoutScreen(
-                        onBackPage = { nestedNavController.navigateUp() },
-                        onProfileClick = { usersData ->
-                            val json = Uri.encode(Json.encodeToString(usersData))
-                            nestedNavController.navigate("${Screen.GeneralHomeScreen.Profile.route}/$json") {
-                                launchSingleTop = true
-                            }
+                    })) {backStackEntry ->
+                val dayData = backStackEntry.arguments?.getString("dayData")
+                dayData?.let {
+                    ProgramByDayScreen(
+                        onBackPage = {
+                            nestedNavController.navigateUp()
                         },
-                        userData = usersData
+                        day = it,
+                        onExerciseProgramClick = {}
                     )
                 }
             }

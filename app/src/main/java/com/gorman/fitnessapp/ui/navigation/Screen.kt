@@ -30,6 +30,11 @@ sealed class Screen() {
         object Nutrition: GeneralHomeScreen("nutrition")
     }
 
+    sealed class WorkoutScreen(val route: String): Screen() {
+        object ProgramByDay: WorkoutScreen("program_day")
+        object ExerciseByProgram: WorkoutScreen("exercise_program")
+    }
+
     sealed class ProfileItemsScreen(val icon: Int, val title: Int): Screen() {
         object Edit: ProfileItemsScreen(R.drawable.profile_edit_icon, R.string.edit)
         object Settings: ProfileItemsScreen(R.drawable.settings_icon, R.string.settings)

@@ -16,6 +16,7 @@
     <string name="choose_level">Physical Activity Level</string>
     <string name="fill_profile">Fill Your Profile</string>
     <string name="kg">Kg</string>
+    <string name="hello">Hi</string>
     <string name="lose_weight">Lose Weight</string>
     <string name="gain_weight">Gain Weight</string>
     <string name="muscle_muss_gain">Muscle Muss Gain</string>
@@ -73,4 +74,5 @@
     <string name="exercise2">Exercises</string>
     <string name="exercisesPerDay_header">Your program by days of week</string>
     <string name="error_text">Try again</string>
+    <string name="repetitions_text">Repetitions</string>
 </resources>

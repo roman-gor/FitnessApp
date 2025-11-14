@@ -187,7 +187,7 @@ fun Header(
         ) {
             userData?.name?.let {
                 Text(
-                    text = "Привет, $it",
+                    text = "${stringResource(R.string.hello)}, $it",
                     fontFamily = mulishFont(),
                     fontSize = 22.sp,
                     color = colorResource(R.color.picker_wheel_bg),
@@ -343,7 +343,7 @@ fun ProgramCard(
                 .padding(horizontal = 16.dp),
             color = colorResource(R.color.meet_text)
         )
-        Spacer(modifier = Modifier.height(6.dp))
+        Spacer(modifier = Modifier.height(8.dp))
         Box(
             modifier = Modifier
                 .fillMaxWidth()
@@ -444,7 +444,7 @@ fun ArticleList(
                     color = colorResource(R.color.meet_text)
                 )
             }
-            Spacer(modifier = Modifier.height(6.dp))
+            Spacer(modifier = Modifier.height(4.dp))
             if (state == ArticlesState.Loading)
                 LoadingStub()
             LazyVerticalGrid (
