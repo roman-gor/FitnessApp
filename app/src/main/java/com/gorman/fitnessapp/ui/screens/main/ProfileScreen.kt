@@ -307,6 +307,7 @@ fun ProfileItem(
     }
 }
 
+@SuppressLint("DefaultLocale")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun BottomSheetDialog(onDismiss: () -> Unit,

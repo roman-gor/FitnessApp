@@ -22,6 +22,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -38,7 +39,6 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.gorman.fitnessapp.R
 import com.gorman.fitnessapp.domain.models.Exercise
-import com.gorman.fitnessapp.domain.models.UsersData
 import com.gorman.fitnessapp.ui.components.Header
 import com.gorman.fitnessapp.ui.fonts.mulishFont
 import com.gorman.fitnessapp.ui.viewmodel.ProgramViewModel
@@ -53,9 +53,9 @@ fun ProgramByDayScreen(
     LaunchedEffect(Unit) {
         programViewModel.prepareProgramData()
     }
-    val program by programViewModel.programTemplateState
-    val programExercises by programViewModel.programExercisesState
-    val exercisesList by programViewModel.exercisesListState
+    val program by programViewModel.programTemplateState.collectAsState()
+    val programExercises by programViewModel.programExercisesState.collectAsState()
+    val exercisesList by programViewModel.exercisesListState.collectAsState()
     val programExercisesByDay = programExercises.filter { it.dayOfWeek == day }
     Box(
         modifier = Modifier

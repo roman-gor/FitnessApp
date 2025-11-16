@@ -3,9 +3,11 @@ package com.gorman.fitnessapp.ui.screens.main
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.colorResource
@@ -23,12 +25,14 @@ fun PreLoadingScreen(navController: NavController) {
     LaunchedEffect(Unit) {
         mainViewModel.checkUserExisting()
     }
-    val uiState by mainViewModel.userCheckState
+    val uiState by mainViewModel.userCheckState.collectAsState()
     val thisRoute = "pre_loading"
-    Scaffold(modifier = Modifier.fillMaxSize()) {
+    Scaffold(modifier = Modifier.fillMaxSize()
+        .background(color = colorResource(R.color.bg_color))) { innerPaddings->
         Box(
             modifier = Modifier
                 .fillMaxSize()
+                .padding(innerPaddings)
                 .background(colorResource(R.color.bg_color))
         )
         when (uiState) {

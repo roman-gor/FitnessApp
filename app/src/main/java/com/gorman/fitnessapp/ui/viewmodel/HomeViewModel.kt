@@ -1,7 +1,5 @@
 package com.gorman.fitnessapp.ui.viewmodel
 
-import androidx.compose.runtime.State
-import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.gorman.fitnessapp.domain.models.Article
@@ -14,6 +12,8 @@ import com.gorman.fitnessapp.ui.states.ArticlesState
 import com.gorman.fitnessapp.ui.states.HomeUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.async
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -24,20 +24,20 @@ class HomeViewModel @Inject constructor(
     private val getArticlesUseCase: GetArticlesUseCase,
     private val getUserFromLocalUseCase: GetUserFromLocalUseCase
 ): ViewModel() {
-    private val _programExistingState = mutableStateOf(false)
-    val programExistingState: State<Boolean> = _programExistingState
+    private val _programExistingState = MutableStateFlow(false)
+    val programExistingState: StateFlow<Boolean> = _programExistingState
 
-    private val _articleListState = mutableStateOf<List<Article>>(emptyList())
-    val articleListState: State<List<Article>> = _articleListState
+    private val _articleListState = MutableStateFlow<List<Article>>(emptyList())
+    val articleListState: StateFlow<List<Article>> = _articleListState
 
-    private val _userDataState = mutableStateOf<UsersData?>(null)
-    val userDataState: State<UsersData?> = _userDataState
+    private val _userDataState = MutableStateFlow<UsersData?>(null)
+    val userDataState: StateFlow<UsersData?> = _userDataState
 
-    private val _homeUiState = mutableStateOf<HomeUiState>(HomeUiState.Idle)
-    val homeUiState: State<HomeUiState> = _homeUiState
+    private val _homeUiState = MutableStateFlow<HomeUiState>(HomeUiState.Idle)
+    val homeUiState: StateFlow<HomeUiState> = _homeUiState
 
-    private val _articlesUiState = mutableStateOf<ArticlesState>(ArticlesState.Loading)
-    val articlesUiState: State<ArticlesState> = _articlesUiState
+    private val _articlesUiState = MutableStateFlow<ArticlesState>(ArticlesState.Loading)
+    val articlesUiState: StateFlow<ArticlesState> = _articlesUiState
 
     fun prepareData() {
         _homeUiState.value = HomeUiState.Loading

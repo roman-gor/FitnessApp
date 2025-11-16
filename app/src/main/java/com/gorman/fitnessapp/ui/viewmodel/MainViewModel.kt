@@ -1,13 +1,13 @@
 package com.gorman.fitnessapp.ui.viewmodel
 
-import androidx.compose.runtime.State
-import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.gorman.fitnessapp.domain.usecases.GetUserIdUseCase
 import com.gorman.fitnessapp.logger.AppLogger
 import com.gorman.fitnessapp.ui.states.UserCheckState
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -16,8 +16,8 @@ class MainViewModel @Inject constructor(
     private val logger: AppLogger,
     private val getUserIdUseCase: GetUserIdUseCase
 ): ViewModel() {
-    private val _userCheckState = mutableStateOf<UserCheckState>(UserCheckState.Idle)
-    val userCheckState: State<UserCheckState> = _userCheckState
+    private val _userCheckState = MutableStateFlow<UserCheckState>(UserCheckState.Idle)
+    val userCheckState: StateFlow<UserCheckState> = _userCheckState
 
     fun checkUserExisting() {
         _userCheckState.value = UserCheckState.Loading

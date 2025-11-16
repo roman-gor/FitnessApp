@@ -1,18 +1,17 @@
 package com.gorman.fitnessapp.ui.viewmodel
 
 import android.net.Uri
-import androidx.compose.runtime.State
-import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.gorman.fitnessapp.domain.models.UsersData
 import com.gorman.fitnessapp.domain.usecases.GetUserFromFirebaseUseCase
 import com.gorman.fitnessapp.domain.usecases.SaveNewUserUseCase
-import com.gorman.fitnessapp.domain.usecases.SetUserIdUseCase
 import com.gorman.fitnessapp.domain.usecases.UploadImageProfileUseCase
 import com.gorman.fitnessapp.logger.AppLogger
 import com.gorman.fitnessapp.ui.states.RegisterUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -24,8 +23,8 @@ class RegisterViewModel @Inject constructor(
     private val logger: AppLogger
 ): ViewModel() {
 
-    private val _registerUiState = mutableStateOf<RegisterUiState>(RegisterUiState.Idle)
-    val registerUiState: State<RegisterUiState> = _registerUiState
+    private val _registerUiState = MutableStateFlow<RegisterUiState>(RegisterUiState.Idle)
+    val registerUiState: StateFlow<RegisterUiState> = _registerUiState
 
     fun registerUser(uri: Uri?, usersData: UsersData) {
         viewModelScope.launch {

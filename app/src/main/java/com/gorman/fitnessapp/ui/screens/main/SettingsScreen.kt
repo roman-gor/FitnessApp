@@ -1,10 +1,8 @@
 package com.gorman.fitnessapp.ui.screens.main
 
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.Indication
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -123,10 +121,8 @@ fun Dialog(
         .background(colorResource(R.color.bg_color).copy(alpha = 0.5f))
         .clickable(
             indication = null,
-            interactionSource = MutableInteractionSource(),
-            onClick = {
-            onDismiss()
-        }
+            interactionSource = null,
+            onClick = { onDismiss() }
         ),
         contentAlignment = Alignment.BottomCenter) {
         Card(

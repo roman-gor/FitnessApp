@@ -30,10 +30,9 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -57,7 +56,6 @@ import com.gorman.fitnessapp.domain.models.Article
 import com.gorman.fitnessapp.domain.models.UsersData
 import com.gorman.fitnessapp.ui.components.LoadingStub
 import com.gorman.fitnessapp.ui.fonts.mulishFont
-import com.gorman.fitnessapp.ui.screens.setup.ErrorMessage
 import com.gorman.fitnessapp.ui.states.ArticlesState
 import com.gorman.fitnessapp.ui.states.HomeUiState
 import com.gorman.fitnessapp.ui.viewmodel.HomeViewModel
@@ -77,11 +75,11 @@ fun HomeScreen(
     LaunchedEffect(Unit) {
         homeViewModel.prepareData()
     }
-    val isProgramExisting by homeViewModel.programExistingState
-    val articlesList by homeViewModel.articleListState
-    val userData by homeViewModel.userDataState
-    val uiState by homeViewModel.homeUiState
-    val articlesState by homeViewModel.articlesUiState
+    val isProgramExisting by homeViewModel.programExistingState.collectAsState()
+    val articlesList by homeViewModel.articleListState.collectAsState()
+    val userData by homeViewModel.userDataState.collectAsState()
+    val uiState by homeViewModel.homeUiState.collectAsState()
+    val articlesState by homeViewModel.articlesUiState.collectAsState()
     when (val state = uiState) {
         is HomeUiState.Error -> {
             LaunchedEffect(state) {

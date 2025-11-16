@@ -1,7 +1,5 @@
 package com.gorman.fitnessapp.ui.viewmodel
 
-import androidx.compose.runtime.State
-import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.gorman.fitnessapp.domain.models.Program
@@ -12,6 +10,8 @@ import com.gorman.fitnessapp.domain.usecases.GetUserFromLocalUseCase
 import com.gorman.fitnessapp.logger.AppLogger
 import com.gorman.fitnessapp.ui.states.GeneratingUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -24,11 +24,11 @@ class GeneratingViewModel @Inject constructor(
     private val getUserFromLocalUseCase: GetUserFromLocalUseCase
 ): ViewModel() {
 
-    private val _genUiState = mutableStateOf<GeneratingUiState>(GeneratingUiState.Idle)
-    val genUiState: State<GeneratingUiState> = _genUiState
+    private val _genUiState = MutableStateFlow<GeneratingUiState>(GeneratingUiState.Idle)
+    val genUiState: StateFlow<GeneratingUiState> = _genUiState
 
-    private val _generatedProgramState = mutableStateOf<Program?>(null)
-    val generatedProgramState: State<Program?> = _generatedProgramState
+    private val _generatedProgramState = MutableStateFlow<Program?>(null)
+    val generatedProgramState: StateFlow<Program?> = _generatedProgramState
 
     fun generateProgram() {
         _genUiState.value = GeneratingUiState.Loading
