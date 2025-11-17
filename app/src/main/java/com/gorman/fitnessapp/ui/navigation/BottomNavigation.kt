@@ -5,6 +5,8 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -16,6 +18,7 @@ import androidx.navigation.NavController
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.gorman.fitnessapp.R
@@ -25,6 +28,7 @@ import com.gorman.fitnessapp.ui.screens.main.HomeScreen
 import com.gorman.fitnessapp.ui.screens.main.ProfileScreen
 import com.gorman.fitnessapp.ui.screens.main.ResourcesScreen
 import com.gorman.fitnessapp.ui.screens.main.SettingsScreen
+import com.gorman.fitnessapp.ui.screens.workout.GeneratingProgram
 import com.gorman.fitnessapp.ui.screens.workout.ProgramByDayScreen
 import com.gorman.fitnessapp.ui.screens.workout.WorkoutScreen
 import com.gorman.fitnessapp.ui.states.HomeUiState
@@ -36,8 +40,12 @@ import kotlinx.serialization.json.Json
 fun BottomNavigation(navController: NavController) {
     val nestedNavController = rememberNavController()
     val homeViewModel: HomeViewModel = hiltViewModel()
-    val state by homeViewModel.homeUiState
+    val state by homeViewModel.homeUiState.collectAsState()
     var showGeneratingNavigation by remember { mutableStateOf(false) }
+    val navBackStackEntry by nestedNavController.currentBackStackEntryAsState()
+    LaunchedEffect(navBackStackEntry?.destination?.route) {
+        showGeneratingNavigation = navBackStackEntry?.destination?.route == Screen.GeneratingScreen.GenerateProgram.route
+    }
     Scaffold(
         modifier = Modifier.fillMaxSize(),
         containerColor = colorResource(R.color.bg_color),
@@ -52,7 +60,7 @@ fun BottomNavigation(navController: NavController) {
         NavHost(
             navController = nestedNavController,
             startDestination = Screen.BottomScreen.Home.route,
-            modifier = Modifier.padding(innerPadding)
+            modifier = if (showGeneratingNavigation) Modifier.fillMaxSize() else Modifier.padding(innerPadding)
         ) {
             Screen.bItems.forEach { bItem ->
                 composable(bItem.route) {
@@ -150,7 +158,9 @@ fun BottomNavigation(navController: NavController) {
                 }
             }
             composable(Screen.GeneratingScreen.GenerateProgram.route) {
+                GeneratingProgram {
 
+                }
             }
         }
     }

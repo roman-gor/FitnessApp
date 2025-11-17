@@ -18,6 +18,7 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -51,7 +52,7 @@ fun SignInScreen(
     onHomePage: () -> Unit
 ) {
     val registerViewModel: RegisterViewModel = hiltViewModel()
-    val uiState by registerViewModel.registerUiState
+    val uiState by registerViewModel.registerUiState.collectAsState()
     SignInDefault(
         onSignInScreen = { email->
             registerViewModel.signInUser(email)
