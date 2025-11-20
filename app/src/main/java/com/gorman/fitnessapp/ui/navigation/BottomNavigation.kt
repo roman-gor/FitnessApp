@@ -22,8 +22,10 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.gorman.fitnessapp.R
+import com.gorman.fitnessapp.domain.models.Article
 import com.gorman.fitnessapp.domain.models.UsersData
 import com.gorman.fitnessapp.ui.components.BottomNavigationBar
+import com.gorman.fitnessapp.ui.screens.main.ArticleScreen
 import com.gorman.fitnessapp.ui.screens.main.HomeScreen
 import com.gorman.fitnessapp.ui.screens.main.ProfileScreen
 import com.gorman.fitnessapp.ui.screens.main.ResourcesScreen
@@ -85,6 +87,12 @@ fun BottomNavigation(navController: NavController) {
                                 nestedNavController.navigate(Screen.GeneratingScreen.GenerateProgram.route){
                                     launchSingleTop = true
                                 }
+                            },
+                            onArticleClick = { article ->
+                                val json = Uri.encode(Json.encodeToString(article))
+                                nestedNavController.navigate("${Screen.GeneralHomeScreen.Article.route}/$json") {
+                                    launchSingleTop = true
+                                }
                             })
                         Screen.BottomScreen.Resources.route -> ResourcesScreen()
                     }
@@ -134,7 +142,9 @@ fun BottomNavigation(navController: NavController) {
             }
             composable(Screen.GeneralHomeScreen.Workout.route) {
                 WorkoutScreen(
-                    onBackPage = { nestedNavController.navigateUp() },
+                    onBackPage = { nestedNavController.navigate(Screen.BottomScreen.Home.route){
+                        popUpTo(0) {inclusive =  true}
+                    } },
                     onItemClick = { day->
                         nestedNavController.navigate("${Screen.WorkoutScreen.ProgramByDay.route}/$day")
                     }
@@ -163,6 +173,21 @@ fun BottomNavigation(navController: NavController) {
                         nestedNavController.navigate(Screen.GeneralHomeScreen.Workout.route)
                     }
                 )
+            }
+            composable(
+                route = "${Screen.GeneralHomeScreen.Article.route}/{article}",
+                arguments = listOf(
+                    navArgument("article") {
+                        type = NavType.StringType
+                    })) { backStackEntry ->
+                val articleJson = backStackEntry.arguments?.getString("article")
+                val article = articleJson?.let { Json.decodeFromString<Article>(it) }
+                article?.let {
+                    ArticleScreen(
+                        onBackPage = { nestedNavController.navigateUp() },
+                        article = article
+                    )
+                }
             }
         }
     }

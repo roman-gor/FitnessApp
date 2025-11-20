@@ -46,7 +46,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
@@ -69,7 +68,8 @@ fun HomeScreen(
     onWorkoutClick: (UsersData) -> Unit,
     onProgressClick: () -> Unit,
     onNutritionClick: () -> Unit,
-    onNavigateToGenProgram: () -> Unit
+    onNavigateToGenProgram: () -> Unit,
+    onArticleClick: (Article) -> Unit
 ) {
     val context = LocalContext.current
     LaunchedEffect(Unit) {
@@ -96,7 +96,8 @@ fun HomeScreen(
                 userData = userData,
                 onNavigateToGenProgram = onNavigateToGenProgram,
                 articlesState = articlesState,
-                description = programDescription
+                description = programDescription,
+                onArticleClick = onArticleClick
             )
         }
         HomeUiState.Idle -> {
@@ -119,7 +120,8 @@ fun HomeScreen(
                 userData = userData,
                 onNavigateToGenProgram = onNavigateToGenProgram,
                 articlesState = articlesState,
-                description = programDescription
+                description = programDescription,
+                onArticleClick = onArticleClick
             )
         }
     }
@@ -136,7 +138,8 @@ fun GeneralScreen(
     userData: UsersData?,
     onNavigateToGenProgram: () -> Unit,
     articlesState: ArticlesState,
-    description: String
+    description: String,
+    onArticleClick: (Article) -> Unit
 ) {
     Box(modifier = Modifier
         .fillMaxSize()
@@ -167,6 +170,7 @@ fun GeneralScreen(
             Spacer(modifier = Modifier.height(16.dp))
             ArticleList(
                 items = articlesList,
+                onArticleClick = onArticleClick,
                 state = articlesState)
         }
     }
@@ -413,6 +417,7 @@ fun ProgramCard(
 @Composable
 fun ArticleList(
     items: List<Article>,
+    onArticleClick: (Article) -> Unit,
     state: ArticlesState
 ) {
     val itemHeight = 230.dp
@@ -462,7 +467,9 @@ fun ArticleList(
                 verticalArrangement = Arrangement.spacedBy(8.dp)
             ) {
                 items(items) { item ->
-                    ArticleListItem(item) {  }
+                    ArticleListItem(item) {
+                        onArticleClick(item)
+                    }
                 }
             }
         }
@@ -506,10 +513,4 @@ fun ArticleListItem(
             overflow = TextOverflow.Ellipsis
         )
     }
-}
-
-@Preview(showBackground = true)
-@Composable
-fun Preview() {
-    //HomeScreen {  }
 }

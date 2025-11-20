@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
@@ -60,6 +61,12 @@ fun ProgramByDayScreen(
     val totalExercises = programExercisesByDay.size
     val duration = programExercisesByDay.sumOf { it.durationSec * it.sets } / 60
     val calories = programExercisesByDay.sumOf { it.caloriesBurned?.toDouble() ?: 0.0 }.toInt()
+    val dayStr = when (day) {
+        "Понедельник" -> R.string.monday
+        "Среда" -> R.string.wednesday
+        "Пятница" -> R.string.friday
+        else -> R.string.monday
+    }
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -73,7 +80,7 @@ fun ProgramByDayScreen(
         ) {
             Header(
                 onBackPage = onBackPage,
-                text = day
+                text = stringResource(dayStr)
             )
             Column(
                 modifier = Modifier
@@ -232,16 +239,16 @@ fun ExerciseCard(
                     fontSize = 14.sp,
                     fontWeight = FontWeight.Bold,
                     maxLines = 2,
-                    modifier = Modifier.width(140.dp))
+                    modifier = Modifier.width(125.dp))
             }
-            Spacer(modifier = Modifier.width(16.dp))
+            Spacer(modifier = Modifier.weight(1f))
             Text(text = "${stringResource(R.string.repetitions_text)} ${repetitions}x",
                 fontFamily = mulishFont(),
                 color = colorResource(R.color.font_purple_color),
                 fontSize = 12.sp,
                 fontWeight = FontWeight.Bold,
                 textAlign = TextAlign.Start,
-                modifier = Modifier.padding(end = 4.dp))
+                modifier = Modifier.wrapContentWidth().padding(end = 8.dp))
         }
     }
 }
