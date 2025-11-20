@@ -1,5 +1,6 @@
 package com.gorman.fitnessapp.ui.screens.workout
 
+import android.util.Log
 import android.widget.Toast
 import androidx.annotation.DrawableRes
 import androidx.compose.foundation.Image
@@ -65,7 +66,7 @@ fun WorkoutScreen(
     val program by programViewModel.programTemplateState.collectAsState()
     val programExercises by programViewModel.programExercisesState.collectAsState()
     val uiState by programViewModel.programUiState.collectAsState()
-    val groupedByDay = programExercises.groupBy { it.dayOfWeek }
+    val groupedByDay = filterProgramDays(programExercises.groupBy { it.dayOfWeek })
     when(val state = uiState) {
         is ProgramUiState.Error -> {
             LaunchedEffect(state) {
@@ -89,6 +90,23 @@ fun WorkoutScreen(
     }
 }
 
+fun filterProgramDays(
+    groupedByDay: Map<String, List<ProgramExercise>>
+): Map<String, List<ProgramExercise>> {
+    val daysMap = mapOf(
+        "Понедельник" to 1,
+        "Среда" to 2,
+        "Пятница" to 3
+    )
+    val sortedMap = groupedByDay
+        .entries
+        .sortedBy { (dayName, _) ->
+            daysMap[dayName] ?: Int.MAX_VALUE
+        }
+        .associate { it.key to it.value }
+    return sortedMap
+}
+
 @Composable
 fun ProgramDefaultInfoScreen(
     onBackPage: () -> Unit,
@@ -99,7 +117,8 @@ fun ProgramDefaultInfoScreen(
     Column(
         modifier = Modifier
             .fillMaxWidth()
-            .background(color = colorResource(R.color.bg_color)),
+            .background(color = colorResource(R.color.bg_color))
+            .padding(top = 8.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Header(
@@ -125,7 +144,7 @@ fun ProgramDefaultInfoScreen(
             )
             groupedByDay.forEach { (day, exercises) ->
                 val totalExercises = exercises.size
-                val duration = exercises.sumOf { it.durationSec } / 60
+                val duration = exercises.sumOf { it.durationSec * it.sets } / 60
                 val calories = exercises.sumOf { it.caloriesBurned?.toDouble() ?: 0.0 }.toInt()
                 val iconRes = when (day) {
                     "Понедельник" -> R.drawable.program_item_image1
@@ -231,7 +250,7 @@ fun ProgramItemCard(
             verticalAlignment = Alignment.CenterVertically
         ) {
             Column(
-                modifier = Modifier.padding(start = 16.dp),
+                modifier = Modifier.padding(start = 16.dp, end = 8.dp),
                 horizontalAlignment = Alignment.Start,
                 verticalArrangement = Arrangement.Center
             ) {
@@ -302,7 +321,7 @@ fun ProgramItemCard(
                 painter = painterResource(imageBg),
                 contentDescription = null,
                 modifier = Modifier
-                    .height(135.dp)
+                    .height(125.dp)
                     .width(165.dp)
                     .clip(RoundedCornerShape(24.dp)),
                 contentScale = ContentScale.Crop

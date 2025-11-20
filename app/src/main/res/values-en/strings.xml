@@ -75,4 +75,10 @@
     <string name="exercisesPerDay_header">Your program by days of week</string>
     <string name="error_text">Try again</string>
     <string name="repetitions_text">Repetitions</string>
+    <string name="program_created_success">Program Was Successfully Created!</string>
+    <string name="generation_loading">Starting the generation process</string>
+    <string name="program_created_error">Error when generating program</string>
+    <string name="get_program_screen">Go To The Program Screen</string>
+    <string name="try_again">Try Again</string>
+    <string name="confirm_to_gen_program">Workout Program Has Already Exists. Do You Want To Generate Another One?</string>
 </resources>

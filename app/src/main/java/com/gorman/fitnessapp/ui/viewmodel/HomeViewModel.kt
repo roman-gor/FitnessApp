@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.gorman.fitnessapp.domain.models.Article
 import com.gorman.fitnessapp.domain.models.UsersData
 import com.gorman.fitnessapp.domain.usecases.GetArticlesUseCase
+import com.gorman.fitnessapp.domain.usecases.GetProgramFromLocalUseCase
 import com.gorman.fitnessapp.domain.usecases.GetProgramIdUseCase
 import com.gorman.fitnessapp.domain.usecases.GetUserFromLocalUseCase
 import com.gorman.fitnessapp.logger.AppLogger
@@ -14,6 +15,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -21,6 +23,7 @@ import javax.inject.Inject
 class HomeViewModel @Inject constructor(
     private val logger: AppLogger,
     private val getProgramIdUseCase: GetProgramIdUseCase,
+    private val getProgramFromLocalUseCase: GetProgramFromLocalUseCase,
     private val getArticlesUseCase: GetArticlesUseCase,
     private val getUserFromLocalUseCase: GetUserFromLocalUseCase
 ): ViewModel() {
@@ -39,6 +42,9 @@ class HomeViewModel @Inject constructor(
     private val _articlesUiState = MutableStateFlow<ArticlesState>(ArticlesState.Loading)
     val articlesUiState: StateFlow<ArticlesState> = _articlesUiState
 
+    private val _programDescriptionState = MutableStateFlow("")
+    val programDescriptionState: StateFlow<String> = _programDescriptionState.asStateFlow()
+
     fun prepareData() {
         _homeUiState.value = HomeUiState.Loading
         viewModelScope.launch {
@@ -47,6 +53,7 @@ class HomeViewModel @Inject constructor(
                 _programExistingState.value = getProgramIdUseCase().isNotEmpty()
                 _userDataState.value = getUserFromLocalUseCase()
                 _homeUiState.value = HomeUiState.Success
+                _programDescriptionState.value = getProgramFromLocalUseCase().keys.first().name
                 try {
                     _articleListState.value = articlesDeferred.await()
                     _articlesUiState.value = ArticlesState.Success

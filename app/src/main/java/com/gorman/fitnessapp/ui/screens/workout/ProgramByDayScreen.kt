@@ -1,5 +1,6 @@
 package com.gorman.fitnessapp.ui.screens.workout
 
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -53,13 +54,16 @@ fun ProgramByDayScreen(
     LaunchedEffect(Unit) {
         programViewModel.prepareProgramData()
     }
-    val program by programViewModel.programTemplateState.collectAsState()
     val programExercises by programViewModel.programExercisesState.collectAsState()
     val exercisesList by programViewModel.exercisesListState.collectAsState()
     val programExercisesByDay = programExercises.filter { it.dayOfWeek == day }
+    val totalExercises = programExercisesByDay.size
+    val duration = programExercisesByDay.sumOf { it.durationSec * it.sets } / 60
+    val calories = programExercisesByDay.sumOf { it.caloriesBurned?.toDouble() ?: 0.0 }.toInt()
     Box(
         modifier = Modifier
             .fillMaxSize()
+            .padding(top = 8.dp)
             .background(colorResource(R.color.bg_color))
     ) {
         Column(
@@ -78,9 +82,9 @@ fun ProgramByDayScreen(
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 ProgramByDayCard(
-                    durationTotal = 100,
-                    caloriesTotal = 100,
-                    exercisesTotal = 5
+                    durationTotal = duration,
+                    caloriesTotal = calories,
+                    exercisesTotal = totalExercises
                 )
                 programExercisesByDay.forEach { programExercise ->
                     val exerciseId = programExercise.exerciseId
@@ -228,13 +232,13 @@ fun ExerciseCard(
                     fontSize = 14.sp,
                     fontWeight = FontWeight.Bold,
                     maxLines = 2,
-                    modifier = Modifier.width(150.dp))
+                    modifier = Modifier.width(140.dp))
             }
             Spacer(modifier = Modifier.width(16.dp))
             Text(text = "${stringResource(R.string.repetitions_text)} ${repetitions}x",
                 fontFamily = mulishFont(),
                 color = colorResource(R.color.font_purple_color),
-                fontSize = 14.sp,
+                fontSize = 12.sp,
                 fontWeight = FontWeight.Bold,
                 textAlign = TextAlign.Start,
                 modifier = Modifier.padding(end = 4.dp))

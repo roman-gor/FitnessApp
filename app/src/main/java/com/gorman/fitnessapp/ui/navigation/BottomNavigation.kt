@@ -158,9 +158,11 @@ fun BottomNavigation(navController: NavController) {
                 }
             }
             composable(Screen.GeneratingScreen.GenerateProgram.route) {
-                GeneratingProgram {
-
-                }
+                GeneratingProgram(
+                    onNavigateToProgram = {
+                        nestedNavController.navigate(Screen.GeneralHomeScreen.Workout.route)
+                    }
+                )
             }
         }
     }

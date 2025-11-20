@@ -6,6 +6,7 @@ import com.gorman.fitnessapp.domain.models.Program
 import com.gorman.fitnessapp.domain.usecases.GenerateAndSyncMealPlansUseCase
 import com.gorman.fitnessapp.domain.usecases.GenerateAndSyncProgramUseCase
 import com.gorman.fitnessapp.domain.usecases.GetProgramFromLocalUseCase
+import com.gorman.fitnessapp.domain.usecases.GetProgramIdUseCase
 import com.gorman.fitnessapp.domain.usecases.GetUserFromLocalUseCase
 import com.gorman.fitnessapp.logger.AppLogger
 import com.gorman.fitnessapp.ui.states.GeneratingUiState
@@ -19,16 +20,18 @@ import javax.inject.Inject
 class GeneratingViewModel @Inject constructor(
     private val logger: AppLogger,
     private val generateAndSyncProgramUseCase: GenerateAndSyncProgramUseCase,
-    private val generateAndSyncMealPlansUseCase: GenerateAndSyncMealPlansUseCase,
-    private val getProgramFromLocalUseCase: GetProgramFromLocalUseCase,
+    private val getProgramIdUseCase: GetProgramIdUseCase,
     private val getUserFromLocalUseCase: GetUserFromLocalUseCase
 ): ViewModel() {
-
     private val _genUiState = MutableStateFlow<GeneratingUiState>(GeneratingUiState.Idle)
     val genUiState: StateFlow<GeneratingUiState> = _genUiState
 
-    private val _generatedProgramState = MutableStateFlow<Program?>(null)
-    val generatedProgramState: StateFlow<Program?> = _generatedProgramState
+    init {
+        viewModelScope.launch {
+            if (getProgramIdUseCase().isNotEmpty())
+                _genUiState.value = GeneratingUiState.IsExist
+        }
+    }
 
     fun generateProgram() {
         _genUiState.value = GeneratingUiState.Loading
@@ -36,7 +39,6 @@ class GeneratingViewModel @Inject constructor(
             try {
                 val user = getUserFromLocalUseCase()
                 generateAndSyncProgramUseCase(user)
-                _generatedProgramState.value = getProgramFromLocalUseCase().keys.first()
                 _genUiState.value = GeneratingUiState.Success
             } catch (e: IllegalStateException) {
                 logger.e("GeneratingProgramVM", "${e.message}")

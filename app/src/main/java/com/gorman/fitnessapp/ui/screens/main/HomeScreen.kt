@@ -80,6 +80,7 @@ fun HomeScreen(
     val userData by homeViewModel.userDataState.collectAsState()
     val uiState by homeViewModel.homeUiState.collectAsState()
     val articlesState by homeViewModel.articlesUiState.collectAsState()
+    val programDescription by homeViewModel.programDescriptionState.collectAsState()
     when (val state = uiState) {
         is HomeUiState.Error -> {
             LaunchedEffect(state) {
@@ -94,7 +95,8 @@ fun HomeScreen(
                 articlesList = articlesList,
                 userData = userData,
                 onNavigateToGenProgram = onNavigateToGenProgram,
-                articlesState = articlesState
+                articlesState = articlesState,
+                description = programDescription
             )
         }
         HomeUiState.Idle -> {
@@ -116,7 +118,8 @@ fun HomeScreen(
                 articlesList = articlesList,
                 userData = userData,
                 onNavigateToGenProgram = onNavigateToGenProgram,
-                articlesState = articlesState
+                articlesState = articlesState,
+                description = programDescription
             )
         }
     }
@@ -132,7 +135,8 @@ fun GeneralScreen(
     articlesList: List<Article>,
     userData: UsersData?,
     onNavigateToGenProgram: () -> Unit,
-    articlesState: ArticlesState
+    articlesState: ArticlesState,
+    description: String
 ) {
     Box(modifier = Modifier
         .fillMaxSize()
@@ -157,7 +161,8 @@ fun GeneralScreen(
             }
             ProgramCard(
                 isProgramExists = isProgramExisting,
-                onGenerateClick = { onNavigateToGenProgram() }
+                onGenerateClick = { onNavigateToGenProgram() },
+                description = description
             )
             Spacer(modifier = Modifier.height(16.dp))
             ArticleList(
@@ -322,9 +327,10 @@ fun HomeNavigation(
 @Composable
 fun ProgramCard(
     isProgramExists: Boolean,
-    onGenerateClick: () -> Unit
+    onGenerateClick: () -> Unit,
+    description: String
 ) {
-    val descText = if (isProgramExists) stringResource(R.string.program_desc_text)
+    val descText = if (isProgramExists) description
         else stringResource(R.string.program_gen_description_text)
     Column(
         modifier = Modifier.fillMaxWidth(),
