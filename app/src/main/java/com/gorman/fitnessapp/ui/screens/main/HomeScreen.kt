@@ -2,6 +2,7 @@ package com.gorman.fitnessapp.ui.screens.main
 
 import android.widget.Toast
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -20,7 +21,6 @@ import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Card
@@ -33,6 +33,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -81,6 +82,9 @@ fun HomeScreen(
     val uiState by homeViewModel.homeUiState.collectAsState()
     val articlesState by homeViewModel.articlesUiState.collectAsState()
     val programDescription by homeViewModel.programDescriptionState.collectAsState()
+    val gridState = rememberSaveable(saver = ScrollState.Saver) {
+        ScrollState(initial = 0)
+    }
     when (val state = uiState) {
         is HomeUiState.Error -> {
             LaunchedEffect(state) {
@@ -97,7 +101,8 @@ fun HomeScreen(
                 onNavigateToGenProgram = onNavigateToGenProgram,
                 articlesState = articlesState,
                 description = programDescription,
-                onArticleClick = onArticleClick
+                onArticleClick = onArticleClick,
+                gridState = gridState
             )
         }
         HomeUiState.Idle -> {
@@ -121,7 +126,8 @@ fun HomeScreen(
                 onNavigateToGenProgram = onNavigateToGenProgram,
                 articlesState = articlesState,
                 description = programDescription,
-                onArticleClick = onArticleClick
+                onArticleClick = onArticleClick,
+                gridState = gridState
             )
         }
     }
@@ -139,7 +145,8 @@ fun GeneralScreen(
     onNavigateToGenProgram: () -> Unit,
     articlesState: ArticlesState,
     description: String,
-    onArticleClick: (Article) -> Unit
+    onArticleClick: (Article) -> Unit,
+    gridState: ScrollState
 ) {
     Box(modifier = Modifier
         .fillMaxSize()
@@ -147,7 +154,7 @@ fun GeneralScreen(
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .verticalScroll(rememberScrollState()),
+                .verticalScroll(gridState),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Column(modifier = Modifier
