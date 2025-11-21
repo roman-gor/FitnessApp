@@ -53,7 +53,6 @@ class HomeViewModel @Inject constructor(
                 _programExistingState.value = getProgramIdUseCase().isNotEmpty()
                 _userDataState.value = getUserFromLocalUseCase()
                 _homeUiState.value = HomeUiState.Success
-                _programDescriptionState.value = getProgramFromLocalUseCase().keys.first().name
                 try {
                     _articleListState.value = articlesDeferred.await()
                     _articlesUiState.value = ArticlesState.Success

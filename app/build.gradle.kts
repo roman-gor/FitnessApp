@@ -49,6 +49,8 @@ android {
 dependencies {
 
     val room_version = "2.7.2"
+    implementation("androidx.media3:media3-exoplayer:1.3.1")
+    implementation("androidx.media3:media3-ui:1.3.1")
     implementation("androidx.compose.foundation:foundation:1.7.0")
     implementation("com.airbnb.android:lottie-compose:6.4.0")
     implementation("com.google.firebase:firebase-storage")

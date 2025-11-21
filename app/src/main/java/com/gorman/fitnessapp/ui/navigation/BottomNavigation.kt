@@ -23,6 +23,7 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.gorman.fitnessapp.R
 import com.gorman.fitnessapp.domain.models.Article
+import com.gorman.fitnessapp.domain.models.Exercise
 import com.gorman.fitnessapp.domain.models.UsersData
 import com.gorman.fitnessapp.ui.components.BottomNavigationBar
 import com.gorman.fitnessapp.ui.screens.main.ArticleScreen
@@ -30,6 +31,7 @@ import com.gorman.fitnessapp.ui.screens.main.HomeScreen
 import com.gorman.fitnessapp.ui.screens.main.ProfileScreen
 import com.gorman.fitnessapp.ui.screens.main.ResourcesScreen
 import com.gorman.fitnessapp.ui.screens.main.SettingsScreen
+import com.gorman.fitnessapp.ui.screens.workout.ExerciseByDayScreen
 import com.gorman.fitnessapp.ui.screens.workout.GeneratingProgram
 import com.gorman.fitnessapp.ui.screens.workout.ProgramByDayScreen
 import com.gorman.fitnessapp.ui.screens.workout.WorkoutScreen
@@ -163,7 +165,10 @@ fun BottomNavigation(navController: NavController) {
                             nestedNavController.navigateUp()
                         },
                         day = it,
-                        onExerciseProgramClick = {}
+                        onExerciseProgramClick = { exercise->
+                            val json = Uri.encode(Json.encodeToString(exercise))
+                            nestedNavController.navigate("${Screen.WorkoutScreen.ExerciseByProgram.route}/$json")
+                        }
                     )
                 }
             }
@@ -186,6 +191,23 @@ fun BottomNavigation(navController: NavController) {
                     ArticleScreen(
                         onBackPage = { nestedNavController.navigateUp() },
                         article = article
+                    )
+                }
+            }
+            composable(
+                route = "${Screen.WorkoutScreen.ExerciseByProgram.route}/{exercise}",
+                arguments = listOf(
+                    navArgument("exercise") {
+                        type = NavType.StringType
+                    })) { backStackEntry ->
+                val exerciseJson = backStackEntry.arguments?.getString("exercise")
+                val exercise = exerciseJson?.let { Json.decodeFromString<Exercise>(it) }
+                exercise?.let {
+                    ExerciseByDayScreen(
+                        onBackPage = {
+                            nestedNavController.navigateUp()
+                        },
+                        exercise = exercise
                     )
                 }
             }
