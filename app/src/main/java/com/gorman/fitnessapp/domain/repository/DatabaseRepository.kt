@@ -1,5 +1,6 @@
 package com.gorman.fitnessapp.domain.repository
 
+import com.gorman.fitnessapp.domain.models.Article
 import com.gorman.fitnessapp.domain.models.Exercise
 import com.gorman.fitnessapp.domain.models.Meal
 import com.gorman.fitnessapp.domain.models.MealPlan
@@ -30,4 +31,6 @@ interface DatabaseRepository {
     suspend fun insertWorkoutHistory(workoutHistory: WorkoutHistory)
     suspend fun updateWorkoutHistory(workoutHistory: WorkoutHistory)
     suspend fun getWorkoutHistory(): List<WorkoutHistory>
+    suspend fun getArticles(): List<Article>
+    suspend fun insertArticles(articles: List<Article>)
 }

@@ -15,7 +15,7 @@ interface ArticleDao {
     @Query("SELECT COUNT(*) FROM articles")
     suspend fun getArticlesCount(): Int
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertIntoArticles(article: ArticleEntity)
+    suspend fun insertIntoArticles(article: List<ArticleEntity>)
     @Delete(entity = ArticleEntity::class)
     suspend fun deleteFromArticles(article: ArticleEntity)
     @Query("DELETE FROM articles")

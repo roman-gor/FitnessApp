@@ -81,4 +81,6 @@
     <string name="get_program_screen">Go To The Program Screen</string>
     <string name="try_again">Try Again</string>
     <string name="confirm_to_gen_program">Workout Program Has Already Exists. Do You Want To Generate Another One?</string>
+    <string name="resources">Resources</string>
+    <string name="exercises_error">Error Loading Resources</string>
 </resources>

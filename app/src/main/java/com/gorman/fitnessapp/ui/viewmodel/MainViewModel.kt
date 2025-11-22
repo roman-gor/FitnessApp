@@ -28,7 +28,7 @@ class MainViewModel @Inject constructor(
                     else UserCheckState.NotExists
                 logger.d("VIEWMODEL", getUserIdUseCase().toString())
             } catch (e: Exception) {
-                logger.d("CHECK USER VIEWMODEL", "${e.message}")
+                logger.e("CHECK USER VIEWMODEL", "${e.message}")
                 _userCheckState.value = UserCheckState.Error(e.message ?: "Ошибка при извлечении данных")
             }
         }

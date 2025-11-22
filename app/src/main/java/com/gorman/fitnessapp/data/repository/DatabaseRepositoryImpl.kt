@@ -15,6 +15,7 @@ import com.gorman.fitnessapp.data.datasource.local.dao.UsersDataDao
 import com.gorman.fitnessapp.data.datasource.local.dao.WorkoutHistoryDao
 import com.gorman.fitnessapp.data.mapper.toDomain
 import com.gorman.fitnessapp.data.mapper.toEntity
+import com.gorman.fitnessapp.domain.models.Article
 import com.gorman.fitnessapp.domain.models.Exercise
 import com.gorman.fitnessapp.domain.models.Meal
 import com.gorman.fitnessapp.domain.models.MealPlan
@@ -135,5 +136,14 @@ class DatabaseRepositoryImpl @Inject constructor(
 
     override suspend fun getWorkoutHistory(): List<WorkoutHistory> {
         return workoutHistoryDao.getWorkoutHistory().map { it.toDomain() }
+    }
+
+    override suspend fun getArticles(): List<Article> {
+        return articleDao.getArticles().map { it.toDomain() }
+    }
+
+    override suspend fun insertArticles(articles: List<Article>) {
+        if (articleDao.getArticlesCount() == 0)
+            articleDao.insertIntoArticles(articles.map { it.toEntity() })
     }
 }

@@ -96,7 +96,17 @@ fun BottomNavigation(navController: NavController) {
                                     launchSingleTop = true
                                 }
                             })
-                        Screen.BottomScreen.Resources.route -> ResourcesScreen()
+                        Screen.BottomScreen.Resources.route -> ResourcesScreen(
+                            onBackPage = {
+                                nestedNavController.navigateUp()
+                            },
+                            onItemClick = { exercise ->
+                                val json = Uri.encode(Json.encodeToString(exercise))
+                                nestedNavController.navigate("${Screen.WorkoutScreen.ExerciseByProgram.route}/$json") {
+                                    launchSingleTop = true
+                                }
+                            }
+                        )
                     }
                 }
             }

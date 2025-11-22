@@ -44,10 +44,10 @@ class ProgramViewModel @Inject constructor(
                 _programExercisesState.value = programMap.values.first()
                 _programUiState.value = ProgramUiState.Success
             } catch (e: IllegalStateException) {
-                logger.d("ProgramViewModel", "${e.message}")
+                logger.e("ProgramViewModel", "${e.message}")
                 _programUiState.value = ProgramUiState.Error(e.message ?: "Ошибка при извлечении данных")
             } catch (e: Exception) {
-                logger.d("ProgramViewModel", "${e.message}")
+                logger.e("ProgramViewModel", "${e.message}")
                 _programUiState.value = ProgramUiState.Error(e.message ?: "Неизвестная ошибка")
             }
         }
