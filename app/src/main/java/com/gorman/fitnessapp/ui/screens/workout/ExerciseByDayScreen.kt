@@ -1,6 +1,8 @@
 package com.gorman.fitnessapp.ui.screens.workout
 
+import android.util.Log
 import android.view.LayoutInflater
+import androidx.annotation.OptIn
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -44,7 +46,10 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.media3.common.MediaItem
+import androidx.media3.common.Player
+import androidx.media3.common.util.UnstableApi
 import androidx.media3.exoplayer.ExoPlayer
+import androidx.media3.ui.AspectRatioFrameLayout
 import androidx.media3.ui.PlayerView
 import com.gorman.fitnessapp.R
 import com.gorman.fitnessapp.domain.models.Exercise
@@ -66,8 +71,10 @@ fun ExerciseByDayScreen(
             prepare()
             volume = 0f
             playWhenReady = false
+            repeatMode = Player.REPEAT_MODE_ALL
         }
     }
+    Log.d("Exercise", exercise.toString())
     DisposableEffect(Unit) {
         val observer = LifecycleEventObserver { _, event ->
             if (event == Lifecycle.Event.ON_PAUSE) {
@@ -121,6 +128,7 @@ fun ExerciseByDayScreen(
     }
 }
 
+@OptIn(UnstableApi::class)
 @Suppress("COMPOSE_APPLIER_CALL_MISMATCH")
 @Composable
 fun VideoItem(
@@ -130,7 +138,7 @@ fun VideoItem(
     Box(
         modifier = Modifier
             .fillMaxWidth()
-            .height(465.dp)
+            .height(470.dp)
             .padding(horizontal = 32.dp, vertical = 24.dp)
             .clip(RoundedCornerShape(24.dp))
             .background(colorResource(R.color.black))
@@ -140,6 +148,7 @@ fun VideoItem(
                 val view = LayoutInflater.from(ctx)
                     .inflate(R.layout.layout_player_view, null, false)
                 val playerView = view.findViewById<PlayerView>(R.id.player_view)
+                playerView.resizeMode = AspectRatioFrameLayout.RESIZE_MODE_ZOOM
                 playerView.apply {
                     player = exoPlayer
                     setOnClickListener { onPlayClick() }

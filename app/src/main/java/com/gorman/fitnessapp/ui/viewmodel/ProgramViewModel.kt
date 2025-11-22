@@ -39,7 +39,7 @@ class ProgramViewModel @Inject constructor(
             try {
                 val exerciseList = getExercisesUseCase()
                 val programMap = getProgramFromLocalUseCase()
-                exerciseList?.let { _exercisesListState.value = it }
+                _exercisesListState.value = exerciseList
                 _programTemplateState.value = programMap.keys.first()
                 _programExercisesState.value = programMap.values.first()
                 _programUiState.value = ProgramUiState.Success

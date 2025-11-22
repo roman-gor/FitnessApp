@@ -17,9 +17,9 @@ class GetExercisesUseCase @Inject constructor(
      * сохраняет полученные данные в локальную базу для последующих запросов и возвращает их.
      * Это обеспечивает быстрый доступ к данным при повторных вызовах и работу в офлайн-режиме.
      */
-    suspend operator fun invoke(): List<Exercise>? {
+    suspend operator fun invoke(): List<Exercise> {
         val localExercises = databaseRepository.getExercises()
-        return localExercises?.ifEmpty {
+        return localExercises.ifEmpty {
             val remoteExercises = firebaseRepository.getExercises()
             databaseRepository.insertExercises(remoteExercises)
             remoteExercises

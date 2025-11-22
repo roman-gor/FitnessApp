@@ -1,6 +1,5 @@
 package com.gorman.fitnessapp.ui.screens.workout
 
-import android.util.Log
 import android.widget.Toast
 import androidx.annotation.DrawableRes
 import androidx.compose.foundation.Image
@@ -210,7 +209,9 @@ fun ProgramInfoCard(
                         color = colorResource(R.color.meet_text),
                         fontFamily = mulishFont(),
                         fontSize = 14.sp,
-                        fontWeight = FontWeight.Bold
+                        fontWeight = FontWeight.Medium,
+                        textAlign = TextAlign.Center,
+                        modifier = Modifier.padding(horizontal = 10.dp)
                     )
                 }
             }

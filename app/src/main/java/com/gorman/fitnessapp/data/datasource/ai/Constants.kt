@@ -57,10 +57,10 @@ const val JSON_SCHEMA = """
                       },
                       "durationSec": {
                         "type": "integer",
-                        "description": "Продолжительность (для кардио или планки) в секундах."
+                        "description": "Продолжительность в секундах."
                       },
                       "caloriesBurned": {
-                        "type": "number",
+                        "type": "integer",
                         "description": "Оценка сожженных калорий для этого упражнения."
                       }
                     },

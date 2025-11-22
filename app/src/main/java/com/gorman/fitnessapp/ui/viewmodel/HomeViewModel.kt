@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.gorman.fitnessapp.domain.models.Article
 import com.gorman.fitnessapp.domain.models.UsersData
+import com.gorman.fitnessapp.domain.usecases.GetAndSyncUserProgramsUseCase
 import com.gorman.fitnessapp.domain.usecases.GetArticlesUseCase
 import com.gorman.fitnessapp.domain.usecases.GetProgramFromLocalUseCase
 import com.gorman.fitnessapp.domain.usecases.GetProgramIdUseCase
@@ -53,6 +54,8 @@ class HomeViewModel @Inject constructor(
                 _programExistingState.value = getProgramIdUseCase().isNotEmpty()
                 _userDataState.value = getUserFromLocalUseCase()
                 _homeUiState.value = HomeUiState.Success
+                if (getProgramIdUseCase().isNotEmpty())
+                    _programDescriptionState.value = getProgramFromLocalUseCase().keys.first().name
                 try {
                     _articleListState.value = articlesDeferred.await()
                     _articlesUiState.value = ArticlesState.Success

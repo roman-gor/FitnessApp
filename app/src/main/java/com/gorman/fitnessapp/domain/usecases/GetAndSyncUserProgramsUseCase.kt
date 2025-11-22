@@ -13,7 +13,7 @@ class GetAndSyncUserProgramsUseCase @Inject constructor(
     /**
      * Извлечение актуальной программы тренировок из облака и синхронизация её с локальной базой данных
      */
-    suspend operator fun invoke(userId: String){
+    suspend operator fun invoke(userId: String) {
         val programOutput = firebaseRepository.getProgram(userId)
         val programId = programOutput?.template?.let {
             databaseRepository.insertProgramWithExercises(it)

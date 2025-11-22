@@ -175,7 +175,9 @@ fun BottomNavigation(navController: NavController) {
             composable(Screen.GeneratingScreen.GenerateProgram.route) {
                 GeneratingProgram(
                     onNavigateToProgram = {
-                        nestedNavController.navigate(Screen.GeneralHomeScreen.Workout.route)
+                        nestedNavController.navigate(Screen.GeneralHomeScreen.Workout.route) {
+                            popUpTo(Screen.BottomScreen.Home.route) { inclusive = false }
+                        }
                     }
                 )
             }

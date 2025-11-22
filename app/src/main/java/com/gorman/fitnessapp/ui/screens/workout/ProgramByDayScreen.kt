@@ -13,7 +13,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
@@ -35,6 +34,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -222,32 +222,35 @@ fun ExerciseCard(
                 .fillMaxWidth()
                 .padding(12.dp),
             verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.Start
         ) {
-            Row(
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Icon(painter = painterResource(R.drawable.play_icon),
-                    contentDescription = "StartExercise",
-                    tint = colorResource(R.color.meet_text),
-                    modifier = Modifier.scale(1.2f))
-                Spacer(modifier = Modifier.width(16.dp))
-                Text(text = name,
-                    fontFamily = mulishFont(),
-                    color = colorResource(R.color.bg_color),
-                    fontSize = 14.sp,
-                    fontWeight = FontWeight.Bold,
-                    maxLines = 2,
-                    modifier = Modifier.width(125.dp))
-            }
-            Spacer(modifier = Modifier.weight(1f))
-            Text(text = "${stringResource(R.string.repetitions_text)} ${repetitions}x",
+            Icon(
+                painter = painterResource(R.drawable.play_icon),
+                contentDescription = "StartExercise",
+                tint = colorResource(R.color.meet_text),
+                modifier = Modifier.scale(1.2f)
+            )
+            Spacer(modifier = Modifier.width(16.dp))
+            Text(
+                text = name,
+                fontFamily = mulishFont(),
+                color = colorResource(R.color.bg_color),
+                fontSize = 14.sp,
+                fontWeight = FontWeight.Bold,
+                maxLines = 2,
+                overflow = TextOverflow.Ellipsis,
+                modifier = Modifier
+                    .weight(1f)
+            )
+            Spacer(modifier = Modifier.width(16.dp))
+            Text(
+                text = "${stringResource(R.string.repetitions_text)} ${repetitions}x",
                 fontFamily = mulishFont(),
                 color = colorResource(R.color.font_purple_color),
                 fontSize = 12.sp,
                 fontWeight = FontWeight.Bold,
                 textAlign = TextAlign.Start,
-                modifier = Modifier.wrapContentWidth().padding(end = 8.dp))
+                modifier = Modifier.padding(end = 8.dp)
+            )
         }
     }
 }

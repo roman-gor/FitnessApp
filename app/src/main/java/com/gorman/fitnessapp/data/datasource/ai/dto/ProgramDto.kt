@@ -7,8 +7,8 @@ import kotlinx.serialization.Serializable
 data class ProgramDto(
     @SerialName("program_id") val programId: String,
     val name: String,
-    val description: String,
-    val muscleGroup: String,
-    val goalType: String,
+    val description: String = "",
+    val muscleGroup: String = "",
+    val goalType: String = "",
     @SerialName("program_exercise") val exercises: List<ProgramExerciseDto>
 )

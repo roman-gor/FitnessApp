@@ -15,6 +15,7 @@ class GeminiGeneratorImpl @Inject constructor(
         val exerciseList = availableExercises.entries.joinToString(separator = ", ") {
             "${it.key}: ${it.value}"
         }
+        Log.d("ExercisesAI", exerciseList)
 
         val prompt = """
             Ты — опытный фитнес-тренер, специализирующийся на составлении программ тренировок. 
@@ -42,6 +43,7 @@ class GeminiGeneratorImpl @Inject constructor(
             
             --- ФОРМАТ ВЫВОДА (ВАЖНО!) ---
             Твой ответ должен быть **только** в формате JSON, соответствующем предоставленной схеме: $JSON_SCHEMA. 
+            Помни про то что все поля схемы должны существовать в ответе.
             Ответ обязательно обрамляй [] квадратными скобками, как массив, независимо от количества объектов
             Не добавляй пояснений, приветствий или дополнительного текста.
         """
