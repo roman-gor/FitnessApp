@@ -22,7 +22,6 @@ interface FirebaseAPI {
     suspend fun insertProgramExercise(programExercise: List<ProgramExerciseFirebase>?, programId: String?)
     suspend fun insertUserProgram(program: UserProgramFirebase)
     suspend fun insertUserProgress(userProgress: UserProgressFirebase): String?
-    suspend fun updateUserProgress(userProgress: UserProgressFirebase)
     suspend fun getUserProgress(userId: String): List<UserProgressFirebase>?
     suspend fun insertUser(user: UsersData): String?
     suspend fun deleteUser(user: UserFirebase)
@@ -38,7 +37,6 @@ interface FirebaseAPI {
     suspend fun getUserProgram(userId: String): UserProgramFirebase?
     suspend fun getMealPlans(userId: String): Map<String, Pair<MealPlanTemplateFirebase, List<MealPlanItemFirebase>>>?
     suspend fun insertWorkoutHistory(workoutHistoryFirebase: WorkoutHistoryFirebase): String?
-    suspend fun updateWorkoutHistory(workoutHistoryFirebase: WorkoutHistoryFirebase, userId: String)
     suspend fun getWorkoutHistory(userId: String): List<WorkoutHistoryFirebase>
     suspend fun getArticles(): List<ArticleFirebase>
 }

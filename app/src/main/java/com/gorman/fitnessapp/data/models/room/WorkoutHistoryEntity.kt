@@ -10,12 +10,10 @@ import kotlinx.parcelize.Parcelize
 @Parcelize
 @Entity(tableName = "WorkoutHistory",
     indices = [
-        Index(value = ["exerciseId"]),
-        Index(value = ["programId"])
+        Index(value = ["exerciseId"])
     ],
     foreignKeys = [
         ForeignKey(entity = ExerciseEntity::class, parentColumns = ["id"], childColumns = ["exerciseId"], onDelete = ForeignKey.CASCADE),
-        ForeignKey(entity = ProgramEntity::class, parentColumns = ["id"], childColumns = ["programId"], onDelete = ForeignKey.SET_NULL)
     ])
 data class WorkoutHistoryEntity(
     @PrimaryKey(autoGenerate = true)

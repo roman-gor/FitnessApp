@@ -5,12 +5,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.colorResource
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -18,12 +12,12 @@ import androidx.navigation.NavController
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.gorman.fitnessapp.R
 import com.gorman.fitnessapp.domain.models.Article
 import com.gorman.fitnessapp.domain.models.Exercise
+import com.gorman.fitnessapp.domain.models.ProgramExercise
 import com.gorman.fitnessapp.domain.models.UsersData
 import com.gorman.fitnessapp.ui.components.BottomNavigationBar
 import com.gorman.fitnessapp.ui.screens.main.ArticleScreen
@@ -34,8 +28,8 @@ import com.gorman.fitnessapp.ui.screens.main.SettingsScreen
 import com.gorman.fitnessapp.ui.screens.workout.ExerciseByDayScreen
 import com.gorman.fitnessapp.ui.screens.workout.GeneratingProgram
 import com.gorman.fitnessapp.ui.screens.workout.ProgramByDayScreen
+import com.gorman.fitnessapp.ui.screens.workout.ProgramRunScreen
 import com.gorman.fitnessapp.ui.screens.workout.WorkoutScreen
-import com.gorman.fitnessapp.ui.states.HomeUiState
 import com.gorman.fitnessapp.ui.viewmodel.HomeViewModel
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
@@ -44,7 +38,6 @@ import kotlinx.serialization.json.Json
 fun BottomNavigation(navController: NavController) {
     val nestedNavController = rememberNavController()
     val homeViewModel: HomeViewModel = hiltViewModel()
-    val state by homeViewModel.homeUiState.collectAsState()
     Scaffold(
         modifier = Modifier.fillMaxSize(),
         containerColor = colorResource(R.color.bg_color),
@@ -171,6 +164,10 @@ fun BottomNavigation(navController: NavController) {
                         onExerciseProgramClick = { exercise->
                             val json = Uri.encode(Json.encodeToString(exercise))
                             nestedNavController.navigate("${Screen.WorkoutScreen.ExerciseByProgram.route}/$json")
+                        },
+                        onStartProgram = { exercises ->
+                            val json = Uri.encode(Json.encodeToString(exercises))
+                            nestedNavController.navigate("${Screen.WorkoutScreen.WorkoutTraining.route}/$json")
                         }
                     )
                 }
@@ -183,6 +180,29 @@ fun BottomNavigation(navController: NavController) {
                         }
                     }
                 )
+            }
+            composable(
+                route = "${Screen.WorkoutScreen.WorkoutTraining.route}/{exercises}",
+                arguments = listOf(
+                    navArgument("exercises") {
+                        type = NavType.StringType
+                    })) { backStackEntry ->
+                val exercisesJson = backStackEntry.arguments?.getString("exercises")
+                val exercises = exercisesJson?.let { Json.decodeFromString<List<ProgramExercise>>(it) }
+                exercises?.let {
+                    ProgramRunScreen(
+                        exercisesProgram = it,
+                        onBackPage = {
+                            nestedNavController.navigate(Screen.GeneralHomeScreen.Workout.route) {
+                                popUpTo(Screen.WorkoutScreen.ExerciseByProgram.route) { inclusive = true }
+                            }
+                        },
+                        onNavigateToHome = {
+                            nestedNavController.navigate(Screen.BottomScreen.Home.route) {
+                                popUpTo(0) { inclusive = true }
+                            }
+                        })
+                }
             }
             composable(
                 route = "${Screen.GeneralHomeScreen.Article.route}/{article}",

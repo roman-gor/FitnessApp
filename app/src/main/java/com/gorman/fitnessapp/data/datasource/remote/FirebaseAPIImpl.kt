@@ -1,5 +1,6 @@
 package com.gorman.fitnessapp.data.datasource.remote
 
+import android.util.Log
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.getValue
 import com.gorman.fitnessapp.data.mapper.toRemote
@@ -113,23 +114,17 @@ class FirebaseAPIImpl @Inject constructor(
 
     override suspend fun insertUserProgress(userProgress: UserProgressFirebase): String? =
         executeRequest("Вставка прогресса пользователя ${userProgress.userId} и обновление веса") {
-            val userProgressRef = database.child("user_progress").push()
+            val userProgressRef = database.child("user_progress").child(userProgress.userId).push()
+            Log.d("UserProgress", userProgress.userId)
             val newProgressKey = userProgressRef.key
                 ?: throw IllegalStateException("Не удалось сгенерировать ключ для user_progress")
 
             val updates = mutableMapOf<String, Any?>()
-            updates["/user_progress/$newProgressKey"] = userProgress
+            updates["/user_progress/${userProgress.userId}/$newProgressKey"] = userProgress
             updates["/users/${userProgress.userId}/weight"] = userProgress.weight
             database.updateChildren(updates).await()
             newProgressKey
         }
-
-    override suspend fun updateUserProgress(userProgress: UserProgressFirebase) {
-        executeRequest("Обновление прогресса пользователя ${userProgress.userId}") {
-            val userProgressRef = database.child("user_progress").child(userProgress.userId)
-            userProgressRef.setValue(userProgress).await()
-        }
-    }
 
     override suspend fun getUserProgress(userId: String): List<UserProgressFirebase>? =
         executeRequest("Получение прогресса пользователя $userId") {
@@ -321,23 +316,12 @@ class FirebaseAPIImpl @Inject constructor(
 
     override suspend fun insertWorkoutHistory(workoutHistoryFirebase: WorkoutHistoryFirebase): String? =
         executeRequest("Вставка истории тренировки") {
-            val workoutHistoryRef = database.child("workout_history").push()
+            val workoutHistoryRef = database.child("workout_history").child(workoutHistoryFirebase.userId).push()
             val newHistoryKey = workoutHistoryRef.key
                 ?: throw IllegalStateException("Не удалось сгенерировать ключ для workout_history")
             workoutHistoryRef.setValue(workoutHistoryFirebase).await()
             newHistoryKey
         }
-
-    override suspend fun updateWorkoutHistory(workoutHistoryFirebase: WorkoutHistoryFirebase, userId: String) {
-        if (workoutHistoryFirebase.id.isBlank()) {
-            logger.e("FirebaseAPI", "Не указан ID для обновления истории тренировки.")
-            return
-        }
-        executeRequest("Обновление истории тренировки ${workoutHistoryFirebase.id}") {
-            val workoutHistoryRef = database.child("workout_history").child(userId).child(workoutHistoryFirebase.id)
-            workoutHistoryRef.setValue(workoutHistoryFirebase).await()
-        }
-    }
 
     override suspend fun getWorkoutHistory(userId: String): List<WorkoutHistoryFirebase> =
         executeRequest("Получение истории тренировок для пользователя $userId") {

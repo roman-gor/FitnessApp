@@ -22,14 +22,12 @@ interface DatabaseRepository {
     suspend fun insertProgramWithExercises(program: Program): Int
     suspend fun insertUserProgram(program: UserProgram)
     suspend fun insertUserProgress(userProgress: UserProgress)
-    suspend fun updateUserProgress(userProgress: UserProgress)
     suspend fun getUserProgress(): List<UserProgress>
     suspend fun getMeals(): List<Meal>
     suspend fun insertMeals(meals: List<Meal>)
     suspend fun insertMealsItems(meal: MealPlan)
     suspend fun getProgram(): Program
     suspend fun insertWorkoutHistory(workoutHistory: WorkoutHistory)
-    suspend fun updateWorkoutHistory(workoutHistory: WorkoutHistory)
     suspend fun getWorkoutHistory(): List<WorkoutHistory>
     suspend fun getArticles(): List<Article>
     suspend fun insertArticles(articles: List<Article>)

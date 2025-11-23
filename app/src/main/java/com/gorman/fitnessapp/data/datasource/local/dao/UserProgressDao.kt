@@ -13,6 +13,4 @@ interface UserProgressDao {
     suspend fun insertUserProgress(userProgressEntity: UserProgressEntity)
     @Query("SELECT * FROM UserProgress")
     suspend fun getUserProgress(): List<UserProgressEntity>
-    @Update(UserProgressEntity::class)
-    suspend fun updateUserProgress(userProgressEntity: UserProgressEntity)
 }

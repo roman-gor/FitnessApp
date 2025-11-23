@@ -81,9 +81,10 @@
     <string name="program_created_success">Программа успешно создана!</string>
     <string name="generation_loading">Запуск процесса генерации</string>
     <string name="program_created_error">Ошибка при генерации программы</string>
-    <string name="get_program_screen">Вернуться на главную</string>
+    <string name="to_home">Вернуться на главную</string>
     <string name="try_again">Попробовать еще раз</string>
     <string name="confirm_to_gen_program">Программа тренировок уже существует. Желаете сгенерировать заново?</string>
     <string name="resources">Ресурсы</string>
     <string name="exercises_error">Ошибка при загрузке ресурсов</string>
+    <string name="complete_program">Тренировка успешно завершена!</string>
 </resources>

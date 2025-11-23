@@ -60,10 +60,6 @@ class FirebaseRepositoryImpl @Inject constructor(
         return firebaseAPI.insertUserProgress(userProgress.toRemote())
     }
 
-    override suspend fun updateUserProgress(userProgress: UserProgress) {
-        firebaseAPI.updateUserProgress(userProgress.toRemote())
-    }
-
     override suspend fun getUserProgress(userId: String): List<UserProgress>? {
         return firebaseAPI.getUserProgress(userId)?.map { it.toDomain() }
     }
@@ -134,13 +130,6 @@ class FirebaseRepositoryImpl @Inject constructor(
 
     override suspend fun insertWorkoutHistory(workoutHistory: WorkoutHistory): String? {
         return firebaseAPI.insertWorkoutHistory(workoutHistory.toRemote())
-    }
-
-    override suspend fun updateWorkoutHistory(
-        workoutHistory: WorkoutHistory,
-        userId: String
-    ) {
-        return firebaseAPI.updateWorkoutHistory(workoutHistory.toRemote(), userId)
     }
 
     override suspend fun getWorkoutHistory(userId: String): List<WorkoutHistory> {

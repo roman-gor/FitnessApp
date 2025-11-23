@@ -40,6 +40,7 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.gorman.fitnessapp.R
 import com.gorman.fitnessapp.domain.models.Exercise
+import com.gorman.fitnessapp.domain.models.ProgramExercise
 import com.gorman.fitnessapp.ui.components.Header
 import com.gorman.fitnessapp.ui.fonts.mulishFont
 import com.gorman.fitnessapp.ui.viewmodel.ProgramViewModel
@@ -48,7 +49,8 @@ import com.gorman.fitnessapp.ui.viewmodel.ProgramViewModel
 fun ProgramByDayScreen(
     onBackPage: () -> Unit,
     day: String,
-    onExerciseProgramClick: (Exercise) -> Unit
+    onExerciseProgramClick: (Exercise) -> Unit,
+    onStartProgram: (List<ProgramExercise>) -> Unit
 ) {
     val programViewModel: ProgramViewModel = hiltViewModel()
     LaunchedEffect(Unit) {
@@ -90,7 +92,8 @@ fun ProgramByDayScreen(
                 ProgramByDayCard(
                     durationTotal = duration,
                     caloriesTotal = calories,
-                    exercisesTotal = totalExercises
+                    exercisesTotal = totalExercises,
+                    onStartProgram = { onStartProgram(programExercisesByDay) }
                 )
                 programExercisesByDay.forEach { programExercise ->
                     val exerciseId = programExercise.exerciseId
@@ -109,10 +112,12 @@ fun ProgramByDayScreen(
 fun ProgramByDayCard(
     durationTotal: Int,
     caloriesTotal: Int,
-    exercisesTotal: Int
+    exercisesTotal: Int,
+    onStartProgram: () -> Unit
 ) {
     Card(
-        modifier = Modifier.padding(horizontal = 24.dp, vertical = 12.dp),
+        modifier = Modifier
+            .padding(horizontal = 24.dp, vertical = 12.dp),
         colors = CardDefaults.cardColors(
             containerColor = colorResource(R.color.bg_color)
         ),
@@ -195,6 +200,16 @@ fun ProgramByDayCard(
                             fontWeight = FontWeight.Medium
                         )
                     }
+                }
+            }
+            Box(
+                modifier = Modifier.matchParentSize()
+                    .align(Alignment.Center),
+                contentAlignment = Alignment.Center
+            ) {
+                Column {
+                    PlayButton { onStartProgram() }
+                    Spacer(modifier = Modifier.height(24.dp))
                 }
             }
         }

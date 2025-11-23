@@ -95,10 +95,6 @@ class DatabaseRepositoryImpl @Inject constructor(
         userProgressDao.insertUserProgress(userProgress.toEntity())
     }
 
-    override suspend fun updateUserProgress(userProgress: UserProgress) {
-        userProgressDao.updateUserProgress(userProgress.toEntity())
-    }
-
     override suspend fun getUserProgress(): List<UserProgress> {
         return userProgressDao.getUserProgress().map { it.toDomain() }
     }
@@ -127,11 +123,8 @@ class DatabaseRepositoryImpl @Inject constructor(
     }
 
     override suspend fun insertWorkoutHistory(workoutHistory: WorkoutHistory) {
+        Log.d("Workout", "${workoutHistory.toEntity()}")
         workoutHistoryDao.insertWorkoutHistory(workoutHistory.toEntity())
-    }
-
-    override suspend fun updateWorkoutHistory(workoutHistory: WorkoutHistory) {
-        workoutHistoryDao.updateWorkoutHistory(workoutHistory.toEntity())
     }
 
     override suspend fun getWorkoutHistory(): List<WorkoutHistory> {

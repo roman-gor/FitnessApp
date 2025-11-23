@@ -18,7 +18,7 @@ import com.gorman.fitnessapp.domain.usecases.GetAndSyncUserProgramsUseCase
 import com.gorman.fitnessapp.domain.usecases.GetExercisesUseCase
 import com.gorman.fitnessapp.domain.usecases.GetMealsUseCase
 import com.gorman.fitnessapp.domain.usecases.GetUserIdUseCase
-import com.gorman.fitnessapp.domain.usecases.InsertUserProgressLocalAndRemoteUseCase
+import com.gorman.fitnessapp.domain.usecases.InsertUserProgressUseCase
 import com.gorman.fitnessapp.domain.usecases.SaveNewUserUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
@@ -37,7 +37,7 @@ class TestViewModel @Inject constructor(
     private val getMealsUseCase: GetMealsUseCase,
     private val getExercisesUseCase: GetExercisesUseCase,
     private val getAndSyncMealPlansUseCase: GetAndSyncMealPlansUseCase,
-    private val insertUserProgressLocalAndRemoteUseCase: InsertUserProgressLocalAndRemoteUseCase,
+    private val insertUserProgressUseCase: InsertUserProgressUseCase,
     private val getUserIdUseCase: GetUserIdUseCase
 ) : ViewModel(){
     private val _usersState: MutableState<List<UsersData>> = mutableStateOf(emptyList())

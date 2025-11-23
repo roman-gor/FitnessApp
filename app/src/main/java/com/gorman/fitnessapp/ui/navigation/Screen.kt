@@ -34,6 +34,7 @@ sealed class Screen() {
     sealed class WorkoutScreen(val route: String): Screen() {
         object ProgramByDay: WorkoutScreen("program_day")
         object ExerciseByProgram: WorkoutScreen("exercise_program")
+        object WorkoutTraining: WorkoutScreen("workout_training")
     }
 
     sealed class ProfileItemsScreen(val icon: Int, val title: Int): Screen() {

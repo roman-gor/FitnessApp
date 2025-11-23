@@ -13,6 +13,4 @@ interface WorkoutHistoryDao {
     suspend fun insertWorkoutHistory(workoutHistoryEntity: WorkoutHistoryEntity)
     @Query("SELECT * FROM workouthistory")
     suspend fun getWorkoutHistory(): List<WorkoutHistoryEntity>
-    @Update(WorkoutHistoryEntity::class)
-    suspend fun updateWorkoutHistory(workoutHistoryEntity: WorkoutHistoryEntity)
 }

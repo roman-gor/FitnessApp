@@ -1,5 +1,8 @@
 package com.gorman.fitnessapp.domain.models
 
+import kotlinx.serialization.Serializable
+
+@Serializable
 data class ProgramExercise(
     val id: Int = 0,
     val firebaseId: String = "",

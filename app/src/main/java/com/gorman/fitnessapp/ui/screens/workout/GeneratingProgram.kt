@@ -93,7 +93,7 @@ fun GeneratingProgram(
             GenerationDefault (
                 onClick = { onNavigateToProgram() },
                 text = stringResource(R.string.program_created_success),
-                buttonText = stringResource(R.string.get_program_screen))
+                buttonText = stringResource(R.string.to_home))
         }
     }
 }

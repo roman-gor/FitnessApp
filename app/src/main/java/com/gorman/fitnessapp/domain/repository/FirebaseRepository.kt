@@ -25,7 +25,6 @@ interface FirebaseRepository {
     suspend fun insertProgramExercise(programExercise: List<ProgramExercise>?, programId: String?)
     suspend fun insertUserProgram(program: UserProgram)
     suspend fun insertUserProgress(userProgress: UserProgress): String?
-    suspend fun updateUserProgress(userProgress: UserProgress)
     suspend fun getUserProgress(userId: String): List<UserProgress>?
     suspend fun insertUser(user: UsersData): String?
     suspend fun deleteUser(user: UsersData)
@@ -39,7 +38,6 @@ interface FirebaseRepository {
     suspend fun getProgram(userId: String): ProgramOutput?
     suspend fun getMealPlans(userId: String): Map<MealPlanTemplate, List<MealPlanItem>>?
     suspend fun insertWorkoutHistory(workoutHistory: WorkoutHistory): String?
-    suspend fun updateWorkoutHistory(workoutHistory: WorkoutHistory, userId: String)
     suspend fun getWorkoutHistory(userId: String): List<WorkoutHistory>
     suspend fun getArticles(): List<Article>
 }
