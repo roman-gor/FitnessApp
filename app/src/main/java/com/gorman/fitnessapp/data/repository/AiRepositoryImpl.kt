@@ -16,13 +16,13 @@ class AiRepositoryImpl @Inject constructor(
     private val generator: GeminiGenerator
 ): AiRepository {
     override suspend fun generatePrograms(usersData: UsersData, availableExercises: Map<Int?, String>?): List<Program> {
-        val response = availableExercises?.let {
-            generator.generateWorkoutProgram(userData = usersData, availableExercises = it)
-                .trimIndent()
-                .removePrefix("```json")
-                .removeSuffix("```")
-        }
-        Log.d("Json", "$response")
+//        val response = availableExercises?.let {
+//            generator.generateWorkoutProgram(userData = usersData, availableExercises = it)
+//                .trimIndent()
+//                .removePrefix("```json")
+//                .removeSuffix("```")
+//        }
+//        Log.d("Json", "$response")
         val testResponse = """
             [
               {
@@ -246,7 +246,7 @@ class AiRepositoryImpl @Inject constructor(
               }
             ]
         """.trimIndent()
-        val programDto: List<ProgramDto> = Json.decodeFromString(response!!)
+        val programDto: List<ProgramDto> = Json.decodeFromString(testResponse)
         return programDto.map { it.toDomain() }
     }
 

@@ -160,6 +160,12 @@ fun SetupNavigation() {
         composable("main_screen") {
             BottomNavigation(navController)
         }
+        composable("generating_route") {
+            GeneratingNavigation(
+                navController = navController,
+                destination = "program"
+            )
+        }
     }
 }
 

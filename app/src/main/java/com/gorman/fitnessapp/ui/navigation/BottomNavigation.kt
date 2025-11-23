@@ -45,11 +45,6 @@ fun BottomNavigation(navController: NavController) {
     val nestedNavController = rememberNavController()
     val homeViewModel: HomeViewModel = hiltViewModel()
     val state by homeViewModel.homeUiState.collectAsState()
-    var showGeneratingNavigation by remember { mutableStateOf(false) }
-    val navBackStackEntry by nestedNavController.currentBackStackEntryAsState()
-    LaunchedEffect(navBackStackEntry?.destination?.route) {
-        showGeneratingNavigation = navBackStackEntry?.destination?.route == Screen.GeneratingScreen.GenerateProgram.route
-    }
     Scaffold(
         modifier = Modifier.fillMaxSize(),
         containerColor = colorResource(R.color.bg_color),
@@ -57,14 +52,13 @@ fun BottomNavigation(navController: NavController) {
             BottomNavigationBar(
                 items = Screen.bItems,
                 navController = nestedNavController,
-                enabled = state == HomeUiState.Success && !showGeneratingNavigation
             )
         }
     ) { innerPadding ->
         NavHost(
             navController = nestedNavController,
             startDestination = Screen.BottomScreen.Home.route,
-            modifier = if (showGeneratingNavigation) Modifier.fillMaxSize() else Modifier.padding(innerPadding)
+            modifier = Modifier.padding(innerPadding)
         ) {
             Screen.bItems.forEach { bItem ->
                 composable(bItem.route) {
@@ -85,8 +79,7 @@ fun BottomNavigation(navController: NavController) {
                                 }
                             },
                             onNavigateToGenProgram = {
-                                showGeneratingNavigation = true
-                                nestedNavController.navigate(Screen.GeneratingScreen.GenerateProgram.route){
+                                navController.navigate("generating_route") {
                                     launchSingleTop = true
                                 }
                             },

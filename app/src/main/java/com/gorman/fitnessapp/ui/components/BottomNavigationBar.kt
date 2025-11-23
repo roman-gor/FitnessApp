@@ -1,5 +1,6 @@
 package com.gorman.fitnessapp.ui.components
 
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -28,18 +29,15 @@ import com.gorman.fitnessapp.ui.navigation.Screen
 @Composable
 fun BottomNavigationBar(
     navController: NavController,
-    items: List<Screen.BottomScreen>,
-    enabled: Boolean
+    items: List<Screen.BottomScreen>
 ) {
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentRoute = navBackStackEntry?.destination?.route
-    if (enabled) {
-        MainItem(
-            items = items,
-            currentRoute = currentRoute,
-            navController = navController
-        )
-    }
+    MainItem(
+        items = items,
+        currentRoute = currentRoute,
+        navController = navController
+    )
 }
 
 @Composable
@@ -81,6 +79,7 @@ fun MainItem(
                             launchSingleTop = true
                             restoreState = true
                         }
+                        Log.d("ID", "${navController.graph.findStartDestination().id}")
                     }
                 )
             }
