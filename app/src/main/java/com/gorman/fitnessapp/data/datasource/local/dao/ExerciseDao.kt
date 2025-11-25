@@ -14,4 +14,8 @@ interface ExerciseDao {
     suspend fun insertExercises(exercises: List<ExerciseEntity>)
     @Query("SELECT COUNT(*) FROM exercise")
     suspend fun getExerciseCount(): Int
+    @Query("DELETE FROM exercise")
+    suspend fun deleteAllExercises()
+    @Query("DELETE FROM sqlite_sequence WHERE name = 'exercise'")
+    suspend fun resetPrimaryKey()
 }

@@ -22,6 +22,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import java.time.LocalDate
+import java.time.ZoneId
 import javax.inject.Inject
 
 @HiltViewModel
@@ -84,7 +85,7 @@ class ProgramViewModel @Inject constructor(
             val duration = programExercises.sumOf { it.durationSec * it.sets } / 60
             val calories = programExercises.sumOf { it.caloriesBurned?.toDouble() ?: 0.0 }.toInt()
             val userWeight = getUserFromLocalUseCase().weight
-            val date = LocalDate.now().toEpochDay()
+            val date = LocalDate.now().atStartOfDay(ZoneId.systemDefault()).toInstant().toEpochMilli()
             val userId = getUserIdUseCase() ?: return@launch
             val programId = getProgramIdUseCase()
             val userProgressResult = insertUserProgressUseCase(

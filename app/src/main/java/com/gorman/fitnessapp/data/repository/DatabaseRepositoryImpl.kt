@@ -74,6 +74,13 @@ class DatabaseRepositoryImpl @Inject constructor(
     }
 
     @Transaction
+    override suspend fun updateExercises(exercises: List<Exercise>) {
+        exerciseDao.deleteAllExercises()
+        exerciseDao.resetPrimaryKey()
+        insertExercises(exercises = exercises)
+    }
+
+    @Transaction
     override suspend fun insertProgramWithExercises(program: Program): Int {
         programDao.deleteAllRows()
         programExerciseDao.deleteAllRows()

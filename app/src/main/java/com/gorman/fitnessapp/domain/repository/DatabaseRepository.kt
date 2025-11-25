@@ -19,6 +19,7 @@ interface DatabaseRepository {
     suspend fun updateUser(user: UsersData, id: Int): Int
     suspend fun getExercises(): List<Exercise>
     suspend fun insertExercises(exercises: List<Exercise>)
+    suspend fun updateExercises(exercises: List<Exercise>)
     suspend fun insertProgramWithExercises(program: Program): Int
     suspend fun insertUserProgram(program: UserProgram)
     suspend fun insertUserProgress(userProgress: UserProgress)

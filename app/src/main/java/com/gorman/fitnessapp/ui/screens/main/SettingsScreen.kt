@@ -64,7 +64,7 @@ fun SettingsScreen(
             ) {
                 GeneralBackButton(
                     onClick = { onBackPage() },
-                    text = stringResource(R.string.profile_title),
+                    text = stringResource(R.string.settings),
                     textColor = colorResource(R.color.picker_wheel_bg)
                 )
             }
