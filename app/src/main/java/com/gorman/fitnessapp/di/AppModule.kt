@@ -128,8 +128,7 @@ object AppModule {
         Room.databaseBuilder(context,
             AppDatabase::class.java,
             "fitness_app_db")
-            .fallbackToDestructiveMigration(false)
-            .addCallback(AppDatabase.MIGRATION_CALLBACK)
+            .fallbackToDestructiveMigration(true)
             .build()
 
     @Provides

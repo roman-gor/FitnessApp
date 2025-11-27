@@ -13,6 +13,7 @@ import com.gorman.fitnessapp.logger.AppLogger
 import com.gorman.fitnessapp.ui.states.ArticlesState
 import com.gorman.fitnessapp.ui.states.HomeUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -48,7 +49,7 @@ class HomeViewModel @Inject constructor(
 
     fun prepareData() {
         _homeUiState.value = HomeUiState.Loading
-        viewModelScope.launch {
+        viewModelScope.launch(Dispatchers.IO) {
             try {
                 val articlesDeferred = async { getArticlesUseCase() }
                 _programExistingState.value = getProgramIdUseCase().isNotEmpty()

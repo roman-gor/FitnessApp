@@ -87,4 +87,6 @@
     <string name="resources">Ресурсы</string>
     <string name="exercises_error">Ошибка при загрузке ресурсов</string>
     <string name="complete_program">Тренировка успешно завершена!</string>
+    <string name="progress_tracking">Прогресс</string>
+    <string name="age">Возраст</string>
 </resources>

@@ -3,6 +3,8 @@ package com.gorman.fitnessapp.ui.screens.workout
 import android.util.Log
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -90,7 +92,10 @@ fun ProgramRunScreen(
             WorkoutCompleteScreen { onNavigateToHome() }
         }
         ProgramHistoryState.Loading -> LoadingStub()
-        else -> {}
+        is ProgramHistoryState.Error -> ErrorRunProgramScreen {
+            programViewModel.markProgramAsCompleted(exercisesProgram)
+        }
+        ProgramHistoryState.Idle -> LoadingStub()
     }
 }
 
@@ -244,6 +249,44 @@ fun WorkoutCompleteScreen(
                     modifier = Modifier
                         .padding(8.dp))
             }
+        }
+    }
+}
+
+@Composable
+fun ErrorRunProgramScreen(
+    onRetryClick: () -> Unit
+) {
+    Box(
+        modifier = Modifier.fillMaxSize()
+            .background(colorResource(R.color.bg_color)),
+        contentAlignment = Alignment.Center
+    ) {
+        Column(
+            modifier = Modifier.fillMaxSize(),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center
+        ) {
+            Text(
+                text = stringResource(R.string.error_text),
+                fontFamily = mulishFont(),
+                fontSize = 22.sp,
+                color = Color.White,
+                fontWeight = FontWeight.Bold
+            )
+            Spacer(modifier = Modifier.height(8.dp))
+            Text(
+                text = stringResource(R.string.try_again),
+                fontFamily = mulishFont(),
+                fontSize = 18.sp,
+                color = Color.White,
+                fontWeight = FontWeight.Bold,
+                modifier = Modifier.clickable(
+                    onClick = {
+                        onRetryClick()
+                    }
+                )
+            )
         }
     }
 }

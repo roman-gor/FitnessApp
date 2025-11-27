@@ -29,6 +29,7 @@ import com.gorman.fitnessapp.ui.screens.workout.ExerciseByDayScreen
 import com.gorman.fitnessapp.ui.screens.workout.GeneratingProgram
 import com.gorman.fitnessapp.ui.screens.workout.ProgramByDayScreen
 import com.gorman.fitnessapp.ui.screens.workout.ProgramRunScreen
+import com.gorman.fitnessapp.ui.screens.workout.ProgressScreen
 import com.gorman.fitnessapp.ui.screens.workout.WorkoutScreen
 import com.gorman.fitnessapp.ui.viewmodel.HomeViewModel
 import kotlinx.serialization.encodeToString
@@ -59,7 +60,11 @@ fun BottomNavigation(navController: NavController) {
                         Screen.BottomScreen.Home.route -> HomeScreen(
                             homeViewModel = homeViewModel,
                             onNutritionClick = {},
-                            onProgressClick = {},
+                            onProgressClick = {
+                                nestedNavController.navigate(Screen.GeneralHomeScreen.Progress.route) {
+                                    launchSingleTop = true
+                                }
+                            },
                             onWorkoutClick = {
                                 nestedNavController.navigate(Screen.GeneralHomeScreen.Workout.route) {
                                     launchSingleTop = true
@@ -146,6 +151,11 @@ fun BottomNavigation(navController: NavController) {
                     onItemClick = { day->
                         nestedNavController.navigate("${Screen.WorkoutScreen.ProgramByDay.route}/$day")
                     }
+                )
+            }
+            composable(Screen.GeneralHomeScreen.Progress.route) {
+                ProgressScreen(
+                    onBackPage = { nestedNavController.navigateUp() }
                 )
             }
             composable(

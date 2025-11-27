@@ -84,4 +84,6 @@
     <string name="resources">Resources</string>
     <string name="exercises_error">Error Loading Resources</string>
     <string name="complete_program">Workout Perfectly Completed!</string>
+    <string name="progress_tracking">Progress Tracking</string>
+    <string name="age">Age</string>
 </resources>

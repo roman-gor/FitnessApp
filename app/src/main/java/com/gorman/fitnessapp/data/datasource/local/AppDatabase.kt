@@ -38,7 +38,7 @@ import com.gorman.fitnessapp.data.models.room.WorkoutHistoryEntity
     UserProgramEntity::class,
     WorkoutHistoryEntity::class,
     ArticleEntity::class
-], version = 20, exportSchema = false)
+], version = 1, exportSchema = false)
 abstract class AppDatabase: RoomDatabase() {
     abstract fun usersDataDao(): UsersDataDao
     abstract fun exerciseDao(): ExerciseDao
@@ -51,14 +51,4 @@ abstract class AppDatabase: RoomDatabase() {
     abstract fun workoutHistoryDao(): WorkoutHistoryDao
     abstract fun mealPlanTemplateDao(): MealPlanTemplateDao
     abstract fun articleDao(): ArticleDao
-    companion object {
-        val MIGRATION_CALLBACK = object : Callback() {
-            override fun onCreate(db: SupportSQLiteDatabase) {
-                super.onCreate(db)
-                db.execSQL(CREATE_TRIGGER_PROGRAM_PROGRESS)
-                db.execSQL(CREATE_TRIGGER_USER_WEIGHT)
-                db.execSQL(CREATE_TRIGGER_PROGRAM_COMPLETION)
-            }
-        }
-    }
 }

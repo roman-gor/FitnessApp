@@ -18,6 +18,7 @@ import com.gorman.fitnessapp.logger.AppLogger
 import com.gorman.fitnessapp.ui.states.ProgramHistoryState
 import com.gorman.fitnessapp.ui.states.ProgramUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
@@ -53,7 +54,7 @@ class ProgramViewModel @Inject constructor(
 
     fun prepareProgramData() {
         _programUiState.value = ProgramUiState.Loading
-        viewModelScope.launch {
+        viewModelScope.launch(Dispatchers.IO) {
             try {
                 val exerciseList = getExercisesUseCase()
                 val programMap = getProgramFromLocalUseCase()
