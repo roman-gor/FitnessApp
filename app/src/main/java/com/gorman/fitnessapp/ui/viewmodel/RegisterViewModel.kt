@@ -9,6 +9,8 @@ import com.gorman.fitnessapp.domain.usecases.GetExercisesUseCase
 import com.gorman.fitnessapp.domain.usecases.GetUserFromFirebaseUseCase
 import com.gorman.fitnessapp.domain.usecases.GetUserIdUseCase
 import com.gorman.fitnessapp.domain.usecases.SaveNewUserUseCase
+import com.gorman.fitnessapp.domain.usecases.SyncUserProgressUseCase
+import com.gorman.fitnessapp.domain.usecases.SyncWorkoutHistoryUseCase
 import com.gorman.fitnessapp.domain.usecases.UploadImageProfileUseCase
 import com.gorman.fitnessapp.logger.AppLogger
 import com.gorman.fitnessapp.ui.states.RegisterUiState
@@ -26,6 +28,8 @@ class RegisterViewModel @Inject constructor(
     private val getUserFromFirebaseUseCase: GetUserFromFirebaseUseCase,
     private val getAndSyncUserProgramsUseCase: GetAndSyncUserProgramsUseCase,
     private val uploadImageProfileUseCase: UploadImageProfileUseCase,
+    private val syncWorkoutHistoryUseCase: SyncWorkoutHistoryUseCase,
+    private val syncUserProgressUseCase: SyncUserProgressUseCase,
     private val logger: AppLogger
 ): ViewModel() {
 
@@ -70,6 +74,8 @@ class RegisterViewModel @Inject constructor(
                 val isUser = getUserFromFirebaseUseCase(email)
                 getUserIdUseCase()?.let {
                     getAndSyncUserProgramsUseCase(it)
+                    syncUserProgressUseCase(it)
+                    syncWorkoutHistoryUseCase(it)
                 }
                 _registerUiState.value = if (isUser) {
                     RegisterUiState.Success

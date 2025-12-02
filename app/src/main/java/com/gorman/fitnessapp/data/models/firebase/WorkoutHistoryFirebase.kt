@@ -5,8 +5,8 @@ data class WorkoutHistoryFirebase(
     val userId: String = "",
     val exerciseId: Int = 0,
     val programId: String? = null,
-    val date: Long,
-    val setsCompleted: Int,
-    val repsCompleted: Int,
+    val date: Long = 0,
+    val setsCompleted: Int = 0,
+    val repsCompleted: Int = 0,
     val weightUsed: Float? = null
 )

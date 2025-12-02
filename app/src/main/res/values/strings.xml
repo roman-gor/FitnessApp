@@ -112,4 +112,5 @@
     <string name="sun">ВС</string>
     <string name="activities">Активность</string>
     <string name="level_complex">Уровень</string>
+    <string name="duration">Длительность</string>
 </resources>

@@ -40,9 +40,9 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -51,7 +51,6 @@ import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.gorman.fitnessapp.R
 import com.gorman.fitnessapp.domain.models.Exercise
-import com.gorman.fitnessapp.domain.models.UserProgress
 import com.gorman.fitnessapp.domain.models.UsersData
 import com.gorman.fitnessapp.domain.models.WorkoutHistory
 import com.gorman.fitnessapp.ui.components.DatesGrid
@@ -92,8 +91,7 @@ fun ProgressScreen(
                 usersData = usersData,
                 exercises = exercises,
                 onDateChange = { currentDate = it },
-                progressList = state.progressHistory.first,
-                historyList = state.progressHistory.second
+                historyList = state.progressHistory
             )
     }
 }
@@ -107,7 +105,6 @@ fun ProgressContent (
     onDateChange: (LocalDate) -> Unit,
     monthNameFormatted: String,
     onDatePickerClick: () -> Unit,
-    filterProgress: List<UserProgress>,
     filterHistory: List<WorkoutHistory>
 ) {
     Box(
@@ -156,7 +153,6 @@ fun ProgressContent (
                         fontFamily = mulishFont(),
                         fontSize = 18.sp,
                         fontWeight = FontWeight.Medium,
-                        fontStyle = FontStyle.Italic,
                         color = colorResource(R.color.white),
                         modifier = Modifier.clickable(onClick = onDatePickerClick)
                     )
@@ -185,7 +181,7 @@ fun ProgressContent (
                         .padding(start = 32.dp),
                     textAlign = TextAlign.Start
                 )
-                Spacer(modifier = Modifier.height(24.dp))
+                Spacer(modifier = Modifier.height(16.dp))
                 HistoryList(
                     filterHistory = filterHistory,
                     exercises = exercises)
@@ -201,18 +197,14 @@ fun DefaultProgressScreen(
     exercises: List<Exercise>,
     currentDate: LocalDate,
     onDateChange: (LocalDate) -> Unit,
-    progressList: List<UserProgress>,
     historyList: List<WorkoutHistory>
 ) {
     var visibleDatePicker by remember { mutableStateOf(false) }
-    val formatter = DateTimeFormatter.ofPattern("MMMM", Locale("en", "EN"))
+    val formatter = DateTimeFormatter.ofPattern("MMMM", Locale.ENGLISH)
     val monthNameFormatted = currentDate.format(formatter)
     val currentDateLong = currentDate.atStartOfDay(ZoneOffset.systemDefault()).toEpochSecond()
     val filterHistory = remember(currentDate, historyList) {
         historyList.filter { it.date == currentDateLong * 1000 }
-    }
-    val filterProgress = remember(currentDate, progressList) {
-        progressList.filter { it.date == currentDateLong * 1000 }
     }
     ProgressContent(
         onBackPage = onBackPage,
@@ -222,10 +214,8 @@ fun DefaultProgressScreen(
         onDatePickerClick = { visibleDatePicker = true },
         currentDate = currentDate,
         onDateChange = onDateChange,
-        filterHistory = filterHistory,
-        filterProgress = progressList
+        filterHistory = filterHistory
     )
-
     MonthPicker(
         visible = visibleDatePicker,
         currentMonth = currentDate.monthValue - 1,
@@ -250,16 +240,15 @@ fun HistoryList(
         val duration = history.repsCompleted * history.setsCompleted
         val complexity = exercise.complexity
         HistoryListItem(
-            history,
             exercise,
             complexity ?: 1,
             duration)
+        Spacer(modifier = Modifier.height(4.dp))
     }
 }
 
 @Composable
 fun HistoryListItem(
-    history: WorkoutHistory,
     exercise: Exercise,
     complexity: Int,
     duration: Int
@@ -267,57 +256,89 @@ fun HistoryListItem(
     Card(
         modifier = Modifier
             .wrapContentWidth()
-            .height(70.dp)
+            .height(80.dp)
             .padding(horizontal = 16.dp, vertical = 4.dp),
-        shape = RoundedCornerShape(24.dp),
+        shape = RoundedCornerShape(32.dp),
         colors = CardDefaults.cardColors(
             containerColor = Color.White
         )
     ) {
         Row(
             modifier = Modifier
-                .height(70.dp)
+                .height(80.dp)
                 .fillMaxWidth()
                 .padding(8.dp),
-            horizontalArrangement = Arrangement.Center,
+            horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Image(
-                painter = painterResource(R.drawable.ic_run),
-                contentDescription = null,
-                modifier = Modifier
-                    .clip(CircleShape)
-                    .size(45.dp),
-                contentScale = ContentScale.Crop
-            )
-            Column(
-                modifier = Modifier.wrapContentWidth()
-                    .height(70.dp),
-                horizontalAlignment = Alignment.Start,
-                verticalArrangement = Arrangement.Top
+            Row (
+                modifier = Modifier.height(55.dp)
             ) {
-                Row(verticalAlignment = Alignment.CenterVertically) {
-                    Icon(
-                        painter = painterResource(R.drawable.fire_icon),
-                        tint = colorResource(R.color.picker_wheel_bg),
-                        contentDescription = null,
-                        modifier = Modifier.scale(1.3f)
-                    )
-                    Spacer(modifier = Modifier.width(4.dp))
+                Image(
+                    painter = painterResource(R.drawable.ic_run),
+                    contentDescription = null,
+                    modifier = Modifier
+                        .clip(CircleShape)
+                        .size(55.dp),
+                    contentScale = ContentScale.Crop
+                )
+                Spacer(modifier = Modifier.width(8.dp))
+                Column(
+                    modifier = Modifier.height(100.dp),
+                    horizontalAlignment = Alignment.Start,
+                    verticalArrangement = Arrangement.Top
+                ) {
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        Icon(
+                            painter = painterResource(R.drawable.fire_icon),
+                            tint = colorResource(R.color.picker_wheel_bg),
+                            contentDescription = null,
+                            modifier = Modifier.scale(1.4f)
+                        )
+                        Spacer(modifier = Modifier.width(4.dp))
+                        Text(
+                            text = "$complexity ${stringResource(R.string.level_complex)}",
+                            fontFamily = mulishFont(),
+                            lineHeight = 15.sp,
+                            color = colorResource(R.color.black),
+                            fontSize = 14.sp,
+                            fontWeight = FontWeight.Medium
+                        )
+                    }
                     Text(
-                        text = "$complexity ${stringResource(R.string.level_complex)}",
+                        text = exercise.name,
                         fontFamily = mulishFont(),
+                        lineHeight = 15.sp,
                         color = colorResource(R.color.black),
-                        fontSize = 12.sp,
-                        fontWeight = FontWeight.Medium
+                        fontSize = 16.sp,
+                        overflow = TextOverflow.Ellipsis,
+                        maxLines = 1,
+                        fontWeight = FontWeight.Bold,
+                        modifier = Modifier.width(170.dp)
                     )
                 }
+            }
+            Column(
+                modifier = Modifier.padding(end = 8.dp),
+                horizontalAlignment = Alignment.End,
+                verticalArrangement = Arrangement.Center
+            ) {
                 Text(
-                    text = exercise.name,
+                    text = stringResource(R.string.duration),
+                    fontFamily = mulishFont(),
+                    color = colorResource(R.color.font_purple_color),
+                    fontSize = 16.sp,
+                    lineHeight = 15.sp,
+                    fontWeight = FontWeight.Medium
+                )
+                Spacer(modifier = Modifier.height(4.dp))
+                Text(
+                    text = "${duration}x",
                     fontFamily = mulishFont(),
                     color = colorResource(R.color.black),
-                    fontSize = 16.sp,
-                    fontWeight = FontWeight.Bold
+                    lineHeight = 15.sp,
+                    fontSize = 14.sp,
+                    fontWeight = FontWeight.Medium
                 )
             }
         }

@@ -35,7 +35,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.withStyle
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -132,7 +131,8 @@ fun SignInDefault(
             Spacer(modifier = Modifier.height(16.dp))
             Button(
                 onClick = {
-                    onSignInScreen(email)
+                    if (email.isNotEmpty())
+                        onSignInScreen(email)
                 },
                 elevation = ButtonDefaults.elevatedButtonElevation(
                     defaultElevation = 8.dp
@@ -214,10 +214,4 @@ fun SignInDefault(
                 .padding(bottom = 100.dp)
         )
     }
-}
-
-@Preview(showBackground = true)
-@Composable
-fun PreviewSignIn() {
-
 }

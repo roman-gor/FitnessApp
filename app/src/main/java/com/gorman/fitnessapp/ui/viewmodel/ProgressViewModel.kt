@@ -21,7 +21,6 @@ import javax.inject.Inject
 class ProgressViewModel @Inject constructor(
     private val logger: AppLogger,
     private val getUserFromLocalUseCase: GetUserFromLocalUseCase,
-    private val getUserProgressFromLocalUseCase: GetUserProgressFromLocalUseCase,
     private val getWorkoutHistoryFromLocalUseCase: GetWorkoutHistoryFromLocalUseCase,
     private val getExercisesUseCase: GetExercisesUseCase
 ): ViewModel() {
@@ -39,9 +38,8 @@ class ProgressViewModel @Inject constructor(
             _progressState.value = ProgressUiState.Loading
             try {
                 _usersDataState.value = getUserFromLocalUseCase()
-                val progressList = getUserProgressFromLocalUseCase()
                 val historyList = getWorkoutHistoryFromLocalUseCase()
-                _progressState.value = ProgressUiState.Success(Pair(progressList, historyList))
+                _progressState.value = ProgressUiState.Success(historyList)
             } catch (e: Exception) {
                 logger.e("ProgressViewModel", "Ошибка ${e.message}")
                 _progressState.value = ProgressUiState.Error("${e.message}")
