@@ -110,4 +110,6 @@
     <string name="fri">ПТ</string>
     <string name="sat">СБ</string>
     <string name="sun">ВС</string>
+    <string name="activities">Активность</string>
+    <string name="level_complex">Уровень</string>
 </resources>

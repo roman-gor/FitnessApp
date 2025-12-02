@@ -1,5 +1,6 @@
 package com.gorman.fitnessapp.ui.screens.workout
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -18,6 +19,9 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -29,6 +33,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
@@ -37,6 +42,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -44,6 +50,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.gorman.fitnessapp.R
+import com.gorman.fitnessapp.domain.models.Exercise
 import com.gorman.fitnessapp.domain.models.UserProgress
 import com.gorman.fitnessapp.domain.models.UsersData
 import com.gorman.fitnessapp.domain.models.WorkoutHistory
@@ -57,6 +64,7 @@ import com.gorman.fitnessapp.ui.states.ProgressUiState
 import com.gorman.fitnessapp.ui.viewmodel.ProgressViewModel
 import java.time.LocalDate
 import java.time.ZoneId
+import java.time.ZoneOffset
 import java.time.format.DateTimeFormatter
 import java.util.Locale
 
@@ -65,35 +73,43 @@ fun ProgressScreen(
     onBackPage: () -> Unit
 ) {
     val progressViewModel: ProgressViewModel = hiltViewModel()
+    var currentDate by remember { mutableStateOf(LocalDate.now(ZoneId.of("Europe/Moscow"))) }
     LaunchedEffect(Unit) {
         progressViewModel.prepareData()
+        progressViewModel.getExercises()
     }
     val uiState by progressViewModel.progressState.collectAsState()
     val usersData by progressViewModel.usersData.collectAsState()
+    val exercises by progressViewModel.exercisesState.collectAsState()
     when(val state = uiState) {
         is ProgressUiState.Error -> ErrorProgressScreen { progressViewModel.prepareData() }
         ProgressUiState.Idle -> LoadingStub()
         ProgressUiState.Loading -> LoadingStub()
-        is ProgressUiState.Success -> DefaultProgressScreen(
-            onBackPage = onBackPage,
-            usersData = usersData,
-            progressList = state.progressHistory.first,
-            historyList = state.progressHistory.second)
+        is ProgressUiState.Success ->
+            DefaultProgressScreen(
+                onBackPage = onBackPage,
+                currentDate = currentDate,
+                usersData = usersData,
+                exercises = exercises,
+                onDateChange = { currentDate = it },
+                progressList = state.progressHistory.first,
+                historyList = state.progressHistory.second
+            )
     }
 }
 
-@Suppress("DEPRECATION")
 @Composable
-fun DefaultProgressScreen(
+fun ProgressContent (
     onBackPage: () -> Unit,
     usersData: UsersData?,
-    progressList: List<UserProgress>,
-    historyList: List<WorkoutHistory>
+    exercises: List<Exercise>,
+    currentDate: LocalDate,
+    onDateChange: (LocalDate) -> Unit,
+    monthNameFormatted: String,
+    onDatePickerClick: () -> Unit,
+    filterProgress: List<UserProgress>,
+    filterHistory: List<WorkoutHistory>
 ) {
-    var visibleDatePicker by remember { mutableStateOf(false) }
-    var currentDate by remember { mutableStateOf(LocalDate.now(ZoneId.of("Europe/Moscow"))) }
-    val formatter = DateTimeFormatter.ofPattern("MMMM", Locale("en", "EN"))
-    val monthNameFormatted = currentDate.format(formatter)
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -142,38 +158,170 @@ fun DefaultProgressScreen(
                         fontWeight = FontWeight.Medium,
                         fontStyle = FontStyle.Italic,
                         color = colorResource(R.color.white),
-                        modifier = Modifier.clickable(
-                            onClick = { visibleDatePicker = !visibleDatePicker }
-                        )
+                        modifier = Modifier.clickable(onClick = onDatePickerClick)
                     )
                 }
                 Spacer(modifier = Modifier.height(24.dp))
                 Box(
-                    modifier = Modifier.fillMaxWidth()
+                    modifier = Modifier
+                        .fillMaxWidth()
                         .padding(horizontal = 32.dp),
                     contentAlignment = Alignment.Center
                 ) {
                     Calendar(
                         currentDate = currentDate,
-                        onDateSelected = { date ->
-                            currentDate = date
-                        }
+                        onDateSelected = { date -> onDateChange(date) }
                     )
                 }
+                Spacer(modifier = Modifier.height(24.dp))
+                Text(
+                    text = stringResource(R.string.activities),
+                    fontFamily = mulishFont(),
+                    fontWeight = FontWeight.Medium,
+                    fontSize = 22.sp,
+                    color = colorResource(R.color.meet_text),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(start = 32.dp),
+                    textAlign = TextAlign.Start
+                )
+                Spacer(modifier = Modifier.height(24.dp))
+                HistoryList(
+                    filterHistory = filterHistory,
+                    exercises = exercises)
             }
         }
     }
+}
+
+@Composable
+fun DefaultProgressScreen(
+    onBackPage: () -> Unit,
+    usersData: UsersData?,
+    exercises: List<Exercise>,
+    currentDate: LocalDate,
+    onDateChange: (LocalDate) -> Unit,
+    progressList: List<UserProgress>,
+    historyList: List<WorkoutHistory>
+) {
+    var visibleDatePicker by remember { mutableStateOf(false) }
+    val formatter = DateTimeFormatter.ofPattern("MMMM", Locale("en", "EN"))
+    val monthNameFormatted = currentDate.format(formatter)
+    val currentDateLong = currentDate.atStartOfDay(ZoneOffset.systemDefault()).toEpochSecond()
+    val filterHistory = remember(currentDate, historyList) {
+        historyList.filter { it.date == currentDateLong * 1000 }
+    }
+    val filterProgress = remember(currentDate, progressList) {
+        progressList.filter { it.date == currentDateLong * 1000 }
+    }
+    ProgressContent(
+        onBackPage = onBackPage,
+        usersData = usersData,
+        exercises = exercises,
+        monthNameFormatted = monthNameFormatted,
+        onDatePickerClick = { visibleDatePicker = true },
+        currentDate = currentDate,
+        onDateChange = onDateChange,
+        filterHistory = filterHistory,
+        filterProgress = progressList
+    )
+
     MonthPicker(
         visible = visibleDatePicker,
-        currentMonth = LocalDate.now().month.value - 1,
-        currentYear = LocalDate.now().year,
+        currentMonth = currentDate.monthValue - 1,
+        currentYear = currentDate.year,
         confirmButtonClicked = { month, year ->
-            currentDate = LocalDate.of(year, month, 1)
+            onDateChange(LocalDate.of(year, month, 1))
+            visibleDatePicker = false
         },
         cancelClicked = {
-            visibleDatePicker = !visibleDatePicker
+            visibleDatePicker = false
         }
     )
+}
+
+@Composable
+fun HistoryList(
+    filterHistory: List<WorkoutHistory>,
+    exercises: List<Exercise>
+) {
+    filterHistory.forEach { history ->
+        val exercise = exercises[history.exerciseId]
+        val duration = history.repsCompleted * history.setsCompleted
+        val complexity = exercise.complexity
+        HistoryListItem(
+            history,
+            exercise,
+            complexity ?: 1,
+            duration)
+    }
+}
+
+@Composable
+fun HistoryListItem(
+    history: WorkoutHistory,
+    exercise: Exercise,
+    complexity: Int,
+    duration: Int
+) {
+    Card(
+        modifier = Modifier
+            .wrapContentWidth()
+            .height(70.dp)
+            .padding(horizontal = 16.dp, vertical = 4.dp),
+        shape = RoundedCornerShape(24.dp),
+        colors = CardDefaults.cardColors(
+            containerColor = Color.White
+        )
+    ) {
+        Row(
+            modifier = Modifier
+                .height(70.dp)
+                .fillMaxWidth()
+                .padding(8.dp),
+            horizontalArrangement = Arrangement.Center,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Image(
+                painter = painterResource(R.drawable.ic_run),
+                contentDescription = null,
+                modifier = Modifier
+                    .clip(CircleShape)
+                    .size(45.dp),
+                contentScale = ContentScale.Crop
+            )
+            Column(
+                modifier = Modifier.wrapContentWidth()
+                    .height(70.dp),
+                horizontalAlignment = Alignment.Start,
+                verticalArrangement = Arrangement.Top
+            ) {
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Icon(
+                        painter = painterResource(R.drawable.fire_icon),
+                        tint = colorResource(R.color.picker_wheel_bg),
+                        contentDescription = null,
+                        modifier = Modifier.scale(1.3f)
+                    )
+                    Spacer(modifier = Modifier.width(4.dp))
+                    Text(
+                        text = "$complexity ${stringResource(R.string.level_complex)}",
+                        fontFamily = mulishFont(),
+                        color = colorResource(R.color.black),
+                        fontSize = 12.sp,
+                        fontWeight = FontWeight.Medium
+                    )
+                }
+                Text(
+                    text = exercise.name,
+                    fontFamily = mulishFont(),
+                    color = colorResource(R.color.black),
+                    fontSize = 16.sp,
+                    fontWeight = FontWeight.Bold
+                )
+            }
+        }
+    }
 }
 
 fun processMonthName(month: String): Int {
@@ -227,7 +375,8 @@ fun ErrorProgressScreen(
     onRetryClick: () -> Unit
 ) {
     Box(
-        modifier = Modifier.fillMaxSize()
+        modifier = Modifier
+            .fillMaxSize()
             .background(colorResource(R.color.bg_color)),
         contentAlignment = Alignment.Center
     ) {
@@ -304,7 +453,8 @@ fun UserDataScreen(
                     modifier = Modifier.wrapContentWidth(),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Spacer(modifier = Modifier.width(4.dp)
+                    Spacer(modifier = Modifier
+                        .width(4.dp)
                         .clip(RoundedCornerShape(24.dp))
                         .height(28.dp)
                         .background(colorResource(R.color.meet_text)))
@@ -335,7 +485,8 @@ fun UserDataScreen(
                     modifier = Modifier.wrapContentWidth(),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Spacer(modifier = Modifier.width(4.dp)
+                    Spacer(modifier = Modifier
+                        .width(4.dp)
                         .clip(RoundedCornerShape(24.dp))
                         .height(28.dp)
                         .background(colorResource(R.color.meet_text)))

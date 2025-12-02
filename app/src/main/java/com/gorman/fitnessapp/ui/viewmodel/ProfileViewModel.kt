@@ -41,6 +41,7 @@ class ProfileViewModel @Inject constructor(
     fun deleteAccount(user: UsersData) {
         viewModelScope.launch {
             deleteUserUseCase(user)
+            logoutFromDevice()
         }
     }
 }

@@ -107,4 +107,6 @@
     <string name="fri">FRI</string>
     <string name="sat">SAT</string>
     <string name="sun">SUN</string>
+    <string name="activities">Activities</string>
+    <string name="level_complex">Level</string>
 </resources>
