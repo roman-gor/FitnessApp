@@ -6,6 +6,7 @@ import com.gorman.fitnessapp.domain.models.Article
 import com.gorman.fitnessapp.domain.models.UsersData
 import com.gorman.fitnessapp.domain.usecases.GetAndSyncUserProgramsUseCase
 import com.gorman.fitnessapp.domain.usecases.GetArticlesUseCase
+import com.gorman.fitnessapp.domain.usecases.GetMealsIdUseCase
 import com.gorman.fitnessapp.domain.usecases.GetProgramFromLocalUseCase
 import com.gorman.fitnessapp.domain.usecases.GetProgramIdUseCase
 import com.gorman.fitnessapp.domain.usecases.GetUserFromLocalUseCase
@@ -26,11 +27,15 @@ class HomeViewModel @Inject constructor(
     private val logger: AppLogger,
     private val getProgramIdUseCase: GetProgramIdUseCase,
     private val getProgramFromLocalUseCase: GetProgramFromLocalUseCase,
+    private val getMealsIdUseCase: GetMealsIdUseCase,
     private val getArticlesUseCase: GetArticlesUseCase,
     private val getUserFromLocalUseCase: GetUserFromLocalUseCase
 ): ViewModel() {
     private val _programExistingState = MutableStateFlow(false)
     val programExistingState: StateFlow<Boolean> = _programExistingState
+
+    private val _mealExistingState = MutableStateFlow(false)
+    val mealExistingState = _mealExistingState.asStateFlow()
 
     private val _articleListState = MutableStateFlow<List<Article>>(emptyList())
     val articleListState: StateFlow<List<Article>> = _articleListState
@@ -71,6 +76,12 @@ class HomeViewModel @Inject constructor(
                 logger.e("HOME", "Неожиданная ошибка: ${e.message}")
                 _homeUiState.value = HomeUiState.Error(e.message ?: "Неожиданная ошибка")
             }
+        }
+    }
+
+    fun checkMealExisting() {
+        viewModelScope.launch {
+            _mealExistingState.value = getMealsIdUseCase().isNotEmpty()
         }
     }
 }

@@ -63,6 +63,7 @@ fun GeneratingProgram(
         GeneratingUiState.ProgramIsExist -> GenerationDefault (
             onClick = { generatingViewModel.generateProgram() },
             text = stringResource(R.string.confirm_to_gen_program),
+            backgroundImage = R.drawable.start_image,
             buttonText = stringResource(R.string.get_started))
         is GeneratingUiState.Error -> {
             val errorString = stringResource(R.string.program_created_error)
@@ -72,11 +73,13 @@ fun GeneratingProgram(
             GenerationDefault (
                 onClick = { generatingViewModel.generateProgram() },
                 text = stringResource(R.string.program_created_error),
+                backgroundImage = R.drawable.start_image,
                 buttonText = stringResource(R.string.try_again))
         }
         GeneratingUiState.Idle -> GenerationDefault (
             onClick = { generatingViewModel.generateProgram() },
             text = stringResource(R.string.program_gen_description_text),
+            backgroundImage = R.drawable.start_image,
             buttonText = stringResource(R.string.get_started))
         GeneratingUiState.Loading -> {
             val loadingString = stringResource(R.string.generation_loading)
@@ -93,9 +96,15 @@ fun GeneratingProgram(
             GenerationDefault (
                 onClick = { onNavigateToProgram() },
                 text = stringResource(R.string.program_created_success),
+                backgroundImage = R.drawable.start_image,
                 buttonText = stringResource(R.string.to_home))
         }
-        else -> {}
+        else ->
+            GenerationDefault (
+                onClick = { generatingViewModel.generateProgram() },
+                text = stringResource(R.string.program_gen_description_text),
+                backgroundImage = R.drawable.start_image,
+                buttonText = stringResource(R.string.get_started))
     }
 }
 
@@ -103,6 +112,7 @@ fun GeneratingProgram(
 fun GenerationDefault(
     onClick: () -> Unit,
     text: String,
+    backgroundImage: Int,
     buttonText: String
 ) {
     Box(
@@ -110,7 +120,7 @@ fun GenerationDefault(
         contentAlignment = Alignment.Center
     ) {
         Image(
-            painter = painterResource(R.drawable.start_image),
+            painter = painterResource(backgroundImage),
             contentDescription = null,
             modifier = Modifier.fillMaxSize(),
             contentScale = ContentScale.Crop

@@ -166,6 +166,12 @@ fun SetupNavigation() {
                 destination = "program"
             )
         }
+        composable("generating_meal_route") {
+            GeneratingNavigation(
+                navController = navController,
+                destination = "meal"
+            )
+        }
     }
 }
 

@@ -94,4 +94,11 @@ class GeneratingViewModel @Inject constructor(
             }
         }
     }
+
+    fun resetUiState() {
+        _genUiState.value = GeneratingUiState.Idle
+        dietState = ""
+        caloriesState = ""
+        allergiesState = emptyList()
+    }
 }

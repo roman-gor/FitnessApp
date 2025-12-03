@@ -115,7 +115,7 @@
     <string name="duration">Длительность</string>
     <string name="know_plan">Узнать свой план</string>
     <string name="generate_meals_plan">Генерация личного плана питания</string>
-    <string name="meal_plans">План питания</string>
+    <string name="meal_plan">План питания</string>
 
     <string name="dietary_prefs">Особенности диеты</string>
     <string name="dietary_question">Какие ваши предпочтения по диете?</string>
@@ -142,4 +142,6 @@
     <string name="no_calories_prefs">Не имеет значения</string>
 
     <string name="meal_created_error">Ошибка при генерации рациона</string>
+    <string name="meal_plan_exist">План питания уже создан. Желаете создать новый?</string>
+    <string name="meal_plan_success">План питания успешно создан!</string>
 </resources>

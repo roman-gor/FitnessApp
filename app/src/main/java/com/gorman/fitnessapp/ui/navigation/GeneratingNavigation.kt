@@ -15,6 +15,8 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.gorman.fitnessapp.R
 import com.gorman.fitnessapp.ui.screens.main.PreGeneratingScreen
+import com.gorman.fitnessapp.ui.screens.nutrition.DefaultGenMealsScreen
+import com.gorman.fitnessapp.ui.screens.nutrition.GeneratingMealScreen
 import com.gorman.fitnessapp.ui.screens.workout.GeneratingProgram
 
 @Composable
@@ -36,11 +38,36 @@ fun GeneratingNavigation(
                             popUpTo("pre_screen") { inclusive = true }
                         }
                     },
-                    onMealGenerate = {})
+                    onMealGenerate = {
+                        generatingNavController.navigate(Screen.GeneratingScreen.GeneratingMeals.route) {
+                            popUpTo("pre_screen") { inclusive = true }
+                        }
+                    })
             }
             composable(Screen.GeneratingScreen.GenerateProgram.route) {
                 GeneratingProgram(
                     onNavigateToProgram = {
+                        navController.navigate("main_screen") {
+                            popUpTo(0) { inclusive = true }
+                        }
+                    }
+                )
+            }
+            composable(Screen.GeneratingScreen.GeneratingMeals.route) {
+                DefaultGenMealsScreen {
+                    generatingNavController.navigate("generate_meal") {
+                        popUpTo(Screen.BottomScreen.Home.route)
+                    }
+                }
+            }
+            composable("generate_meal") {
+                GeneratingMealScreen(
+                    onNavigateToMenu = {
+                        navController.navigate("main_screen") {
+                            popUpTo(0) { inclusive = true }
+                        }
+                    },
+                    onBackPage = {
                         navController.navigate("main_screen") {
                             popUpTo(0) { inclusive = true }
                         }

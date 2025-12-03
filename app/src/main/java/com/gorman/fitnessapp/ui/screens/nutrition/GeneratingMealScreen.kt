@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
@@ -46,7 +47,8 @@ import com.gorman.fitnessapp.ui.viewmodel.GeneratingViewModel
 
 @Composable
 fun GeneratingMealScreen(
-    onBackPage: () -> Unit
+    onBackPage: () -> Unit,
+    onNavigateToMenu: () -> Unit
 ) {
     val generatingViewModel: GeneratingViewModel = hiltViewModel()
     val uiState by generatingViewModel.genUiState.collectAsState()
@@ -55,10 +57,11 @@ fun GeneratingMealScreen(
             GenerationDefault(
                 onClick = { generatingViewModel.onTryAgainClicked() },
                 text = stringResource(R.string.meal_created_error),
+                backgroundImage = R.drawable.meals_img,
                 buttonText = stringResource(R.string.try_again)
             )
         }
-        GeneratingUiState.Idle -> {
+        GeneratingUiState.Idle ->
             PreGenerationScreen(
                 onBackPage = onBackPage,
                 onStartGenerating = { diet, allergies, calories ->
@@ -69,11 +72,32 @@ fun GeneratingMealScreen(
                     )
                 }
             )
-        }
         GeneratingUiState.Loading -> LoadingStub()
-        GeneratingUiState.MealsIsExist -> TODO()
-        GeneratingUiState.ProgramIsExist -> TODO()
-        GeneratingUiState.Success -> TODO()
+        GeneratingUiState.MealsIsExist ->
+            GenerationDefault(
+                onClick = { generatingViewModel.resetUiState() },
+                text = stringResource(R.string.meal_plan_exist),
+                backgroundImage = R.drawable.meals_img,
+                buttonText = stringResource(R.string.get_started)
+            )
+        GeneratingUiState.Success ->
+            GenerationDefault(
+                onClick = { onNavigateToMenu() },
+                text = stringResource(R.string.meal_plan_success),
+                backgroundImage = R.drawable.meals_img,
+                buttonText = stringResource(R.string.to_home)
+            )
+        else ->
+            PreGenerationScreen(
+                onBackPage = onBackPage,
+                onStartGenerating = { diet, allergies, calories ->
+                    generatingViewModel.generateMeals(
+                        dietaryPreferences = diet.name,
+                        exceptionProducts = allergies.map { it.name },
+                        calories = calories.name
+                    )
+                }
+            )
     }
 }
 
@@ -86,7 +110,7 @@ fun PreGenerationScreen(
     var allergies by remember { mutableStateOf(listOf<AllergiesType>()) }
     var calories by remember { mutableStateOf(CaloriesType.NONE) }
     Box(
-        modifier = Modifier.fillMaxSize()
+        modifier = Modifier.fillMaxSize().systemBarsPadding()
             .background(colorResource(R.color.bg_color))
     ) {
         Column(
@@ -96,7 +120,7 @@ fun PreGenerationScreen(
         ) {
             Header(
                 onBackPage = onBackPage,
-                text = stringResource(R.string.generate_meals_plan)
+                text = stringResource(R.string.meal_plan)
             )
             Column(
                 modifier = Modifier.fillMaxSize()

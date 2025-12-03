@@ -112,7 +112,7 @@
     <string name="duration">Duration</string>
     <string name="know_plan">Know Your Plan</string>
     <string name="generate_meals_plan">Generating Personal Nutrition Plan</string>
-    <string name="meal_plans">Meal Plans</string>
+    <string name="meal_plan">Meal Plan</string>
 
     <string name="dietary_prefs">Dietary Preferences</string>
     <string name="dietary_question">What are your dietary preferences?</string>
@@ -139,4 +139,6 @@
     <string name="no_calories_prefs">Not sure/Don\'t have a goal</string>
 
     <string name="meal_created_error">Error when generating meals</string>
+    <string name="meal_plan_exist">Meal Plan Has Already Exists. Do You Want To Generate Another One?</string>
+    <string name="meal_plan_success">Meal Plan Was Successfully Created!</string>
 </resources>

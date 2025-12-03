@@ -1,10 +1,14 @@
 package com.gorman.fitnessapp.ui.navigation
 
 import android.net.Uri
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.colorResource
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -39,6 +43,10 @@ import kotlinx.serialization.json.Json
 fun BottomNavigation(navController: NavController) {
     val nestedNavController = rememberNavController()
     val homeViewModel: HomeViewModel = hiltViewModel()
+    LaunchedEffect(Unit) {
+        homeViewModel.checkMealExisting()
+    }
+    val isMealExist by homeViewModel.mealExistingState.collectAsState()
     Scaffold(
         modifier = Modifier.fillMaxSize(),
         containerColor = colorResource(R.color.bg_color),
@@ -59,7 +67,18 @@ fun BottomNavigation(navController: NavController) {
                     when (bItem.route) {
                         Screen.BottomScreen.Home.route -> HomeScreen(
                             homeViewModel = homeViewModel,
-                            onNutritionClick = {},
+                            onNutritionClick = {
+                                if (!isMealExist) {
+                                    navController.navigate("generating_meal_route") {
+                                        launchSingleTop = true
+                                    }
+                                }
+                                else {
+                                    nestedNavController.navigate(Screen.GeneralHomeScreen.Nutrition.route) {
+                                        launchSingleTop = true
+                                    }
+                                }
+                            },
                             onProgressClick = {
                                 nestedNavController.navigate(Screen.GeneralHomeScreen.Progress.route) {
                                     launchSingleTop = true
@@ -100,6 +119,9 @@ fun BottomNavigation(navController: NavController) {
                         )
                     }
                 }
+            }
+            composable(Screen.GeneralHomeScreen.Nutrition.route) {
+                Box(modifier = Modifier.fillMaxSize())
             }
             composable(
                 route = "${Screen.GeneralHomeScreen.Profile.route}/{usersDataJson}",
