@@ -55,7 +55,8 @@ class GeminiGeneratorImpl @Inject constructor(
 
     override suspend fun generateMealPlan(
         userData: UsersData,
-        goal: String,
+        dietaryPreferences: String,
+        calories: String,
         availableMeals: Map<Int?, String>,
         exceptionProducts: List<String>
     ): String {
@@ -74,6 +75,8 @@ class GeminiGeneratorImpl @Inject constructor(
                         - Пол: ${userData.gender}
                         - Уровень активности: ${userData.activityLevel}
                         - Продукты-исключения (аллергии, непереносимости): $exceptionProducts
+                        - Диеты: $dietaryPreferences
+                        - Желаемая калорийность: $calories
                     
                         --- ДОСТУПНЫЕ БЛЮДА (ИСПОЛЬЗУЙ СТРОГО ЭТОТ СПИСОК) ---
                         - Карта доступных блюд: $mealsList

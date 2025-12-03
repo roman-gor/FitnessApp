@@ -110,4 +110,33 @@
     <string name="activities">Activities</string>
     <string name="level_complex">Level</string>
     <string name="duration">Duration</string>
+    <string name="know_plan">Know Your Plan</string>
+    <string name="generate_meals_plan">Generating Personal Nutrition Plan</string>
+    <string name="meal_plans">Meal Plans</string>
+
+    <string name="dietary_prefs">Dietary Preferences</string>
+    <string name="dietary_question">What are your dietary preferences?</string>
+    <string name="vegetarian">Vegetarian</string>
+    <string name="vegan">Vegan</string>
+    <string name="gluten_free">Gluten-Free</string>
+    <string name="keto">Keto</string>
+    <string name="paleo">Paleo</string>
+    <string name="no_dietary_prefs">No preferences</string>
+
+    <string name="allergies">Allergies</string>
+    <string name="allergies_question">Do you have any food allergies we should know about?</string>
+    <string name="dairy">Dairy</string>
+    <string name="nuts">Nuts</string>
+    <string name="shellfish">Shellfish</string>
+    <string name="eggs">Eggs</string>
+    <string name="no_allergies">No allergies</string>
+
+    <string name="caloric">Caloric Goal</string>
+    <string name="caloric_question">What is your daily caloric intake goal?</string>
+    <string name="less_than_1500">Less than 1500 calories</string>
+    <string name="from_1500_to_2000">1500-2000 calories</string>
+    <string name="more_than_2000">More than 2000 calories</string>
+    <string name="no_calories_prefs">Not sure/Don\'t have a goal</string>
+
+    <string name="meal_created_error">Error when generating meals</string>
 </resources>

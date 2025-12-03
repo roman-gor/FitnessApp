@@ -44,6 +44,7 @@ import com.gorman.fitnessapp.domain.repository.SettingsRepository
 import com.gorman.fitnessapp.domain.repository.StorageRepository
 import com.gorman.fitnessapp.domain.usecases.GetExercisesUseCase
 import com.gorman.fitnessapp.domain.usecases.GetMealsUseCase
+import com.gorman.fitnessapp.domain.usecases.SetMealsIdUseCase
 import com.gorman.fitnessapp.domain.usecases.SetProgramIdUseCase
 import com.gorman.fitnessapp.logger.AppLogger
 import com.gorman.fitnessapp.logger.AppLoggerImpl
@@ -209,8 +210,9 @@ object AppModule {
     fun provideMealRepository(getMealsUseCase: GetMealsUseCase,
                               aiRepository: AiRepository,
                               firebaseRepository: FirebaseRepository,
-                              databaseRepository: DatabaseRepository): MealRepository =
-        MealRepositoryImpl(getMealsUseCase, aiRepository, firebaseRepository, databaseRepository)
+                              databaseRepository: DatabaseRepository,
+                              setMealsIdUseCase: SetMealsIdUseCase): MealRepository =
+        MealRepositoryImpl(getMealsUseCase, aiRepository, firebaseRepository, databaseRepository, setMealsIdUseCase)
 
     @Provides
     @Singleton

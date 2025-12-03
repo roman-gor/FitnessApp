@@ -252,7 +252,8 @@ class AiRepositoryImpl @Inject constructor(
 
     override suspend fun generateMealPlan(
         userData: UsersData,
-        goal: String,
+        dietaryPreferences: String,
+        calories: String,
         availableMeals: Map<Int?, String>,
         exceptionProducts: List<String>
     ): MealPlan {

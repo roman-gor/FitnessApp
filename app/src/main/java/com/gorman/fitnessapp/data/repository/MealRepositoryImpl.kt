@@ -7,17 +7,20 @@ import com.gorman.fitnessapp.domain.repository.DatabaseRepository
 import com.gorman.fitnessapp.domain.repository.FirebaseRepository
 import com.gorman.fitnessapp.domain.repository.MealRepository
 import com.gorman.fitnessapp.domain.usecases.GetMealsUseCase
+import com.gorman.fitnessapp.domain.usecases.SetMealsIdUseCase
 import javax.inject.Inject
 
 class MealRepositoryImpl @Inject constructor(
     private val getMealsUseCase: GetMealsUseCase,
     private val aiRepository: AiRepository,
     private val firebaseRepository: FirebaseRepository,
-    private val databaseRepository: DatabaseRepository
+    private val databaseRepository: DatabaseRepository,
+    private val setMealsIdUseCase: SetMealsIdUseCase
 ): MealRepository {
     override suspend fun generateAndSyncMeal(
         usersData: UsersData,
-        goal: String,
+        dietaryPreferences: String,
+        calories: String,
         exceptionProducts: List<String>
     ): String {
         val availableMeals = getMealsUseCase().associate { meal ->
@@ -26,12 +29,13 @@ class MealRepositoryImpl @Inject constructor(
         }
         val generatedMealPlan = aiRepository.generateMealPlan(
             usersData,
-            goal,
+            dietaryPreferences,
+            calories,
             availableMeals,
             exceptionProducts)
         val isPlanValid = generatedMealPlan.template.name.isNotBlank() && generatedMealPlan.items.isNotEmpty()
         if (isPlanValid) {
-            val userId = "0"
+            val userId = usersData.firebaseId
             val oldMealPlans = firebaseRepository.findUserMealPlanTemplate(userId)
             if (oldMealPlans.isNotEmpty()) {
                 oldMealPlans.keys.forEach { templateId ->
@@ -50,6 +54,7 @@ class MealRepositoryImpl @Inject constructor(
                     items = generatedMealPlan.items.map { it.copy(firebaseId = id) }
                 )
                 databaseRepository.insertMealsItems(syncedMealPlan)
+                setMealsIdUseCase(id)
             }
         }
         return generatedMealPlan.toString()

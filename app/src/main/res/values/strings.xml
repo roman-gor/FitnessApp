@@ -113,4 +113,33 @@
     <string name="activities">Активность</string>
     <string name="level_complex">Уровень</string>
     <string name="duration">Длительность</string>
+    <string name="know_plan">Узнать свой план</string>
+    <string name="generate_meals_plan">Генерация личного плана питания</string>
+    <string name="meal_plans">План питания</string>
+
+    <string name="dietary_prefs">Особенности диеты</string>
+    <string name="dietary_question">Какие ваши предпочтения по диете?</string>
+    <string name="vegetarian">Вегетарианец</string>
+    <string name="vegan">Веган</string>
+    <string name="gluten_free">Безглютеновая диета</string>
+    <string name="keto">Кето</string>
+    <string name="paleo">Палео</string>
+    <string name="no_dietary_prefs">Нет особенностей</string>
+
+    <string name="allergies">Аллергия</string>
+    <string name="allergies_question">Есть ли продукты, о которых нам важно знать?</string>
+    <string name="dairy">Молочные продукты</string>
+    <string name="nuts">Орехи</string>
+    <string name="shellfish">Раки и моллюски</string>
+    <string name="eggs">Яйца</string>
+    <string name="no_allergies">Нет аллергии</string>
+
+    <string name="caloric">Калорийность</string>
+    <string name="caloric_question">Какая желаемая калорийность рациона?</string>
+    <string name="less_than_1500">Меньше 1500 калорий</string>
+    <string name="from_1500_to_2000">1500-2000 калорий</string>
+    <string name="more_than_2000">Больше 2000 калорий</string>
+    <string name="no_calories_prefs">Не имеет значения</string>
+
+    <string name="meal_created_error">Ошибка при генерации рациона</string>
 </resources>

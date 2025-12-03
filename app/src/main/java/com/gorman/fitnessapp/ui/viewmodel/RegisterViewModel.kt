@@ -4,8 +4,10 @@ import android.net.Uri
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.gorman.fitnessapp.domain.models.UsersData
+import com.gorman.fitnessapp.domain.usecases.GetAndSyncMealPlansUseCase
 import com.gorman.fitnessapp.domain.usecases.GetAndSyncUserProgramsUseCase
 import com.gorman.fitnessapp.domain.usecases.GetExercisesUseCase
+import com.gorman.fitnessapp.domain.usecases.GetMealsUseCase
 import com.gorman.fitnessapp.domain.usecases.GetUserFromFirebaseUseCase
 import com.gorman.fitnessapp.domain.usecases.GetUserIdUseCase
 import com.gorman.fitnessapp.domain.usecases.SaveNewUserUseCase
@@ -25,8 +27,10 @@ class RegisterViewModel @Inject constructor(
     private val saveNewUserUseCase: SaveNewUserUseCase,
     private val getUserIdUseCase: GetUserIdUseCase,
     private val getExercisesUseCase: GetExercisesUseCase,
+    private val getMealsUseCase: GetMealsUseCase,
     private val getUserFromFirebaseUseCase: GetUserFromFirebaseUseCase,
     private val getAndSyncUserProgramsUseCase: GetAndSyncUserProgramsUseCase,
+    private val getAndSyncMealPlansUseCase: GetAndSyncMealPlansUseCase,
     private val uploadImageProfileUseCase: UploadImageProfileUseCase,
     private val syncWorkoutHistoryUseCase: SyncWorkoutHistoryUseCase,
     private val syncUserProgressUseCase: SyncUserProgressUseCase,
@@ -41,6 +45,7 @@ class RegisterViewModel @Inject constructor(
             _registerUiState.value = RegisterUiState.Loading
             try {
                 getExercisesUseCase()
+                getMealsUseCase()
                 if (uri != null) {
                     uploadImageProfileUseCase(uri).collect { result->
                         result.onSuccess {
@@ -71,9 +76,11 @@ class RegisterViewModel @Inject constructor(
             _registerUiState.value = RegisterUiState.Loading
             try {
                 getExercisesUseCase()
+                getMealsUseCase()
                 val isUser = getUserFromFirebaseUseCase(email)
                 getUserIdUseCase()?.let {
                     getAndSyncUserProgramsUseCase(it)
+                    getAndSyncMealPlansUseCase(it)
                     syncUserProgressUseCase(it)
                     syncWorkoutHistoryUseCase(it)
                 }

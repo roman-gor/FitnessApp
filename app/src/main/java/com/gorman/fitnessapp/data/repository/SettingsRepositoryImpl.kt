@@ -13,6 +13,8 @@ class SettingsRepositoryImpl(private val context: Context): SettingsRepository {
         .map { prefs -> prefs[SettingsKeys.USER_ID] ?: "" }
     override val programIdFlow: Flow<String> = context.dataStore.data
         .map { prefs-> prefs[SettingsKeys.PROGRAM_ID] ?: "" }
+    override val mealIdFlow: Flow<String> = context.dataStore.data
+        .map { prefs-> prefs[SettingsKeys.MEAL_ID] ?: "" }
 
     override suspend fun setUserId(id: String) {
         context.dataStore.edit { prefs ->
@@ -23,6 +25,12 @@ class SettingsRepositoryImpl(private val context: Context): SettingsRepository {
     override suspend fun setProgramId(id: String) {
         context.dataStore.edit { prefs ->
             prefs[SettingsKeys.PROGRAM_ID] = id
+        }
+    }
+
+    override suspend fun setMealId(id: String) {
+        context.dataStore.edit { prefs ->
+            prefs[SettingsKeys.MEAL_ID] = id
         }
     }
 }

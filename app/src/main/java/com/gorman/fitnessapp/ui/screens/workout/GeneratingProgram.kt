@@ -60,7 +60,7 @@ fun GeneratingProgram(
         iterations = LottieConstants.IterateForever
     )
     when (val state = uiState) {
-        GeneratingUiState.IsExist -> GenerationDefault (
+        GeneratingUiState.ProgramIsExist -> GenerationDefault (
             onClick = { generatingViewModel.generateProgram() },
             text = stringResource(R.string.confirm_to_gen_program),
             buttonText = stringResource(R.string.get_started))
@@ -95,6 +95,7 @@ fun GeneratingProgram(
                 text = stringResource(R.string.program_created_success),
                 buttonText = stringResource(R.string.to_home))
         }
+        else -> {}
     }
 }
 
