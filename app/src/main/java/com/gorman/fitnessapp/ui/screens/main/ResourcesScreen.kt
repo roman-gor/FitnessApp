@@ -11,18 +11,26 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyGridState
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.foundation.lazy.grid.rememberLazyGridState
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
+import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -55,6 +63,22 @@ fun ResourcesScreen(
     onMealClick: (Meal) -> Unit
 ) {
     val resourcesViewModel: ResourcesViewModel = hiltViewModel()
+    var isExercises by rememberSaveable { mutableStateOf(true) }
+    val savedIndex = rememberSaveable { mutableStateOf(0) }
+    val savedOffset = rememberSaveable { mutableStateOf(0) }
+    val gridState = rememberLazyGridState(
+        initialFirstVisibleItemIndex = savedIndex.value,
+        initialFirstVisibleItemScrollOffset = savedOffset.value
+    )
+    LaunchedEffect(gridState) {
+        snapshotFlow {
+            gridState.firstVisibleItemIndex to
+                    gridState.firstVisibleItemScrollOffset
+        }.collect { (index, offset) ->
+            savedIndex.value = index
+            savedOffset.value = offset
+        }
+    }
     LaunchedEffect(Unit) {
         resourcesViewModel.loadExercises()
     }
@@ -69,7 +93,11 @@ fun ResourcesScreen(
                 onExerciseClick = onExerciseClick,
                 onMealClick = onMealClick,
                 exercises = state.exercises,
-                meals = state.meals
+                meals = state.meals,
+                state = gridState,
+                isExercises = isExercises,
+                onItemChangeTrue = { isExercises = true },
+                onItemChangeFalse = { isExercises = false }
             )
         }
     }
@@ -81,9 +109,12 @@ fun ExercisesSuccessScreen(
     onExerciseClick: (Exercise) -> Unit,
     onMealClick: (Meal) -> Unit,
     exercises: List<Exercise>,
-    meals: List<Meal>
+    meals: List<Meal>,
+    state: LazyGridState,
+    isExercises: Boolean,
+    onItemChangeTrue: () -> Unit,
+    onItemChangeFalse: () -> Unit
 ) {
-    val isExercises by remember { mutableStateOf(true) }
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -106,20 +137,53 @@ fun ExercisesSuccessScreen(
                 )
             }
             Spacer(modifier = Modifier.height(16.dp))
-            Text(
-                text = stringResource(R.string.exercise2),
-                fontFamily = mulishFont(),
-                fontSize = 18.sp,
-                textAlign = TextAlign.Start,
-                modifier = Modifier
+            Row(
+                modifier = Modifier.wrapContentHeight()
                     .fillMaxWidth()
-                    .wrapContentHeight()
                     .padding(horizontal = 24.dp),
-                color = colorResource(R.color.meet_text)
-            )
+                horizontalArrangement = Arrangement.Center,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Button(
+                    onClick = { onItemChangeTrue() },
+                    modifier = Modifier.weight(1f),
+                    shape = CircleShape,
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = if (!isExercises) colorResource(R.color.white)
+                        else colorResource(R.color.meet_text)
+                    )
+                ) {
+                    Text(text = stringResource(R.string.exercise2),
+                        fontFamily = mulishFont(),
+                        fontWeight = FontWeight.Bold,
+                        lineHeight = 15.sp,
+                        fontSize = 14.sp,
+                        color = if (!isExercises) colorResource(R.color.font_purple_color)
+                                else colorResource(R.color.bg_color))
+                }
+                Spacer(modifier = Modifier.width(8.dp))
+                Button(
+                    onClick = { onItemChangeFalse() },
+                    modifier = Modifier.weight(1f),
+                    shape = CircleShape,
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = if (isExercises) colorResource(R.color.white)
+                        else colorResource(R.color.meet_text)
+                    )
+                ) {
+                    Text(text = stringResource(R.string.meals),
+                        fontFamily = mulishFont(),
+                        fontWeight = FontWeight.Bold,
+                        lineHeight = 15.sp,
+                        fontSize = 14.sp,
+                        color = if (isExercises) colorResource(R.color.font_purple_color)
+                        else colorResource(R.color.bg_color))
+                }
+            }
             Spacer(modifier = Modifier.height(10.dp))
             LazyVerticalGrid(
                 columns = GridCells.Fixed(2),
+                state = state,
                 modifier = Modifier.padding(horizontal = 16.dp)
             ) {
                 if(isExercises)

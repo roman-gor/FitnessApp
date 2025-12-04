@@ -29,6 +29,7 @@ sealed class Screen() {
         object Article: GeneralHomeScreen("article")
         object Progress: GeneralHomeScreen("progress")
         object Nutrition: GeneralHomeScreen("nutrition")
+        object MealItem: GeneralHomeScreen("meal_item")
     }
 
     sealed class WorkoutScreen(val route: String): Screen() {

@@ -134,7 +134,7 @@ fun PreGenerationScreen(
                 CaloriesBlock(calories) { calories = it }
                 RoundedButton(
                     onClick = { onStartGenerating(dietaryPrefs, allergies, calories) },
-                    modifier = Modifier.width(100.dp).padding(top = 10.dp, bottom = 32.dp),
+                    modifier = Modifier.width(150.dp).padding(top = 10.dp, bottom = 32.dp),
                     color = colorResource(R.color.meet_text),
                     textColor = colorResource(R.color.bg_color),
                     text = R.string.start
@@ -197,8 +197,9 @@ fun DietaryBlock(
                     Text(
                         text = stringResource(R.string.vegetarian),
                         fontFamily = mulishFont(),
-                        fontSize = 14.sp,
+                        fontSize = 12.sp,
                         fontWeight = FontWeight.Medium,
+                        maxLines = 2,
                         color = colorResource(R.color.white),
                         textAlign = TextAlign.Start
                     )
@@ -218,7 +219,8 @@ fun DietaryBlock(
                     Text(
                         text = stringResource(R.string.vegan),
                         fontFamily = mulishFont(),
-                        fontSize = 14.sp,
+                        fontSize = 12.sp,
+                        maxLines = 2,
                         fontWeight = FontWeight.Medium,
                         color = colorResource(R.color.white),
                         textAlign = TextAlign.Start
@@ -239,7 +241,8 @@ fun DietaryBlock(
                     Text(
                         text = stringResource(R.string.gluten_free),
                         fontFamily = mulishFont(),
-                        fontSize = 14.sp,
+                        fontSize = 12.sp,
+                        maxLines = 2,
                         fontWeight = FontWeight.Medium,
                         color = colorResource(R.color.white),
                         textAlign = TextAlign.Start
@@ -263,7 +266,8 @@ fun DietaryBlock(
                     Text(
                         text = stringResource(R.string.keto),
                         fontFamily = mulishFont(),
-                        fontSize = 14.sp,
+                        fontSize = 12.sp,
+                        maxLines = 2,
                         fontWeight = FontWeight.Medium,
                         color = colorResource(R.color.white),
                         textAlign = TextAlign.Start
@@ -284,7 +288,8 @@ fun DietaryBlock(
                     Text(
                         text = stringResource(R.string.paleo),
                         fontFamily = mulishFont(),
-                        fontSize = 14.sp,
+                        fontSize = 12.sp,
+                        maxLines = 2,
                         fontWeight = FontWeight.Medium,
                         color = colorResource(R.color.white),
                         textAlign = TextAlign.Start
@@ -305,7 +310,8 @@ fun DietaryBlock(
                     Text(
                         text = stringResource(R.string.no_dietary_prefs),
                         fontFamily = mulishFont(),
-                        fontSize = 14.sp,
+                        fontSize = 12.sp,
+                        maxLines = 2,
                         fontWeight = FontWeight.Medium,
                         color = colorResource(R.color.white),
                         textAlign = TextAlign.Start
@@ -420,7 +426,8 @@ private fun AllergiesOption(
         Text(
             text = label,
             fontFamily = mulishFont(),
-            fontSize = 14.sp,
+            fontSize = 12.sp,
+            maxLines = 2,
             fontWeight = FontWeight.Medium,
             color = colorResource(R.color.white)
         )
@@ -476,7 +483,8 @@ fun CaloriesBlock(
                 Text(
                     text = stringResource(R.string.less_than_1500),
                     fontFamily = mulishFont(),
-                    fontSize = 14.sp,
+                    fontSize = 12.sp,
+                    maxLines = 2,
                     fontWeight = FontWeight.Medium,
                     color = colorResource(R.color.white),
                     textAlign = TextAlign.Start
@@ -497,7 +505,8 @@ fun CaloriesBlock(
                 Text(
                     text = stringResource(R.string.from_1500_to_2000),
                     fontFamily = mulishFont(),
-                    fontSize = 14.sp,
+                    fontSize = 12.sp,
+                    maxLines = 2,
                     fontWeight = FontWeight.Medium,
                     color = colorResource(R.color.white),
                     textAlign = TextAlign.Start
@@ -518,7 +527,8 @@ fun CaloriesBlock(
                 Text(
                     text = stringResource(R.string.more_than_2000),
                     fontFamily = mulishFont(),
-                    fontSize = 14.sp,
+                    fontSize = 12.sp,
+                    maxLines = 2,
                     fontWeight = FontWeight.Medium,
                     color = colorResource(R.color.white),
                     textAlign = TextAlign.Start
@@ -539,7 +549,8 @@ fun CaloriesBlock(
                 Text(
                     text = stringResource(R.string.no_calories_prefs),
                     fontFamily = mulishFont(),
-                    fontSize = 14.sp,
+                    fontSize = 12.sp,
+                    maxLines = 2,
                     fontWeight = FontWeight.Medium,
                     color = colorResource(R.color.white),
                     textAlign = TextAlign.Start

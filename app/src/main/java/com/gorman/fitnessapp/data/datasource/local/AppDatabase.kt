@@ -2,7 +2,6 @@ package com.gorman.fitnessapp.data.datasource.local
 
 import androidx.room.Database
 import androidx.room.RoomDatabase
-import androidx.sqlite.db.SupportSQLiteDatabase
 import com.gorman.fitnessapp.data.datasource.local.dao.ArticleDao
 import com.gorman.fitnessapp.data.datasource.local.dao.ExerciseDao
 import com.gorman.fitnessapp.data.datasource.local.dao.MealDao
@@ -38,7 +37,7 @@ import com.gorman.fitnessapp.data.models.room.WorkoutHistoryEntity
     UserProgramEntity::class,
     WorkoutHistoryEntity::class,
     ArticleEntity::class
-], version = 2, exportSchema = false)
+], version = 1, exportSchema = false)
 abstract class AppDatabase: RoomDatabase() {
     abstract fun usersDataDao(): UsersDataDao
     abstract fun exerciseDao(): ExerciseDao

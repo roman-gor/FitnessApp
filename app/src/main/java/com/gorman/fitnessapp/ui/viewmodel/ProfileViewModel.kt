@@ -6,9 +6,11 @@ import com.gorman.fitnessapp.domain.models.UsersData
 import com.gorman.fitnessapp.domain.usecases.DeleteUserUseCase
 import com.gorman.fitnessapp.domain.usecases.SetProgramIdUseCase
 import com.gorman.fitnessapp.domain.usecases.SetUserIdUseCase
+import com.gorman.fitnessapp.domain.usecases.UpdateExercisesUseCase
 import com.gorman.fitnessapp.domain.usecases.UpdateUserUseCase
 import com.gorman.fitnessapp.ui.states.RegisterUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject

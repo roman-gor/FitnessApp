@@ -76,6 +76,7 @@
     <string name="exercises">Exercises</string>
     <string name="exercise">Exercises</string>
     <string name="exercise2">Exercises</string>
+    <string name="meals">Meals</string>
     <string name="exercisesPerDay_header">Your program by days of week</string>
     <string name="error_text">Try again</string>
     <string name="repetitions_text">Repetitions</string>
@@ -151,4 +152,8 @@
     <string name="dinner">Dinner</string>
     <string name="snack">Snack</string>
     <string name="pfc">PFC</string>
+    <string name="cpfc">CPFC</string>
+    <string name="update_exercises">Update Exercises</string>
+    <string name="description">Description</string>
+    <string name="recipe">Recipe</string>
 </resources>

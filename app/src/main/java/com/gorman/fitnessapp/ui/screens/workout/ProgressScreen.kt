@@ -256,7 +256,7 @@ fun HistoryListItem(
     Card(
         modifier = Modifier
             .wrapContentWidth()
-            .height(80.dp)
+            .height(90.dp)
             .padding(horizontal = 16.dp, vertical = 4.dp),
         shape = RoundedCornerShape(32.dp),
         colors = CardDefaults.cardColors(
@@ -273,6 +273,7 @@ fun HistoryListItem(
         ) {
             Row (
                 modifier = Modifier.height(55.dp)
+                    .weight(1f)
             ) {
                 Image(
                     painter = painterResource(R.drawable.ic_run),
@@ -284,7 +285,6 @@ fun HistoryListItem(
                 )
                 Spacer(modifier = Modifier.width(8.dp))
                 Column(
-                    modifier = Modifier.height(100.dp),
                     horizontalAlignment = Alignment.Start,
                     verticalArrangement = Arrangement.Top
                 ) {
@@ -312,12 +312,12 @@ fun HistoryListItem(
                         color = colorResource(R.color.black),
                         fontSize = 16.sp,
                         overflow = TextOverflow.Ellipsis,
-                        maxLines = 1,
                         fontWeight = FontWeight.Bold,
-                        modifier = Modifier.width(170.dp)
+                        modifier = Modifier.weight(1f)
                     )
                 }
             }
+            Spacer(modifier = Modifier.width(8.dp))
             Column(
                 modifier = Modifier.padding(end = 8.dp),
                 horizontalAlignment = Alignment.End,
@@ -327,9 +327,11 @@ fun HistoryListItem(
                     text = stringResource(R.string.duration),
                     fontFamily = mulishFont(),
                     color = colorResource(R.color.font_purple_color),
-                    fontSize = 16.sp,
+                    fontSize = 14.sp,
                     lineHeight = 15.sp,
-                    fontWeight = FontWeight.Medium
+                    fontWeight = FontWeight.Medium,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis
                 )
                 Spacer(modifier = Modifier.height(4.dp))
                 Text(

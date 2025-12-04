@@ -70,7 +70,8 @@ import java.time.ZoneId
 
 @Composable
 fun NutritionScreen(
-    onBackPage: () -> Unit
+    onBackPage: () -> Unit,
+    onMealClick: (Meal) -> Unit
 ) {
     val nutritionViewModel: NutritionViewModel = hiltViewModel()
     LaunchedEffect(Unit) {
@@ -89,6 +90,7 @@ fun NutritionScreen(
             DefaultNutritionScreen(
                 onBackPage = onBackPage,
                 meals = meals,
+                onMealClick = onMealClick,
                 mealPlanTemplate = state.mealPlan.first,
                 mealPlanItems = state.mealPlan.second
             )
@@ -99,6 +101,7 @@ fun NutritionScreen(
 fun DefaultNutritionScreen(
     onBackPage: () -> Unit,
     meals: List<Meal>,
+    onMealClick: (Meal) -> Unit,
     mealPlanTemplate: MealPlanTemplate,
     mealPlanItems: List<MealPlanItem>
 ) {
@@ -140,11 +143,11 @@ fun DefaultNutritionScreen(
             Text(
                 text = mealPlanTemplate.name,
                 fontFamily = mulishFont(),
-                fontWeight = FontWeight.ExtraBold,
-                fontSize = 26.sp,
+                fontWeight = FontWeight.Bold,
+                fontSize = 22.sp,
                 textAlign = TextAlign.Start,
                 maxLines = 2,
-                lineHeight = 35.sp,
+                lineHeight = 30.sp,
                 overflow = TextOverflow.Ellipsis,
                 color = colorResource(R.color.meet_text),
                 modifier = Modifier.padding(start = 32.dp, end = 32.dp, bottom = 20.dp)
@@ -168,7 +171,8 @@ fun DefaultNutritionScreen(
                         val previousPage = pagerState.currentPage - 1
                         pagerState.animateScrollToPage(previousPage)
                     }
-                }
+                },
+                onMealClick = onMealClick
             )
         }
     }
@@ -179,7 +183,8 @@ fun MealsByDayPager(
     pages: List<Pair<DayOfWeek, Map<String, Meal>>>,
     pagerState: PagerState,
     onNextClick: () -> Unit,
-    onPreviousClick: () -> Unit
+    onPreviousClick: () -> Unit,
+    onMealClick: (Meal) -> Unit
 ) {
     HorizontalPager(
         state = pagerState,
@@ -190,7 +195,8 @@ fun MealsByDayPager(
             day = day,
             meal = mealsForDay,
             onNextClick = onNextClick,
-            onPreviousClick = onPreviousClick
+            onPreviousClick = onPreviousClick,
+            onMealClick = onMealClick
         )
     }
 }
@@ -201,7 +207,8 @@ fun MealPlanByDayPage(
     day: DayOfWeek,
     meal: Map<String, Meal>,
     onNextClick: () -> Unit,
-    onPreviousClick: () -> Unit
+    onPreviousClick: () -> Unit,
+    onMealClick: (Meal) -> Unit
 ) {
     val iconColor =
         if (index != 0) colorResource(R.color.white)
@@ -282,7 +289,10 @@ fun MealPlanByDayPage(
                 modifier = Modifier.padding(top = 8.dp, bottom = 4.dp),
                 textAlign = TextAlign.Start
             )
-            MealItem(item) {  }
+            MealItem(
+                onMealClick = onMealClick,
+                meal = item
+            )
         }
         Spacer(modifier = Modifier.height(48.dp))
     }
@@ -301,11 +311,11 @@ private fun getMealOrder(mealType: String): Int {
 @Composable
 fun MealItem(
     meal: Meal,
-    onMealClick: (meal: Meal) -> Unit) {
+    onMealClick: (Meal) -> Unit) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
-            .height(145.dp)
+            .height(125.dp)
             .padding(vertical = 4.dp)
             .clickable(onClick = {
                 onMealClick(meal)
@@ -332,13 +342,14 @@ fun MealItem(
                     text = meal.name,
                     fontFamily = mulishFont(),
                     color = colorResource(R.color.bg_color),
-                    fontSize = 20.sp,
+                    fontSize = 14.sp,
                     overflow = TextOverflow.Ellipsis,
                     maxLines = 2,
-                    fontWeight = FontWeight.ExtraBold,
+                    lineHeight = 15.sp,
+                    fontWeight = FontWeight.Bold,
                     textAlign = TextAlign.Start
                 )
-                Spacer(modifier = Modifier.height(8.dp))
+                Spacer(modifier = Modifier.height(4.dp))
                 Row(
                     horizontalArrangement = Arrangement.Start,
                     verticalAlignment = Alignment.CenterVertically
@@ -347,28 +358,30 @@ fun MealItem(
                         painter = painterResource(R.drawable.fire_icon),
                         tint = colorResource(R.color.bg_color),
                         contentDescription = null,
-                        modifier = Modifier.scale(1.4f)
+                        modifier = Modifier.scale(1.3f)
                     )
                     Spacer(modifier = Modifier.width(4.dp))
                     Text(
                         text = "${meal.calories.toInt()} ${stringResource(R.string.calories)}",
                         fontFamily = mulishFont(),
                         color = colorResource(R.color.bg_color),
-                        fontSize = 14.sp,
+                        fontSize = 10.sp,
+                        lineHeight = 15.sp,
                         fontWeight = FontWeight.Medium
                     )
                 }
-                Spacer(modifier = Modifier.width(4.dp))
+                Spacer(modifier = Modifier.width(2.dp))
                 Text(
                     text = "${stringResource(R.string.pfc)}: " +
                             "${meal.protein.toInt()}/${meal.fats.toInt()}/${meal.carbs.toInt()}",
                     fontFamily = mulishFont(),
                     color = colorResource(R.color.bg_color),
-                    fontSize = 14.sp,
+                    fontSize = 10.sp,
+                    lineHeight = 15.sp,
                     fontWeight = FontWeight.Medium
                 )
             }
-            Spacer(modifier = Modifier.width(16.dp))
+            Spacer(modifier = Modifier.width(8.dp))
             AsyncImage(
                 model = ImageRequest.Builder(LocalContext.current)
                     .data(meal.photo)
@@ -378,8 +391,8 @@ fun MealItem(
                 error = painterResource(R.drawable.articles_placeholder),
                 contentDescription = null,
                 modifier = Modifier
-                    .height(145.dp)
-                    .width(155.dp)
+                    .height(125.dp)
+                    .width(125.dp)
                     .clip(RoundedCornerShape(24.dp)),
                 contentScale = ContentScale.Crop
             )

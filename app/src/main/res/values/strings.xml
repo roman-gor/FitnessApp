@@ -79,6 +79,7 @@
     <string name="exercises">Упражнений</string>
     <string name="exercise">Упражнение</string>
     <string name="exercise2">Упражнения</string>
+    <string name="meals">Рационы</string>
     <string name="exercisesPerDay_header">Твоя программа по дням недели</string>
     <string name="error_text">Попробовать снова</string>
     <string name="repetitions_text">Повторений:</string>
@@ -154,4 +155,8 @@
     <string name="dinner">Ужин</string>
     <string name="snack">Перекус</string>
     <string name="pfc">БЖУ</string>
+    <string name="cpfc">КБЖУ</string>
+    <string name="update_exercises">Обновить упражнения</string>
+    <string name="description">Описание</string>
+    <string name="recipe">Рецепт</string>
 </resources>

@@ -20,6 +20,7 @@ import androidx.navigation.navArgument
 import com.gorman.fitnessapp.R
 import com.gorman.fitnessapp.domain.models.Article
 import com.gorman.fitnessapp.domain.models.Exercise
+import com.gorman.fitnessapp.domain.models.Meal
 import com.gorman.fitnessapp.domain.models.ProgramExercise
 import com.gorman.fitnessapp.domain.models.UsersData
 import com.gorman.fitnessapp.ui.components.BottomNavigationBar
@@ -28,6 +29,7 @@ import com.gorman.fitnessapp.ui.screens.main.HomeScreen
 import com.gorman.fitnessapp.ui.screens.main.ProfileScreen
 import com.gorman.fitnessapp.ui.screens.main.ResourcesScreen
 import com.gorman.fitnessapp.ui.screens.main.SettingsScreen
+import com.gorman.fitnessapp.ui.screens.nutrition.MealSingleScreen
 import com.gorman.fitnessapp.ui.screens.nutrition.NutritionScreen
 import com.gorman.fitnessapp.ui.screens.workout.ExerciseByDayScreen
 import com.gorman.fitnessapp.ui.screens.workout.GeneratingProgram
@@ -116,15 +118,72 @@ fun BottomNavigation(navController: NavController) {
                                     launchSingleTop = true
                                 }
                             },
-                            onMealClick = {TODO()}
+                            onMealClick = { meal->
+                                val json = Uri.encode(Json.encodeToString(meal))
+                                nestedNavController.navigate("${Screen.GeneralHomeScreen.MealItem.route}res/$json") {
+                                    launchSingleTop = true
+                                }
+                            }
                         )
                     }
                 }
             }
-            composable(Screen.GeneralHomeScreen.Nutrition.route) {
-                NutritionScreen {
-                    nestedNavController.popBackStack()
+            composable(
+                route = "${Screen.GeneralHomeScreen.MealItem.route}res/{usersDataJson}",
+                arguments = listOf(
+                    navArgument("usersDataJson") {
+                        type = NavType.StringType
+                    })) { backStackEntry ->
+                val mealJson = backStackEntry.arguments?.getString("usersDataJson")
+                val meal = mealJson?.let { Json.decodeFromString<Meal>(it) }
+                meal?.let {
+                    MealSingleScreen(
+                        onBackPage = {
+                            nestedNavController.popBackStack()
+                        },
+                        meal = it
+                    )
                 }
+            }
+            composable(
+                route = "${Screen.GeneralHomeScreen.MealItem.route}nut/{usersDataJson}",
+                arguments = listOf(
+                    navArgument("usersDataJson") {
+                        type = NavType.StringType
+                    })) { backStackEntry ->
+                val mealJson = backStackEntry.arguments?.getString("usersDataJson")
+                val meal = mealJson?.let { Json.decodeFromString<Meal>(it) }
+                meal?.let {
+                    MealSingleScreen(
+                        onBackPage = {
+                            nestedNavController.navigate(Screen.BottomScreen.Resources.route) {
+                                popUpTo(Screen.GeneralHomeScreen.Nutrition.route) {
+                                    inclusive = false
+                                }
+                                launchSingleTop = true
+                            }
+                        },
+                        meal = it
+                    )
+                }
+            }
+            composable(Screen.GeneralHomeScreen.Nutrition.route) {
+                NutritionScreen (
+                    onBackPage = {
+                        nestedNavController.navigate(Screen.BottomScreen.Home.route) {
+                            popUpTo(Screen.BottomScreen.Home.route) {
+                                inclusive = false
+                            }
+                            launchSingleTop = true
+                        }
+                    },
+                    onMealClick = { meal ->
+                        val json = Uri.encode(Json.encodeToString(meal))
+                        nestedNavController.navigate("${Screen.GeneralHomeScreen.MealItem.route}nut/$json") {
+                            launchSingleTop = true
+                        }
+                    }
+                )
             }
             composable(
                 route = "${Screen.GeneralHomeScreen.Profile.route}/{usersDataJson}",

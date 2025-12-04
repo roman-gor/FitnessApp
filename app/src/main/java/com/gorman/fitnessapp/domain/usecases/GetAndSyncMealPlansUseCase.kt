@@ -7,7 +7,8 @@ import javax.inject.Inject
 
 class GetAndSyncMealPlansUseCase @Inject constructor(
     private val firebaseRepository: FirebaseRepository,
-    private val databaseRepository: DatabaseRepository
+    private val databaseRepository: DatabaseRepository,
+    private val setMealsIdUseCase: SetMealsIdUseCase
 ) {
     /**
      * Извлечение актуальной программы питания из облака и синхронизация её с локальной базой данных
@@ -17,6 +18,7 @@ class GetAndSyncMealPlansUseCase @Inject constructor(
         mealPlansOutput?.firstNotNullOfOrNull { (template, items) ->
             val newMealPlan = MealPlan(template = template, items = items)
             databaseRepository.insertMealsItems(newMealPlan)
+            setMealsIdUseCase(mealPlansOutput.keys.first().firebaseId)
         }
     }
 }
