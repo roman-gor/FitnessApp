@@ -21,6 +21,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -39,35 +41,35 @@ import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.gorman.fitnessapp.R
 import com.gorman.fitnessapp.domain.models.Exercise
+import com.gorman.fitnessapp.domain.models.Meal
 import com.gorman.fitnessapp.ui.components.GeneralBackButton
 import com.gorman.fitnessapp.ui.components.LoadingStub
 import com.gorman.fitnessapp.ui.fonts.mulishFont
-import com.gorman.fitnessapp.ui.states.ExercisesUiState
+import com.gorman.fitnessapp.ui.states.ResourcesUiState
 import com.gorman.fitnessapp.ui.viewmodel.ResourcesViewModel
 
 @Composable
 fun ResourcesScreen(
     onBackPage: () -> Unit,
-    onItemClick: (Exercise) -> Unit
+    onExerciseClick: (Exercise) -> Unit,
+    onMealClick: (Meal) -> Unit
 ) {
     val resourcesViewModel: ResourcesViewModel = hiltViewModel()
     LaunchedEffect(Unit) {
         resourcesViewModel.loadExercises()
     }
-    val exercisesState by resourcesViewModel.exercisesState.collectAsState()
+    val exercisesState by resourcesViewModel.resourcesState.collectAsState()
     when (val state = exercisesState) {
-        is ExercisesUiState.Error -> {
-            ExercisesErrorScreen { resourcesViewModel.loadExercises() }
-        }
-        ExercisesUiState.Idle -> {}
-        ExercisesUiState.Loading -> {
-            LoadingStub()
-        }
-        is ExercisesUiState.Success -> {
+        is ResourcesUiState.Error -> ExercisesErrorScreen { resourcesViewModel.loadExercises() }
+        ResourcesUiState.Idle -> Box(modifier = Modifier.fillMaxSize().background(colorResource(R.color.bg_color)))
+        ResourcesUiState.Loading -> LoadingStub()
+        is ResourcesUiState.Success -> {
             ExercisesSuccessScreen(
                 onBackPage = onBackPage,
-                onItemClick = onItemClick,
-                exercises = state.list
+                onExerciseClick = onExerciseClick,
+                onMealClick = onMealClick,
+                exercises = state.exercises,
+                meals = state.meals
             )
         }
     }
@@ -76,9 +78,12 @@ fun ResourcesScreen(
 @Composable
 fun ExercisesSuccessScreen(
     onBackPage: () -> Unit,
-    onItemClick: (Exercise) -> Unit,
-    exercises: List<Exercise>
+    onExerciseClick: (Exercise) -> Unit,
+    onMealClick: (Meal) -> Unit,
+    exercises: List<Exercise>,
+    meals: List<Meal>
 ) {
+    val isExercises by remember { mutableStateOf(true) }
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -117,11 +122,18 @@ fun ExercisesSuccessScreen(
                 columns = GridCells.Fixed(2),
                 modifier = Modifier.padding(horizontal = 16.dp)
             ) {
-                items(exercises) { item ->
-                    ExerciseItem(exercise = item) {
-                        onItemClick(it)
+                if(isExercises)
+                    items(exercises) { item ->
+                        ExerciseItem(exercise = item) {
+                            onExerciseClick(it)
+                        }
                     }
-                }
+                else
+                    items(meals) { item ->
+                        MealItem(meal = item) {
+                            onMealClick(it)
+                        }
+                    }
             }
         }
     }
@@ -167,6 +179,57 @@ fun ExerciseItem(
         ) {
             Text(
                 text = exercise.name,
+                color = colorResource(R.color.white),
+                fontFamily = mulishFont(),
+                fontSize = 10.sp,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis,
+                fontWeight = FontWeight.Medium,
+                textAlign = TextAlign.Center,
+                modifier = Modifier.padding(horizontal = 10.dp)
+            )
+        }
+    }
+}
+
+@Composable
+fun MealItem(
+    meal: Meal,
+    onItemClick: (Meal) -> Unit
+) {
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(8.dp)
+            .clickable(onClick = {
+                onItemClick(meal)
+            })
+            .clip(RoundedCornerShape(24.dp))
+    ) {
+        AsyncImage(
+            model = ImageRequest.Builder(LocalContext.current)
+                .data(meal.photo)
+                .crossfade(true)
+                .build(),
+            contentDescription = "Firebase Image",
+            placeholder = painterResource(R.drawable.articles_placeholder),
+            error = painterResource(R.drawable.articles_placeholder),
+            contentScale = ContentScale.Crop,
+            modifier = Modifier.fillMaxWidth()
+                .height(140.dp)
+        )
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .align(Alignment.BottomCenter)
+                .background(
+                    colorResource(R.color.black).copy(alpha = 0.6f)
+                )
+                .padding(vertical = 8.dp),
+            contentAlignment = Alignment.Center
+        ) {
+            Text(
+                text = meal.name,
                 color = colorResource(R.color.white),
                 fontFamily = mulishFont(),
                 fontSize = 10.sp,

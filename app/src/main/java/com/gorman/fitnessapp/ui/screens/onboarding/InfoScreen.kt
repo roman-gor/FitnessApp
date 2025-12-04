@@ -169,6 +169,7 @@ fun InfoScreenTemplate(
                 Text(text = stringResource(buttonTitle),
                     fontFamily = mulishFont(),
                     fontSize = 18.sp,
+                    textAlign = TextAlign.Center,
                     fontWeight = FontWeight.ExtraBold,
                     color = colorResource(R.color.white),
                     modifier = Modifier

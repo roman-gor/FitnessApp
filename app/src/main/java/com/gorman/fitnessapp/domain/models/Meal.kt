@@ -5,6 +5,7 @@ data class Meal(
     val firebaseId: String  = "",
     val name: String,
     val description: String,
+    val photo: String,
     val calories: Float,
     val protein: Float,
     val carbs: Float,

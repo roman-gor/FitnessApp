@@ -110,7 +110,7 @@ const val MEALS_JSON_SCHEMA = """
                             },
                             "mealType": {
                               "type": "string",
-                              "description": "Тип приема пищи (например, 'Завтрак', 'Обед', 'Ужин', 'Перекус'). Соответствует 'mealType'."
+                              "description": "Тип приема пищи ('Завтрак', 'Обед', 'Ужин', 'Перекус'). Соответствует 'mealType'."
                             },
                             "quantity": {
                               "type": "integer",

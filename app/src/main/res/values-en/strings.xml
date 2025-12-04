@@ -63,8 +63,12 @@
     <string name="height">Height</string>
     <string name="program_gen_description_text">Let’s generate your personality Program</string>
     <string name="monday">Monday</string>
+    <string name="tuesday">Tuesday</string>
     <string name="wednesday">Wednesday</string>
+    <string name="thursday">Thursday</string>
     <string name="friday">Friday</string>
+    <string name="saturday">Saturday</string>
+    <string name="sunday">Sunday</string>
     <string name="minutes">Minutes</string>
     <string name="minute">Minutes</string>
     <string name="minute2">Minutes</string>
@@ -141,4 +145,10 @@
     <string name="meal_created_error">Error when generating meals</string>
     <string name="meal_plan_exist">Meal Plan Has Already Exists. Do You Want To Generate Another One?</string>
     <string name="meal_plan_success">Meal Plan Was Successfully Created!</string>
+    <string name="meal_plan_error">Error Loading Meal Plan</string>
+    <string name="breakfast">Breakfast</string>
+    <string name="lunch">Lunch</string>
+    <string name="dinner">Dinner</string>
+    <string name="snack">Snack</string>
+    <string name="pfc">PFC</string>
 </resources>

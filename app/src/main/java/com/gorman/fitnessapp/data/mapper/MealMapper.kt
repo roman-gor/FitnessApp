@@ -14,6 +14,7 @@ fun Meal.toEntity(): MealEntity = MealEntity(
     firebaseId = firebaseId,
     name = name,
     description = description,
+    photo = photo,
     calories = calories,
     protein = protein,
     carbs = carbs,
@@ -26,6 +27,7 @@ fun MealEntity.toDomain(): Meal = Meal(
     firebaseId = firebaseId,
     name = name,
     description = description,
+    photo = photo,
     calories = calories,
     protein = protein,
     carbs = carbs,
@@ -37,6 +39,7 @@ fun MealFirebase.toDomain(id: String): Meal = Meal(
     firebaseId = id,
     name = name,
     description = description,
+    photo = photo,
     calories = calories,
     protein = protein,
     carbs = carbs,
@@ -81,6 +84,25 @@ fun MealPlanTemplateFirebase.toDomain(firebaseId: String): MealPlanTemplate = Me
 
 fun MealPlanItemFirebase.toDomain(): MealPlanItem = MealPlanItem(
     firebaseId = templateId,
+    mealId = mealId,
+    mealType = mealType,
+    date = date,
+    quantity = quantity,
+    notes = notes
+)
+
+fun MealPlanTemplateEntity.toDomain(): MealPlanTemplate = MealPlanTemplate(
+    localId = id,
+    firebaseId = firebaseId,
+    userFirebaseId = userFirebaseId,
+    name = name,
+    description = description
+)
+
+fun MealPlanItemEntity.toDomain(): MealPlanItem = MealPlanItem(
+    localId = id,
+    firebaseId = firebaseId,
+    templateId = templateId,
     mealId = mealId,
     mealType = mealType,
     date = date,

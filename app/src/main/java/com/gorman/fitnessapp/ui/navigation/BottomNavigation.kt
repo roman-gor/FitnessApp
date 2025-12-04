@@ -1,7 +1,6 @@
 package com.gorman.fitnessapp.ui.navigation
 
 import android.net.Uri
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
@@ -29,6 +28,7 @@ import com.gorman.fitnessapp.ui.screens.main.HomeScreen
 import com.gorman.fitnessapp.ui.screens.main.ProfileScreen
 import com.gorman.fitnessapp.ui.screens.main.ResourcesScreen
 import com.gorman.fitnessapp.ui.screens.main.SettingsScreen
+import com.gorman.fitnessapp.ui.screens.nutrition.NutritionScreen
 import com.gorman.fitnessapp.ui.screens.workout.ExerciseByDayScreen
 import com.gorman.fitnessapp.ui.screens.workout.GeneratingProgram
 import com.gorman.fitnessapp.ui.screens.workout.ProgramByDayScreen
@@ -110,18 +110,21 @@ fun BottomNavigation(navController: NavController) {
                             onBackPage = {
                                 nestedNavController.navigateUp()
                             },
-                            onItemClick = { exercise ->
+                            onExerciseClick = { exercise ->
                                 val json = Uri.encode(Json.encodeToString(exercise))
                                 nestedNavController.navigate("${Screen.WorkoutScreen.ExerciseByProgram.route}/$json") {
                                     launchSingleTop = true
                                 }
-                            }
+                            },
+                            onMealClick = {TODO()}
                         )
                     }
                 }
             }
             composable(Screen.GeneralHomeScreen.Nutrition.route) {
-                Box(modifier = Modifier.fillMaxSize())
+                NutritionScreen {
+                    nestedNavController.popBackStack()
+                }
             }
             composable(
                 route = "${Screen.GeneralHomeScreen.Profile.route}/{usersDataJson}",

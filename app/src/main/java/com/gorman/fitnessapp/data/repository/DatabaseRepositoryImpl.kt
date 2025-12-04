@@ -19,6 +19,8 @@ import com.gorman.fitnessapp.domain.models.Article
 import com.gorman.fitnessapp.domain.models.Exercise
 import com.gorman.fitnessapp.domain.models.Meal
 import com.gorman.fitnessapp.domain.models.MealPlan
+import com.gorman.fitnessapp.domain.models.MealPlanItem
+import com.gorman.fitnessapp.domain.models.MealPlanTemplate
 import com.gorman.fitnessapp.domain.models.Program
 import com.gorman.fitnessapp.domain.models.ProgramExercise
 import com.gorman.fitnessapp.domain.models.UserProgram
@@ -127,6 +129,12 @@ class DatabaseRepositoryImpl @Inject constructor(
         val mappedItems = meal.items.map { it.toEntity(templateId) }
         mealPlanItemDao.insertMealPlanItem(mappedItems)
         Log.d("MealsPlansCount", mealPlanTemplateDao.getMealsTemplateCount().toString())
+    }
+
+    override suspend fun getMealPlan(): Pair<MealPlanTemplate, List<MealPlanItem>> {
+        val mealPlanTemplate = mealPlanTemplateDao.getMealPlanTemplates().first().toDomain()
+        val mealPlanItem = mealPlanItemDao.getMealPlanItems().map { it.toDomain() }
+        return Pair(mealPlanTemplate, mealPlanItem)
     }
 
     override suspend fun getProgram(): Program {

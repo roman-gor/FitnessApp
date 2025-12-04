@@ -66,8 +66,12 @@
     <string name="height">Рост</string>
     <string name="program_gen_description_text">Давайте сгенерируем вашу персональную программу</string>
     <string name="monday">Понедельник</string>
+    <string name="tuesday">Вторник</string>
     <string name="wednesday">Среда</string>
+    <string name="thursday">Четверг</string>
     <string name="friday">Пятница</string>
+    <string name="saturday">Суббота</string>
+    <string name="sunday">Воскресенье</string>
     <string name="minutes">Минут</string>
     <string name="minute">Минута</string>
     <string name="minute2">Минуты</string>
@@ -144,4 +148,10 @@
     <string name="meal_created_error">Ошибка при генерации рациона</string>
     <string name="meal_plan_exist">План питания уже создан. Желаете создать новый?</string>
     <string name="meal_plan_success">План питания успешно создан!</string>
+    <string name="meal_plan_error">Ошибка при загрузке плана питания</string>
+    <string name="breakfast">Завтрак</string>
+    <string name="lunch">Обед</string>
+    <string name="dinner">Ужин</string>
+    <string name="snack">Перекус</string>
+    <string name="pfc">БЖУ</string>
 </resources>

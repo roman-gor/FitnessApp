@@ -347,12 +347,3 @@ fun ErrorMessage(
 fun isValidEmail(email: String): Boolean {
     return email.isNotEmpty() && Patterns.EMAIL_ADDRESS.matcher(email).matches()
 }
-
-@Preview(showBackground = true)
-@Composable
-fun ProfilePreview() {
-    MaterialTheme {
-        //ProfileSetupScreen(onBackPage = {}, onNextPage = {})
-        //LoadingStub()
-    }
-}

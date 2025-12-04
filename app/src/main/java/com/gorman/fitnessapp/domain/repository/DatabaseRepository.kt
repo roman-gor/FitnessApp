@@ -4,6 +4,8 @@ import com.gorman.fitnessapp.domain.models.Article
 import com.gorman.fitnessapp.domain.models.Exercise
 import com.gorman.fitnessapp.domain.models.Meal
 import com.gorman.fitnessapp.domain.models.MealPlan
+import com.gorman.fitnessapp.domain.models.MealPlanItem
+import com.gorman.fitnessapp.domain.models.MealPlanTemplate
 import com.gorman.fitnessapp.domain.models.Program
 import com.gorman.fitnessapp.domain.models.ProgramExercise
 import com.gorman.fitnessapp.domain.models.UserProgram
@@ -28,6 +30,7 @@ interface DatabaseRepository {
     suspend fun getMeals(): List<Meal>
     suspend fun insertMeals(meals: List<Meal>)
     suspend fun insertMealsItems(meal: MealPlan)
+    suspend fun getMealPlan(): Pair<MealPlanTemplate, List<MealPlanItem>>
     suspend fun getProgram(): Program
     suspend fun insertWorkoutHistory(workoutHistory: WorkoutHistory)
     suspend fun insertWorkoutHistory(workoutHistory: List<WorkoutHistory>)
