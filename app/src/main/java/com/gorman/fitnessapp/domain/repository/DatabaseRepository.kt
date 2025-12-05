@@ -37,4 +37,5 @@ interface DatabaseRepository {
     suspend fun getWorkoutHistory(): List<WorkoutHistory>
     suspend fun getArticles(): List<Article>
     suspend fun insertArticles(articles: List<Article>)
+    suspend fun deleteUserProgressAndHistory()
 }

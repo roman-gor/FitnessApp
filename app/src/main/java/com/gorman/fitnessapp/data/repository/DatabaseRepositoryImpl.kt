@@ -162,4 +162,9 @@ class DatabaseRepositoryImpl @Inject constructor(
         if (articleDao.getArticlesCount() == 0)
             articleDao.insertIntoArticles(articles.map { it.toEntity() })
     }
+
+    override suspend fun deleteUserProgressAndHistory() {
+        workoutHistoryDao.deleteWorkoutHistory()
+        userProgressDao.deleteUserProgress()
+    }
 }

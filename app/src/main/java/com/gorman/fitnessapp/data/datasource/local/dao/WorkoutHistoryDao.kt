@@ -11,10 +11,12 @@ import com.gorman.fitnessapp.data.models.room.WorkoutHistoryEntity
 
 @Dao
 interface WorkoutHistoryDao {
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    @Insert(onConflict = REPLACE)
     suspend fun insertWorkoutHistory(workoutHistoryEntity: WorkoutHistoryEntity)
     @Insert(onConflict = REPLACE)
     suspend fun insertListWorkoutHistory(workoutHistoryEntities: List<WorkoutHistoryEntity>)
     @Query("SELECT * FROM workouthistory")
     suspend fun getWorkoutHistory(): List<WorkoutHistoryEntity>
+    @Query("DELETE FROM workouthistory")
+    suspend fun deleteWorkoutHistory()
 }
