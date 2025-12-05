@@ -1,5 +1,6 @@
 package com.gorman.fitnessapp.data.datasource.remote
 
+import com.gorman.fitnessapp.data.models.postgresql.ArticleSupabase
 import com.gorman.fitnessapp.data.models.postgresql.ExerciseSupabase
 import com.gorman.fitnessapp.data.models.postgresql.MealPlanFullSupabase
 import com.gorman.fitnessapp.data.models.postgresql.MealSupabase
@@ -55,12 +56,13 @@ class PostgreSQLServiceImpl @Inject constructor(
                 .decodeList<ExerciseSupabase>()
         }
     }
+
     override suspend fun getMeals(): List<MealSupabase> {
         return executeListRequest(
             tag = "SUPABASE Meals",
             operationName = "Получен список блюд"
         ) {
-            client.postgrest["meal"]
+            client.postgrest["meals"]
                 .select()
                 .decodeList<MealSupabase>()
         }
@@ -71,10 +73,10 @@ class PostgreSQLServiceImpl @Inject constructor(
             tag = "SUPABASE UserPrograms",
             operationName = "Найдены программы для пользователя"
         ) {
-            client.postgrest["userprogram"]
+            client.postgrest["user_programs"]
                 .select {
                     filter {
-                        eq("userid_usersdata", userId)
+                        eq("user_id", userId)
                     }
                 }
                 .decodeList<UserProgramSupabase>()
@@ -87,14 +89,14 @@ class PostgreSQLServiceImpl @Inject constructor(
             tag = "SupabaseAPI",
             operationName = "Удаление программ пользователя"
         ) {
-            val programIds = userPrograms.map { it.programId }
-            logger.d("ProgramId", programIds.first().toString())
-            client.postgrest.rpc(
-                function = "delete_user_program_atomic",
-                parameters = mapOf(
-                    "program_id" to programIds.first()
+            userPrograms.forEach { program ->
+                client.postgrest.rpc(
+                    function = "delete_user_program_atomic",
+                    parameters = mapOf(
+                        "program_id" to program.programId
+                    )
                 )
-            )
+            }
         }
     }
 
@@ -103,7 +105,7 @@ class PostgreSQLServiceImpl @Inject constructor(
             tag = "SUPABASE Insert",
             operationName = "Вставка программы тренировок"
         ) {
-            val insertedProgram = client.postgrest["program"]
+            val insertedProgram = client.postgrest["programs"]
                 .insert(program) {
                     select()
                 }
@@ -121,7 +123,7 @@ class PostgreSQLServiceImpl @Inject constructor(
             tag = "ProgramExercise",
             operationName = "Успешно вставлено ${programExercises.size} упражнений для программы $programId"
         ) {
-            client.postgrest["programexercise"]
+            client.postgrest["program_exercises"]
                 .insert(programExercises) {
                     select()
                 }
@@ -134,7 +136,7 @@ class PostgreSQLServiceImpl @Inject constructor(
             tag = "SupabaseAPI",
             operationName = "Успешно вставлена программа пользователя."
         ) {
-            client.postgrest["userprogram"]
+            client.postgrest["user_programs"]
                 .insert(program)
         }
     }
@@ -142,14 +144,29 @@ class PostgreSQLServiceImpl @Inject constructor(
     override suspend fun insertUserProgress(userProgress: UserProgressSupabase): Int? {
         return executeRequest(
             tag = "SupabaseAPI",
-            operationName = "Успешно добавлена запись прогресса пользователя."
+            operationName = "Успешно добавлена запись прогресса пользователя и обновлен вес."
         ) {
-            val progressId = client.postgrest["userprogress"]
+            // 1. Вставка прогресса
+            val insertedProgress = client.postgrest["user_progress"]
                 .insert(userProgress) {
                     select()
                 }
                 .decodeSingle<UserProgressSupabase>()
-            progressId.id
+
+            // 2. Обновление веса пользователя в таблице usersdata (Логика Firebase)
+            if (userProgress.weight != null) {
+                client.postgrest["users"].update(
+                    {
+                        set("weight", userProgress.weight)
+                    }
+                ) {
+                    filter {
+                        eq("user_id", userProgress.userId)
+                    }
+                }
+            }
+
+            insertedProgress.id
         }
     }
 
@@ -158,7 +175,7 @@ class PostgreSQLServiceImpl @Inject constructor(
             tag = "SUPABASE Update",
             operationName = "Запись прогресса успешно обновлена"
         ) {
-            client.postgrest["userprogress"]
+            client.postgrest["user_progress"]
                 .update(userProgress)
         }
     }
@@ -168,10 +185,10 @@ class PostgreSQLServiceImpl @Inject constructor(
             tag = "SupabaseAPI",
             operationName = "Извлечение записи прогресса пользователя"
         ) {
-            client.postgrest["userprogress"]
+            client.postgrest["user_progress"]
                 .select {
                     filter {
-                        eq("userid_usersdata", userId)
+                        eq("user_id", userId)
                     }
                 }
                 .decodeList<UserProgressSupabase>()
@@ -183,7 +200,7 @@ class PostgreSQLServiceImpl @Inject constructor(
             tag = "SUPABASE User",
             operationName = "Найден пользователь с email $email"
         ) {
-            client.postgrest["usersdata"]
+            client.postgrest["users"]
                 .select {
                     filter {
                         eq("email", email)
@@ -198,7 +215,7 @@ class PostgreSQLServiceImpl @Inject constructor(
             tag = "SUPABASE Insert",
             operationName = "Успешно вставлен пользователь"
         ) {
-            val insertedUser = client.postgrest["usersdata"]
+            val insertedUser = client.postgrest["users"]
                 .insert(user) {
                     select()
                 }
@@ -210,14 +227,30 @@ class PostgreSQLServiceImpl @Inject constructor(
     override suspend fun deleteUser(user: UserSupabase) {
         executeRequest(
             tag = "SUPABASE Delete",
-            operationName = "Удаление пользователя: ${user.userId}"
+            operationName = "Удаление пользователя и связанных данных: ${user.userId}"
         ) {
-            client.postgrest["usersdata"]
-                .delete{
-                    filter {
-                        eq("userId", user.userId)
-                    }
-                }
+            // Реализация логики Firebase: удаление связанных данных перед удалением пользователя
+            val userId = user.userId
+
+            // Удаление программ пользователя
+            client.postgrest["user_programs"].delete {
+                filter { eq("user_id", userId!!) }
+            }
+
+            // Удаление прогресса
+            client.postgrest["user_progress"].delete {
+                filter { eq("user_id", userId!!) }
+            }
+
+            // Удаление истории тренировок
+            client.postgrest["workout_history_logs"].delete {
+                filter { eq("user_id", userId!!) }
+            }
+
+            // Наконец, удаление самого пользователя
+            client.postgrest["users"].delete {
+                filter { eq("user_id", userId!!) }
+            }
         }
     }
 
@@ -226,7 +259,7 @@ class PostgreSQLServiceImpl @Inject constructor(
             tag = "SUPABASE Update",
             operationName = "Обновление пользователя: ${user.userId}"
         ) {
-            client.postgrest["usersdata"]
+            client.postgrest["users"]
                 .update(user)
         }
     }
@@ -242,7 +275,7 @@ class PostgreSQLServiceImpl @Inject constructor(
         ) {
             val templateToInsert = mealPlanTemplateSupabase.copy(userId = userId)
 
-            val insertedTemplate = client.postgrest["mealplantemplate"]
+            val insertedTemplate = client.postgrest["meal_plan_templates"]
                 .insert(templateToInsert) {
                     select()
                 }
@@ -252,7 +285,7 @@ class PostgreSQLServiceImpl @Inject constructor(
 
             if (mealPlanItemSupabase.isNotEmpty()) {
                 val itemsToInsert = mealPlanItemSupabase.map { it.copy(templateId = templateId) }
-                val insertedItems = client.postgrest["mealplanitem"]
+                val insertedItems = client.postgrest["meal_plan_items"]
                     .insert(itemsToInsert) {
                         select()
                     }
@@ -268,10 +301,10 @@ class PostgreSQLServiceImpl @Inject constructor(
             tag = "SUPABASE Templates",
             operationName = "Найдены шаблоны для пользователя $userId"
         ) {
-            client.postgrest["mealplantemplate"]
+            client.postgrest["meal_plan_template"]
                 .select {
                     filter {
-                        eq("userid_usersdata", userId)
+                        eq("user_id", userId)
                     }
                 }
                 .decodeList<MealPlanTemplateSupabase>()
@@ -284,10 +317,10 @@ class PostgreSQLServiceImpl @Inject constructor(
             tag = "SUPABASE Program",
             operationName = "Найдена программа $programId"
         ) {
-            client.postgrest["program"]
+            client.postgrest["programs"]
                 .select {
                     filter {
-                        eq("id_program", programId)
+                        eq("program_id", programId)
                     }
                 }
                 .decodeSingleOrNull<ProgramSupabase>()
@@ -299,10 +332,10 @@ class PostgreSQLServiceImpl @Inject constructor(
             tag = "SUPABASE Exercises",
             operationName = "Найдено упражнений для программы $programId"
         ) {
-            client.postgrest["programexercise"]
+            client.postgrest["program_exercises"]
                 .select {
                     filter {
-                        eq("programid_program", programId)
+                        eq("program_id", programId)
                     }
                 }
                 .decodeList<ProgramExerciseSupabase>()
@@ -314,10 +347,10 @@ class PostgreSQLServiceImpl @Inject constructor(
             tag = "SUPABASE UserProgram",
             operationName = "Найдена программа пользователя $userId"
         ) {
-            client.postgrest["userprogram"]
+            client.postgrest["user_program"]
                 .select {
                     filter {
-                        eq("userid_usersdata", userId)
+                        eq("user_id", userId)
                     }
                     limit(1)
                 }
@@ -330,10 +363,10 @@ class PostgreSQLServiceImpl @Inject constructor(
             tag = "SUPABASE",
             operationName = "Получение планов питания для пользователя $userId"
         ) {
-            val templates = client.postgrest["mealplantemplate"]
+            val templates = client.postgrest["meal_plan_templates"]
                 .select {
                     filter {
-                        eq("userid_usersdata", userId)
+                        eq("user_id", userId)
                     }
                 }
                 .decodeList<MealPlanTemplateSupabase>()
@@ -346,10 +379,10 @@ class PostgreSQLServiceImpl @Inject constructor(
             val mealPlans = mutableListOf<MealPlanFullSupabase>()
 
             for (template in templates) {
-                val items = client.postgrest["mealplanitem"]
+                val items = client.postgrest["meal_plan_items"]
                     .select {
                         filter {
-                            eq("templateid_mealplantemplate", template.templateId)
+                            eq("template_id", template.templateId)
                         }
                     }
                     .decodeList<MealPlanItemSupabase>()
@@ -364,7 +397,7 @@ class PostgreSQLServiceImpl @Inject constructor(
             tag = "SupabaseAPI",
             operationName = "Успешно добавлена запись тренировки."
         ) {
-            val workoutHistory = client.postgrest["workouthistory"]
+            val workoutHistory = client.postgrest["workout_history_logs"]
                 .insert(workoutHistorySupabase) {
                     select()
                 }
@@ -378,7 +411,7 @@ class PostgreSQLServiceImpl @Inject constructor(
             tag = "SUPABASE Update",
             operationName = "Запись истории тренировки успешно обновлена"
         ) {
-            client.postgrest["workouthistory"]
+            client.postgrest["workout_history_logs"]
                 .update(workoutHistorySupabase)
         }
     }
@@ -388,10 +421,10 @@ class PostgreSQLServiceImpl @Inject constructor(
             tag = "SupabaseAPI",
             operationName = "Получение истории тренировок"
         ) {
-            client.postgrest["workouthistory"]
+            client.postgrest["workout_history_logs"]
                 .select {
                     filter {
-                        eq("userid_usersdata", userId)
+                        eq("user_id", userId)
                     }
                 }
                 .decodeList<WorkoutHistorySupabase>()
@@ -409,6 +442,17 @@ class PostgreSQLServiceImpl @Inject constructor(
                     "template_id" to templateId
                 )
             )
+        }
+    }
+
+    override suspend fun getArticles(): List<ArticleSupabase> {
+        return executeListRequest(
+            tag = "SUPABASE Articles",
+            operationName = "Получение статей"
+        ) {
+            client.postgrest["article"]
+                .select()
+                .decodeList<ArticleSupabase>()
         }
     }
 }

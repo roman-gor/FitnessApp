@@ -5,7 +5,7 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class MealSupabase(
-    @SerialName("id_meal")
+    @SerialName("id")
     val id: Int  = 0,
     @SerialName("name")
     val name: String = "",
@@ -20,5 +20,7 @@ data class MealSupabase(
     @SerialName("fats")
     val fats: Float = 0.0f,
     @SerialName("recipe")
-    val recipe: String = ""
+    val recipe: String = "",
+    @SerialName("photo_url")
+    val photo: String = ""
 )

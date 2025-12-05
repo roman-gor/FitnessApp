@@ -5,20 +5,20 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class WorkoutHistorySupabase(
-    @SerialName("id_workoutprogress")
+    @SerialName("log_id")
     val id: Int = 0,
-    @SerialName("userid_usersdata")
+    @SerialName("user_id")
     val userId: Int,
-    @SerialName("exerciseid_exercise")
+    @SerialName("exercise_id")
     val exerciseId: Int,
-    @SerialName("programid_program")
+    @SerialName("program_id")
     val programId: Int? = null,
-    @SerialName("date")
+    @SerialName("log_date")
     val date: Long,
-    @SerialName("setscompleted")
+    @SerialName("sets_completed")
     val setsCompleted: Int,
-    @SerialName("repscompleted")
+    @SerialName("reps_completed")
     val repsCompleted: Int,
-    @SerialName("weightused")
+    @SerialName("weight_used")
     val weightUsed: Float? = null
 )

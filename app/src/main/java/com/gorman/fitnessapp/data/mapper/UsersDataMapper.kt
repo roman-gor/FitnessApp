@@ -10,7 +10,7 @@ fun UsersDataEntity.toDomain(): UsersData =
         supabaseId = supabaseId,
         name = name,
         email = email,
-        birthday = birthday,
+        age = age,
         goal = goal,
         weight = weight,
         desiredWeight = desiredWeight,
@@ -26,7 +26,7 @@ fun UsersData.toEntity(userId: Int = 0): UsersDataEntity =
         supabaseId = supabaseId,
         name = name,
         email = email,
-        birthday = birthday,
+        age = age,
         goal = goal,
         weight = weight,
         desiredWeight = desiredWeight,
@@ -38,10 +38,9 @@ fun UsersData.toEntity(userId: Int = 0): UsersDataEntity =
 
 fun UsersData.toRemote(): UserSupabase =
     UserSupabase(
-        userId = supabaseId,
         name = name,
         email = email,
-        birthday = birthday,
+        age = age,
         goal = goal,
         weight = weight,
         desiredWeight = desiredWeight,
@@ -53,10 +52,10 @@ fun UsersData.toRemote(): UserSupabase =
 
 fun UserSupabase.toDomain(): UsersData =
     UsersData(
-        supabaseId = userId,
+        supabaseId = userId!!,
         name = name,
         email = email,
-        birthday = birthday,
+        age = age,
         goal = goal,
         weight = weight,
         desiredWeight = desiredWeight,

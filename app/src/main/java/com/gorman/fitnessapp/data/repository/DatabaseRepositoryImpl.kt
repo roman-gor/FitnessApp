@@ -2,6 +2,7 @@ package com.gorman.fitnessapp.data.repository
 
 import android.util.Log
 import androidx.room.Transaction
+import com.gorman.fitnessapp.data.datasource.local.dao.ArticleDao
 import com.gorman.fitnessapp.data.datasource.local.dao.ExerciseDao
 import com.gorman.fitnessapp.data.datasource.local.dao.MealDao
 import com.gorman.fitnessapp.data.datasource.local.dao.MealPlanItemDao
@@ -14,9 +15,12 @@ import com.gorman.fitnessapp.data.datasource.local.dao.UsersDataDao
 import com.gorman.fitnessapp.data.datasource.local.dao.WorkoutHistoryDao
 import com.gorman.fitnessapp.data.mapper.toDomain
 import com.gorman.fitnessapp.data.mapper.toEntity
+import com.gorman.fitnessapp.domain.models.Article
 import com.gorman.fitnessapp.domain.models.Exercise
 import com.gorman.fitnessapp.domain.models.Meal
 import com.gorman.fitnessapp.domain.models.MealPlan
+import com.gorman.fitnessapp.domain.models.MealPlanItem
+import com.gorman.fitnessapp.domain.models.MealPlanTemplate
 import com.gorman.fitnessapp.domain.models.Program
 import com.gorman.fitnessapp.domain.models.ProgramExercise
 import com.gorman.fitnessapp.domain.models.UserProgram
@@ -36,9 +40,9 @@ class DatabaseRepositoryImpl @Inject constructor(
     private val mealPlanTemplateDao: MealPlanTemplateDao,
     private val mealPlanItemDao: MealPlanItemDao,
     private val userProgressDao: UserProgressDao,
-    private val workoutHistoryDao: WorkoutHistoryDao
+    private val workoutHistoryDao: WorkoutHistoryDao,
+    private val articleDao: ArticleDao
 ): DatabaseRepository {
-
     override suspend fun getUserProgramById(programId: Int): UserProgram {
         return userProgramDao.getUserProgramById(programId = programId).toDomain()
     }
@@ -61,7 +65,7 @@ class DatabaseRepositoryImpl @Inject constructor(
         return usersDataDao.updateUser(user.toEntity(id))
     }
 
-    override suspend fun getExercises(): List<Exercise>? {
+    override suspend fun getExercises(): List<Exercise> {
         return exerciseDao.getExercises().map { it.toDomain() }
     }
 
@@ -69,6 +73,13 @@ class DatabaseRepositoryImpl @Inject constructor(
     override suspend fun insertExercises(exercises: List<Exercise>) {
         if (exerciseDao.getExerciseCount() == 0)
             exerciseDao.insertExercises(exercises.map { it.toEntity() })
+    }
+
+    @Transaction
+    override suspend fun updateExercises(exercises: List<Exercise>) {
+        exerciseDao.deleteAllExercises()
+        exerciseDao.resetPrimaryKey()
+        insertExercises(exercises = exercises)
     }
 
     @Transaction
@@ -93,8 +104,8 @@ class DatabaseRepositoryImpl @Inject constructor(
         userProgressDao.insertUserProgress(userProgress.toEntity())
     }
 
-    override suspend fun updateUserProgress(userProgress: UserProgress) {
-        userProgressDao.updateUserProgress(userProgress.toEntity())
+    override suspend fun insertUserProgress(userProgress: List<UserProgress>) {
+        userProgressDao.insertListUserProgress(userProgress.map { it.toEntity() })
     }
 
     override suspend fun getUserProgress(): List<UserProgress> {
@@ -115,26 +126,45 @@ class DatabaseRepositoryImpl @Inject constructor(
         mealPlanItemDao.deleteAllRows()
         mealPlanTemplateDao.deleteAllRows()
         val templateId = mealPlanTemplateDao.insertMealPlanTemplate(meal.template.toEntity()).toInt()
-        val mappedItems = meal.items.map { item ->
-            item.toEntity(templateId).copy(mealId = item.mealId)
-        }
+        val mappedItems = meal.items.map { it.toEntity(templateId) }
         mealPlanItemDao.insertMealPlanItem(mappedItems)
         Log.d("MealsPlansCount", mealPlanTemplateDao.getMealsTemplateCount().toString())
     }
 
-    override suspend fun getProgramList(): List<Program> {
-        return programDao.getList().map{ it.toDomain() }
+    override suspend fun getMealPlan(): Pair<MealPlanTemplate, List<MealPlanItem>> {
+        val mealPlanTemplate = mealPlanTemplateDao.getMealPlanTemplates().first().toDomain()
+        val mealPlanItem = mealPlanItemDao.getMealPlanItems().map { it.toDomain() }
+        return Pair(mealPlanTemplate, mealPlanItem)
+    }
+
+    override suspend fun getProgram(): Program {
+        return programDao.getProgram().toDomain()
     }
 
     override suspend fun insertWorkoutHistory(workoutHistory: WorkoutHistory) {
+        Log.d("Workout", "${workoutHistory.toEntity()}")
         workoutHistoryDao.insertWorkoutHistory(workoutHistory.toEntity())
     }
 
-    override suspend fun updateWorkoutHistory(workoutHistory: WorkoutHistory) {
-        workoutHistoryDao.updateWorkoutHistory(workoutHistory.toEntity())
+    override suspend fun insertWorkoutHistory(workoutHistory: List<WorkoutHistory>) {
+        workoutHistoryDao.insertListWorkoutHistory(workoutHistory.map { it.toEntity() })
     }
 
     override suspend fun getWorkoutHistory(): List<WorkoutHistory> {
         return workoutHistoryDao.getWorkoutHistory().map { it.toDomain() }
+    }
+
+    override suspend fun getArticles(): List<Article> {
+        return articleDao.getArticles().map { it.toDomain() }
+    }
+
+    override suspend fun insertArticles(articles: List<Article>) {
+        if (articleDao.getArticlesCount() == 0)
+            articleDao.insertIntoArticles(articles.map { it.toEntity() })
+    }
+
+    override suspend fun deleteUserProgressAndHistory() {
+        workoutHistoryDao.deleteWorkoutHistory()
+        userProgressDao.deleteUserProgress()
     }
 }

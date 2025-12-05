@@ -6,16 +6,18 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class UserProgramSupabase(
-    @SerialName("userid_usersdata")
+    @SerialName("user_program_id")
+    val id: Int = 0,
+    @SerialName("user_id")
     val userId: Int = 0,
-    @SerialName("programid_program")
+    @SerialName("program_id")
     val programId: Int = 0,
-    @SerialName("startdate")
+    @SerialName("start_date")
     val startDate: Long = 0,
-    @SerialName("enddate")
+    @SerialName("end_date")
     val endDate: Long? = 0,
     @SerialName("progress")
     val progress: Float? = 0f,
-    @SerializedName("iscompleted")
+    @SerializedName("completed")
     val isCompleted: Boolean = false
 )

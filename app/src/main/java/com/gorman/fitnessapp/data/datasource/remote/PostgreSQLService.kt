@@ -1,5 +1,6 @@
 package com.gorman.fitnessapp.data.datasource.remote
 
+import com.gorman.fitnessapp.data.models.postgresql.ArticleSupabase
 import com.gorman.fitnessapp.data.models.postgresql.ExerciseSupabase
 import com.gorman.fitnessapp.data.models.postgresql.MealPlanFullSupabase
 import com.gorman.fitnessapp.data.models.postgresql.MealSupabase
@@ -11,7 +12,6 @@ import com.gorman.fitnessapp.data.models.postgresql.UserSupabase
 import com.gorman.fitnessapp.data.models.postgresql.UserProgramSupabase
 import com.gorman.fitnessapp.data.models.postgresql.UserProgressSupabase
 import com.gorman.fitnessapp.data.models.postgresql.WorkoutHistorySupabase
-import com.gorman.fitnessapp.domain.models.UsersData
 
 interface PostgreSQLService {
     suspend fun getExercises(): List<ExerciseSupabase>
@@ -40,4 +40,5 @@ interface PostgreSQLService {
     suspend fun insertWorkoutHistory(workoutHistorySupabase: WorkoutHistorySupabase): Int?
     suspend fun updateWorkoutHistory(workoutHistorySupabase: WorkoutHistorySupabase)
     suspend fun getWorkoutHistory(userId: Int): List<WorkoutHistorySupabase>
+    suspend fun getArticles(): List<ArticleSupabase>
 }

@@ -1,8 +1,11 @@
 package com.gorman.fitnessapp.domain.repository
 
+import com.gorman.fitnessapp.domain.models.Article
 import com.gorman.fitnessapp.domain.models.Exercise
 import com.gorman.fitnessapp.domain.models.Meal
 import com.gorman.fitnessapp.domain.models.MealPlan
+import com.gorman.fitnessapp.domain.models.MealPlanItem
+import com.gorman.fitnessapp.domain.models.MealPlanTemplate
 import com.gorman.fitnessapp.domain.models.Program
 import com.gorman.fitnessapp.domain.models.ProgramExercise
 import com.gorman.fitnessapp.domain.models.UserProgram
@@ -16,18 +19,23 @@ interface DatabaseRepository {
     suspend fun getUser(): UsersData
     suspend fun addUser(user: UsersData)
     suspend fun updateUser(user: UsersData, id: Int): Int
-    suspend fun getExercises(): List<Exercise>?
+    suspend fun getExercises(): List<Exercise>
     suspend fun insertExercises(exercises: List<Exercise>)
+    suspend fun updateExercises(exercises: List<Exercise>)
     suspend fun insertProgramWithExercises(program: Program): Int
     suspend fun insertUserProgram(program: UserProgram)
     suspend fun insertUserProgress(userProgress: UserProgress)
-    suspend fun updateUserProgress(userProgress: UserProgress)
+    suspend fun insertUserProgress(userProgress: List<UserProgress>)
     suspend fun getUserProgress(): List<UserProgress>
     suspend fun getMeals(): List<Meal>
     suspend fun insertMeals(meals: List<Meal>)
     suspend fun insertMealsItems(meal: MealPlan)
-    suspend fun getProgramList(): List<Program>
+    suspend fun getMealPlan(): Pair<MealPlanTemplate, List<MealPlanItem>>
+    suspend fun getProgram(): Program
     suspend fun insertWorkoutHistory(workoutHistory: WorkoutHistory)
-    suspend fun updateWorkoutHistory(workoutHistory: WorkoutHistory)
+    suspend fun insertWorkoutHistory(workoutHistory: List<WorkoutHistory>)
     suspend fun getWorkoutHistory(): List<WorkoutHistory>
+    suspend fun getArticles(): List<Article>
+    suspend fun insertArticles(articles: List<Article>)
+    suspend fun deleteUserProgressAndHistory()
 }

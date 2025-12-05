@@ -1,57 +1,45 @@
 package com.gorman.fitnessapp
 
+import android.graphics.Color
 import android.os.Bundle
-import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import androidx.compose.foundation.gestures.scrollable
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.text.selection.SelectionContainer
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
-import androidx.hilt.navigation.compose.hiltViewModel
-import com.gorman.fitnessapp.ui.screens.RegisterScreen
+import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
+import androidx.core.view.WindowCompat
+import androidx.core.view.WindowInsetsControllerCompat
+import com.gorman.fitnessapp.ui.navigation.SetupNavigation
 import com.gorman.fitnessapp.ui.theme.FitnessAppTheme
-import com.gorman.fitnessapp.ui.viewmodel.RegisterViewModel
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.delay
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
+        val splashScreen = installSplashScreen()
         super.onCreate(savedInstanceState)
+        var keepSplashOnScreen = true
+        splashScreen.setKeepOnScreenCondition { keepSplashOnScreen }
         enableEdgeToEdge()
+        WindowCompat.setDecorFitsSystemWindows(window, false)
+        window.statusBarColor = Color.TRANSPARENT
+        WindowInsetsControllerCompat(window, window.decorView).isAppearanceLightStatusBars = false
         setContent {
-            val registerViewModel: RegisterViewModel = hiltViewModel()
-            val users = registerViewModel.usersState.value
-            val json = registerViewModel.json.value
             LaunchedEffect(Unit) {
-                registerViewModel.prompt()
+                delay(2000)
+                keepSplashOnScreen = false
             }
             FitnessAppTheme {
                 Surface (
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ){
-                    Column(modifier = Modifier
-                        .fillMaxSize()
-                        .verticalScroll(rememberScrollState())){
-                        SelectionContainer {
-                            Text(json)
-                        }
-                    }
-                    //RegisterScreen()
-                    if (users.isNotEmpty()) {
-                        Log.d("Room", users[1].toString())
-                    } else {
-                        Log.d("Room", "Users list is empty or still loading.")
-                    }
+                    SetupNavigation()
                 }
             }
         }

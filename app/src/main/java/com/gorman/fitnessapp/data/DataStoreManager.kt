@@ -12,4 +12,5 @@ val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "se
 object SettingsKeys {
     val USER_ID = intPreferencesKey("user_id")
     val PROGRAM_ID = intPreferencesKey("program_id")
+    val MEAL_ID = intPreferencesKey("meal_id")
 }

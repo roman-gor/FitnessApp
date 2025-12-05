@@ -5,18 +5,18 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class ExerciseSupabase(
-    @SerialName("id_exercise")
+    @SerialName("id")
     val id: Int = 0,
     @SerialName("name")
     val name: String = "",
     @SerialName("description")
     val description: String? = null,
-    @SerialName("muscleGroup")
+    @SerialName("muscle_group")
     val muscleGroup: String = "",
     @SerialName("complexity")
     val complexity: Int? = null,
-    @SerialName("videoUrl")
+    @SerialName("video_url")
     val videoUrl: String? = null,
-    @SerialName("imageUrl")
+    @SerialName("image_url")
     val imageUrl: String? = null
 )

@@ -1,11 +1,14 @@
 package com.gorman.fitnessapp.domain.models
 
+import kotlinx.serialization.Serializable
+
+@Serializable
 data class UsersData(
     val id: Int = 0,
     val supabaseId: Int = 0,
     val name: String? = null,
     val email: String? = null,
-    val birthday: Long? = null,
+    val age: Long? = null,
     val goal: String? = null,
     val weight: Float? = null,
     val desiredWeight: Float? = null,

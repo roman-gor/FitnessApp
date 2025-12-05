@@ -10,9 +10,15 @@ class GenerateAndSyncMealPlansUseCase @Inject constructor(
     /**
      * Запускает процесс генерации и полной синхронизации нового плана питания для пользователя.
      */
-    suspend operator fun invoke(usersData: UsersData,
-                                goal: String,
+    suspend operator fun invoke(userData: UsersData,
+                                dietaryPreferences: String,
+                                calories: String,
                                 exceptionProducts: List<String>): String {
-        return mealRepository.generateAndSyncMeal(usersData, goal, exceptionProducts)
+        return mealRepository.generateAndSyncMeal(
+            userData,
+            dietaryPreferences,
+            calories,
+            exceptionProducts
+        )
     }
 }

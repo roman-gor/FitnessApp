@@ -4,6 +4,7 @@ import android.util.Log
 import com.gorman.fitnessapp.data.datasource.remote.PostgreSQLService
 import com.gorman.fitnessapp.data.mapper.toDomain
 import com.gorman.fitnessapp.data.mapper.toRemote
+import com.gorman.fitnessapp.domain.models.Article
 import com.gorman.fitnessapp.domain.models.Exercise
 import com.gorman.fitnessapp.domain.models.Meal
 import com.gorman.fitnessapp.domain.models.MealPlan
@@ -140,5 +141,9 @@ class SupabaseRepositoryImpl @Inject constructor(
 
     override suspend fun getWorkoutHistory(userId: Int): List<WorkoutHistory> {
         return postgreSQLService.getWorkoutHistory(userId).map { it.toDomain() }
+    }
+
+    override suspend fun getArticles(): List<Article> {
+        return postgreSQLService.getArticles().map { it.toDomain() }
     }
 }

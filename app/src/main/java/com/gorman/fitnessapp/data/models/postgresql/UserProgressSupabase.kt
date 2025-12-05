@@ -5,17 +5,17 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class UserProgressSupabase(
-    @SerialName("id_userprogress")
+    @SerialName("progress_id")
     val id: Int = 0,
-    @SerialName("userid_usersdata")
+    @SerialName("user_id")
     val userId: Int,
-    @SerialName("date")
+    @SerialName("log_date")
     val date: Long,
     @SerialName("weight")
     val weight: Float? = null,
-    @SerialName("caloriesburned")
+    @SerialName("calories_burned")
     val caloriesBurned: Float? = null,
-    @SerialName("durationminutes")
+    @SerialName("duration_minutes")
     val durationMinutes: Int? = null,
     @SerialName("notes")
     val notes: String? = null

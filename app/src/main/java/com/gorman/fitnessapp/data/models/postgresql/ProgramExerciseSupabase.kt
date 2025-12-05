@@ -5,22 +5,22 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class ProgramExerciseSupabase(
-    @SerialName("id_programexercise")
+    @SerialName("program_exercise_id")
     val id: Int = 0,
-    @SerialName("programid_program")
+    @SerialName("program_id")
     val programId: Int = 0,
-    @SerialName("exerciseid_exercise")
+    @SerialName("exercise_id")
     val exerciseId: Int = 0,
-    @SerialName("ordering")
+    @SerialName("exercise_order")
     val order: Int = 0,
-    @SerialName("dayofweek")
+    @SerialName("day_of_week")
     val dayOfWeek: String = "",
-    @SerialName("durationsec")
+    @SerialName("duration_sec")
     val durationSec: Int = 0,
     @SerialName("repetitions")
     val repetitions: Int = 0,
     @SerialName("sets")
     val sets: Int = 0,
-    @SerialName("caloriesburned")
+    @SerialName("calories_burned")
     val caloriesBurned: Float? = null
 )

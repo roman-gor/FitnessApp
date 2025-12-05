@@ -5,9 +5,9 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class MealPlanTemplateSupabase(
-    @SerialName("id_mealplantemplate")
+    @SerialName("template_id")
     val templateId: Int = 0,
-    @SerialName("userid_usersdata")
+    @SerialName("user_id")
     val userId: Int = 0,
     @SerialName("name")
     val name: String = "",

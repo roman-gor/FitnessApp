@@ -5,15 +5,15 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class MealPlanItemSupabase(
-    @SerialName("id_mealplanitem")
+    @SerialName("meal_item_id")
     val itemId: Int = 0,
-    @SerialName("templateid_mealplantemplate")
+    @SerialName("template_id")
     val templateId: Int = 0,
-    @SerialName("mealid_meal")
+    @SerialName("meal_id")
     val mealId: Int = 0,
-    @SerialName("date")
+    @SerialName("log_date")
     val date: Long = 0,
-    @SerialName("mealtype")
+    @SerialName("meal_type")
     val mealType: String = "",
     @SerialName("quantity")
     val quantity: Int = 1,

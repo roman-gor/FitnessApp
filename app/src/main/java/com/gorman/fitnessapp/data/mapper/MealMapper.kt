@@ -15,6 +15,7 @@ fun Meal.toEntity(): MealEntity = MealEntity(
     name = name,
     description = description,
     calories = calories,
+    photo = photo,
     protein = protein,
     carbs = carbs,
     fats = fats,
@@ -27,6 +28,7 @@ fun MealEntity.toDomain(): Meal = Meal(
     name = name,
     description = description,
     calories = calories,
+    photo = photo,
     protein = protein,
     carbs = carbs,
     fats = fats,
@@ -38,6 +40,7 @@ fun MealSupabase.toDomain(id: Int): Meal = Meal(
     name = name,
     description = description,
     calories = calories,
+    photo = photo,
     protein = protein,
     carbs = carbs,
     fats = fats,
@@ -81,6 +84,25 @@ fun MealPlanTemplateSupabase.toDomain(supabaseId: Int): MealPlanTemplate = MealP
 
 fun MealPlanItemSupabase.toDomain(): MealPlanItem = MealPlanItem(
     supabaseId = templateId,
+    mealId = mealId,
+    mealType = mealType,
+    date = date,
+    quantity = quantity,
+    notes = notes
+)
+
+fun MealPlanTemplateEntity.toDomain(): MealPlanTemplate = MealPlanTemplate(
+    localId = id,
+    supabaseId = supabaseId,
+    userSupabaseId = userSupabaseId,
+    name = name,
+    description = description
+)
+
+fun MealPlanItemEntity.toDomain(): MealPlanItem = MealPlanItem(
+    localId = id,
+    supabaseId = supabaseId,
+    templateId = templateId,
     mealId = mealId,
     mealType = mealType,
     date = date,

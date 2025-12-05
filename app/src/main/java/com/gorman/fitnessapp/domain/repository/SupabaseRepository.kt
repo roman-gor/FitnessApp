@@ -1,5 +1,6 @@
 package com.gorman.fitnessapp.domain.repository
 
+import com.gorman.fitnessapp.domain.models.Article
 import com.gorman.fitnessapp.domain.models.Exercise
 import com.gorman.fitnessapp.domain.models.Meal
 import com.gorman.fitnessapp.domain.models.MealPlan
@@ -28,9 +29,11 @@ interface SupabaseRepository {
     suspend fun deleteUser(user: UsersData)
     suspend fun updateUser(user: UsersData)
     suspend fun getMeals(): List<Meal>
-    suspend fun insertMealPlan(mealPlanItem: List<MealPlanItem>,
-                               mealPlanTemplate: MealPlanTemplate,
-                               userId: Int): Int?
+    suspend fun insertMealPlan(
+        mealPlanItem: List<MealPlanItem>,
+        mealPlanTemplate: MealPlanTemplate,
+        userId: Int
+    ): Int?
     suspend fun findUserMealPlanTemplate(userId: Int): Map<Int, MealPlanTemplate>
     suspend fun deleteMealPlan(templateId: Int)
     suspend fun getProgram(userId: Int): ProgramOutput?
@@ -38,4 +41,5 @@ interface SupabaseRepository {
     suspend fun insertWorkoutHistory(workoutHistory: WorkoutHistory): Int?
     suspend fun updateWorkoutHistory(workoutHistory: WorkoutHistory)
     suspend fun getWorkoutHistory(userId: Int): List<WorkoutHistory>
+    suspend fun getArticles(): List<Article>
 }

@@ -7,4 +7,8 @@
     <color name="teal_700">#FF018786</color>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+    <color name="meet_text">#FFE2F163</color>
+    <color name="bg_color">#FF232323</color>
+    <color name="picker_wheel_bg">#FFB3A0FF</color>
+    <color name="font_purple_color">#FF896CFE</color>
 </resources>

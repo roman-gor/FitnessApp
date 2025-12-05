@@ -1,5 +1,8 @@
 package com.gorman.fitnessapp.domain.models
 
+import kotlinx.serialization.Serializable
+
+@Serializable
 data class Program(
     val supabaseId: Int = 0,
     val localId: Int = 0,

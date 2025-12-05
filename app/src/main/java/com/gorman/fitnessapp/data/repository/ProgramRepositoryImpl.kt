@@ -30,7 +30,6 @@ class ProgramRepositoryImpl @Inject constructor(
             key to exercise.name
         }
         val oldUserPrograms = supabaseRepository.findUserPrograms(usersData.supabaseId)
-        Log.d("OldUserPrograms", oldUserPrograms.toString())
         if (oldUserPrograms.isNotEmpty()) {
             supabaseRepository.deleteAllUserPrograms(oldUserPrograms)
         }

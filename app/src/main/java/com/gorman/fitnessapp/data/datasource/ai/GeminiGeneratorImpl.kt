@@ -15,6 +15,7 @@ class GeminiGeneratorImpl @Inject constructor(
         val exerciseList = availableExercises.entries.joinToString(separator = ", ") {
             "${it.key}: ${it.value}"
         }
+        Log.d("ExercisesAI", exerciseList)
 
         val prompt = """
             Ты — опытный фитнес-тренер, специализирующийся на составлении программ тренировок. 
@@ -42,6 +43,8 @@ class GeminiGeneratorImpl @Inject constructor(
             
             --- ФОРМАТ ВЫВОДА (ВАЖНО!) ---
             Твой ответ должен быть **только** в формате JSON, соответствующем предоставленной схеме: $JSON_SCHEMA. 
+            Помни про то что все поля схемы должны существовать в ответе.
+            Ответ обязательно обрамляй [] квадратными скобками, как массив, независимо от количества объектов
             Не добавляй пояснений, приветствий или дополнительного текста.
         """
 
@@ -52,7 +55,8 @@ class GeminiGeneratorImpl @Inject constructor(
 
     override suspend fun generateMealPlan(
         userData: UsersData,
-        goal: String,
+        dietaryPreferences: String,
+        calories: String,
         availableMeals: Map<Int?, String>,
         exceptionProducts: List<String>
     ): String {
@@ -71,6 +75,8 @@ class GeminiGeneratorImpl @Inject constructor(
                         - Пол: ${userData.gender}
                         - Уровень активности: ${userData.activityLevel}
                         - Продукты-исключения (аллергии, непереносимости): $exceptionProducts
+                        - Диеты: $dietaryPreferences
+                        - Желаемая калорийность: $calories
                     
                         --- ДОСТУПНЫЕ БЛЮДА (ИСПОЛЬЗУЙ СТРОГО ЭТОТ СПИСОК) ---
                         - Карта доступных блюд: $mealsList
@@ -78,7 +84,7 @@ class GeminiGeneratorImpl @Inject constructor(
                         --- ИНСТРУКЦИИ ---
                         1.  Проанализируй данные пользователя, чтобы определить его примерную суточную потребность в калориях и макронутриентах (БЖУ) для достижения цели (${userData.goal}).
                         2.  Составь план питания на 7 дней (Понедельник - Воскресенье).
-                        3.  Для каждого дня запланируй 3-4 приема пищи (например, Завтрак, Обед, Ужин, Перекус).
+                        3.  Для каждого дня запланируй 3-4 приема пищи (строго - Завтрак, Обед, Ужин, Перекус).
                         4.  Используй числовые ID для блюд СТРОГО из предоставленной карты ${availableMeals}. Не придумывай новые блюда.
                         5.  СТРОГО исключи из плана любые блюда, которые могут содержать продукты из списка ${exceptionProducts}. Внимательно проанализируй состав блюд, исходя из их названий.
                         6.  Постарайся сделать рацион разнообразным и сбалансированным в течение недели.
@@ -92,5 +98,4 @@ class GeminiGeneratorImpl @Inject constructor(
         val rawResponse = apiClient.completion(prompt)
         return rawResponse
     }
-
 }
