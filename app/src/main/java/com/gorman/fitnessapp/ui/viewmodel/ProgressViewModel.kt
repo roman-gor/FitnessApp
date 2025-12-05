@@ -6,7 +6,6 @@ import com.gorman.fitnessapp.domain.models.Exercise
 import com.gorman.fitnessapp.domain.models.UsersData
 import com.gorman.fitnessapp.domain.usecases.GetExercisesUseCase
 import com.gorman.fitnessapp.domain.usecases.GetUserFromLocalUseCase
-import com.gorman.fitnessapp.domain.usecases.GetUserProgressFromLocalUseCase
 import com.gorman.fitnessapp.domain.usecases.GetWorkoutHistoryFromLocalUseCase
 import com.gorman.fitnessapp.logger.AppLogger
 import com.gorman.fitnessapp.ui.states.ProgressUiState

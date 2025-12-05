@@ -26,7 +26,7 @@ class ProgramRepositoryImpl @Inject constructor(
         selectedProgramIndex: Int
     ): String {
         Log.d("Exercises", "${getExercisesUseCase()}")
-        val availableExercises = getExercisesUseCase()?.associate { exercise ->
+        val availableExercises = getExercisesUseCase().associate { exercise ->
             val key = exercise.firebaseId.toIntOrNull()
             key to exercise.name
         }

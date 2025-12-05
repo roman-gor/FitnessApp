@@ -4,7 +4,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.gorman.fitnessapp.domain.models.Article
 import com.gorman.fitnessapp.domain.models.UsersData
-import com.gorman.fitnessapp.domain.usecases.GetAndSyncUserProgramsUseCase
 import com.gorman.fitnessapp.domain.usecases.GetArticlesUseCase
 import com.gorman.fitnessapp.domain.usecases.GetMealsIdUseCase
 import com.gorman.fitnessapp.domain.usecases.GetProgramFromLocalUseCase
