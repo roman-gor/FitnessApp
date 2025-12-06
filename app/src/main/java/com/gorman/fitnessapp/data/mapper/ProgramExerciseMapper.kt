@@ -23,7 +23,7 @@ fun ProgramExerciseEntity.toDomain(): ProgramExercise =
 
 fun ProgramExerciseSupabase.toDomain(): ProgramExercise =
     ProgramExercise(
-        supabaseId = id,
+        supabaseId = id!!,
         exerciseId = exerciseId,
         order = order,
         dayOfWeek = dayOfWeek,
@@ -56,7 +56,7 @@ fun ProgramExercise.toRemote(programId: Int): ProgramExerciseSupabase =
         sets = sets,
         repetitions = repetitions,
         durationSec = durationSec,
-        caloriesBurned = caloriesBurned
+        caloriesBurned = caloriesBurned!!
     )
 
 fun ProgramExerciseEntity.toRemote(): ProgramExerciseSupabase =
@@ -67,7 +67,7 @@ fun ProgramExerciseEntity.toRemote(): ProgramExerciseSupabase =
         durationSec = durationSec,
         repetitions = repetitions,
         sets = sets,
-        caloriesBurned = caloriesBurned
+        caloriesBurned = caloriesBurned!!
     )
 
 //Program's mappers
@@ -98,7 +98,7 @@ fun Program.toRemote(): ProgramSupabase =
 
 fun ProgramSupabase.toDomain(): Program =
     Program(
-        supabaseId = id,
+        supabaseId = id!!,
         name = name,
         muscleGroup = muscleGroup,
         description = description,

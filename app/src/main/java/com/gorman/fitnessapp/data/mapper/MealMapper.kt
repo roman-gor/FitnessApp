@@ -87,7 +87,7 @@ fun MealPlanItemSupabase.toDomain(): MealPlanItem = MealPlanItem(
     mealId = mealId,
     mealType = mealType,
     date = date,
-    quantity = quantity,
+    quantity = quantity!!,
     notes = notes
 )
 

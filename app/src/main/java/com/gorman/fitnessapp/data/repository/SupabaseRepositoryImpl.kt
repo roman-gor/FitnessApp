@@ -126,7 +126,7 @@ class SupabaseRepositoryImpl @Inject constructor(
         val firstPlan = mealPlans.firstOrNull() ?: return null
         val supabaseTemplateId = firstPlan.template.templateId
         return MealPlan(
-            template = firstPlan.template.toDomain(supabaseTemplateId),
+            template = firstPlan.template.toDomain(supabaseTemplateId!!),
             items = firstPlan.items.map { it.toDomain() }
         )
     }

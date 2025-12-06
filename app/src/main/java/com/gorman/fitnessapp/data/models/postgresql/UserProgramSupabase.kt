@@ -7,7 +7,7 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class UserProgramSupabase(
     @SerialName("user_program_id")
-    val id: Int = 0,
+    val id: Int? = null,
     @SerialName("user_id")
     val userId: Int = 0,
     @SerialName("program_id")

@@ -39,7 +39,7 @@ class AiRepositoryImpl @Inject constructor(
                     "dayOfWeek": "Понедельник",
                     "sets": 4,
                     "repetitions": 10,
-                    "durationSec": 0,
+                    "durationSec": 120,
                     "caloriesBurned": 72
                   },
                   {
@@ -49,7 +49,7 @@ class AiRepositoryImpl @Inject constructor(
                     "dayOfWeek": "Понедельник",
                     "sets": 3,
                     "repetitions": 12,
-                    "durationSec": 0,
+                    "durationSec": 120,
                     "caloriesBurned": 55
                   },
                   {
@@ -59,7 +59,7 @@ class AiRepositoryImpl @Inject constructor(
                     "dayOfWeek": "Понедельник",
                     "sets": 4,
                     "repetitions": 10,
-                    "durationSec": 0,
+                    "durationSec": 120,
                     "caloriesBurned": 65
                   },
                   {
@@ -69,7 +69,7 @@ class AiRepositoryImpl @Inject constructor(
                     "dayOfWeek": "Понедельник",
                     "sets": 3,
                     "repetitions": 12,
-                    "durationSec": 0,
+                    "durationSec": 120,
                     "caloriesBurned": 40
                   },
                   {
@@ -79,7 +79,7 @@ class AiRepositoryImpl @Inject constructor(
                     "dayOfWeek": "Понедельник",
                     "sets": 3,
                     "repetitions": 12,
-                    "durationSec": 0,
+                    "durationSec": 120,
                     "caloriesBurned": 30
                   },
                   {
@@ -89,7 +89,7 @@ class AiRepositoryImpl @Inject constructor(
                     "dayOfWeek": "Понедельник",
                     "sets": 3,
                     "repetitions": 12,
-                    "durationSec": 0,
+                    "durationSec": 120,
                     "caloriesBurned": 35
                   },
                   {
@@ -99,7 +99,7 @@ class AiRepositoryImpl @Inject constructor(
                     "dayOfWeek": "Понедельник",
                     "sets": 3,
                     "repetitions": 15,
-                    "durationSec": 0,
+                    "durationSec": 120,
                     "caloriesBurned": 25
                   },
                   {
@@ -109,7 +109,7 @@ class AiRepositoryImpl @Inject constructor(
                     "dayOfWeek": "Среда",
                     "sets": 4,
                     "repetitions": 10,
-                    "durationSec": 0,
+                    "durationSec": 120,
                     "caloriesBurned": 80
                   },
                   {
@@ -119,7 +119,7 @@ class AiRepositoryImpl @Inject constructor(
                     "dayOfWeek": "Среда",
                     "sets": 3,
                     "repetitions": 12,
-                    "durationSec": 0,
+                    "durationSec": 120,
                     "caloriesBurned": 40
                   },
                   {
@@ -129,7 +129,7 @@ class AiRepositoryImpl @Inject constructor(
                     "dayOfWeek": "Среда",
                     "sets": 3,
                     "repetitions": 12,
-                    "durationSec": 0,
+                    "durationSec": 120,
                     "caloriesBurned": 45
                   },
                   {
@@ -139,7 +139,7 @@ class AiRepositoryImpl @Inject constructor(
                     "dayOfWeek": "Среда",
                     "sets": 3,
                     "repetitions": 15,
-                    "durationSec": 0,
+                    "durationSec": 120,
                     "caloriesBurned": 30
                   },
                   {
@@ -149,7 +149,7 @@ class AiRepositoryImpl @Inject constructor(
                     "dayOfWeek": "Среда",
                     "sets": 3,
                     "repetitions": 12,
-                    "durationSec": 0,
+                    "durationSec": 120,
                     "caloriesBurned": 30
                   },
                   {
@@ -159,7 +159,7 @@ class AiRepositoryImpl @Inject constructor(
                     "dayOfWeek": "Среда",
                     "sets": 3,
                     "repetitions": 12,
-                    "durationSec": 0,
+                    "durationSec": 120,
                     "caloriesBurned": 28
                   },
                   {
@@ -179,7 +179,7 @@ class AiRepositoryImpl @Inject constructor(
                     "dayOfWeek": "Пятница",
                     "sets": 3,
                     "repetitions": 10,
-                    "durationSec": 0,
+                    "durationSec": 120,
                     "caloriesBurned": 60
                   },
                   {
@@ -189,7 +189,7 @@ class AiRepositoryImpl @Inject constructor(
                     "dayOfWeek": "Пятница",
                     "sets": 3,
                     "repetitions": 12,
-                    "durationSec": 0,
+                    "durationSec": 120,
                     "caloriesBurned": 40
                   },
                   {
@@ -199,7 +199,7 @@ class AiRepositoryImpl @Inject constructor(
                     "dayOfWeek": "Пятница",
                     "sets": 4,
                     "repetitions": 12,
-                    "durationSec": 0,
+                    "durationSec": 120,
                     "caloriesBurned": 70
                   },
                   {
@@ -209,7 +209,7 @@ class AiRepositoryImpl @Inject constructor(
                     "dayOfWeek": "Пятница",
                     "sets": 3,
                     "repetitions": 12,
-                    "durationSec": 0,
+                    "durationSec": 120,
                     "caloriesBurned": 35
                   },
                   {
@@ -219,7 +219,7 @@ class AiRepositoryImpl @Inject constructor(
                     "dayOfWeek": "Пятница",
                     "sets": 3,
                     "repetitions": 12,
-                    "durationSec": 0,
+                    "durationSec": 120,
                     "caloriesBurned": 25
                   },
                   {
@@ -229,7 +229,7 @@ class AiRepositoryImpl @Inject constructor(
                     "dayOfWeek": "Пятница",
                     "sets": 3,
                     "repetitions": 20,
-                    "durationSec": 0,
+                    "durationSec": 120,
                     "caloriesBurned": 20
                   },
                   {
@@ -239,7 +239,7 @@ class AiRepositoryImpl @Inject constructor(
                     "dayOfWeek": "Пятница",
                     "sets": 3,
                     "repetitions": 15,
-                    "durationSec": 0,
+                    "durationSec": 120,
                     "caloriesBurned": 28
                   }
                 ]

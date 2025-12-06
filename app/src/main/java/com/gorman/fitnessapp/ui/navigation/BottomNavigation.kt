@@ -120,7 +120,7 @@ fun BottomNavigation(navController: NavController) {
                             },
                             onMealClick = { meal->
                                 val json = Uri.encode(Json.encodeToString(meal))
-                                nestedNavController.navigate("${Screen.GeneralHomeScreen.MealItem.route}res/$json") {
+                                nestedNavController.navigate("${Screen.GeneralHomeScreen.MealItem.route}/$json") {
                                     launchSingleTop = true
                                 }
                             }
@@ -129,7 +129,7 @@ fun BottomNavigation(navController: NavController) {
                 }
             }
             composable(
-                route = "${Screen.GeneralHomeScreen.MealItem.route}res/{usersDataJson}",
+                route = "${Screen.GeneralHomeScreen.MealItem.route}/{usersDataJson}",
                 arguments = listOf(
                     navArgument("usersDataJson") {
                         type = NavType.StringType
@@ -140,28 +140,6 @@ fun BottomNavigation(navController: NavController) {
                     MealSingleScreen(
                         onBackPage = {
                             nestedNavController.popBackStack()
-                        },
-                        meal = it
-                    )
-                }
-            }
-            composable(
-                route = "${Screen.GeneralHomeScreen.MealItem.route}nut/{usersDataJson}",
-                arguments = listOf(
-                    navArgument("usersDataJson") {
-                        type = NavType.StringType
-                    })) { backStackEntry ->
-                val mealJson = backStackEntry.arguments?.getString("usersDataJson")
-                val meal = mealJson?.let { Json.decodeFromString<Meal>(it) }
-                meal?.let {
-                    MealSingleScreen(
-                        onBackPage = {
-                            nestedNavController.navigate(Screen.BottomScreen.Resources.route) {
-                                popUpTo(Screen.GeneralHomeScreen.Nutrition.route) {
-                                    inclusive = false
-                                }
-                                launchSingleTop = true
-                            }
                         },
                         meal = it
                     )
@@ -179,7 +157,7 @@ fun BottomNavigation(navController: NavController) {
                     },
                     onMealClick = { meal ->
                         val json = Uri.encode(Json.encodeToString(meal))
-                        nestedNavController.navigate("${Screen.GeneralHomeScreen.MealItem.route}nut/$json") {
+                        nestedNavController.navigate("${Screen.GeneralHomeScreen.MealItem.route}/$json") {
                             launchSingleTop = true
                         }
                     }

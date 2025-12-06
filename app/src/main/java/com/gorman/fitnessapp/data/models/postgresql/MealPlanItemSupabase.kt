@@ -6,7 +6,7 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class MealPlanItemSupabase(
     @SerialName("meal_item_id")
-    val itemId: Int = 0,
+    val itemId: Int? = null,
     @SerialName("template_id")
     val templateId: Int = 0,
     @SerialName("meal_id")
@@ -16,7 +16,7 @@ data class MealPlanItemSupabase(
     @SerialName("meal_type")
     val mealType: String = "",
     @SerialName("quantity")
-    val quantity: Int = 1,
+    val quantity: Int? = null,
     @SerialName("notes")
     val notes: String? = null
 )

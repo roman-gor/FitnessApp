@@ -6,7 +6,7 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class ProgramSupabase(
     @SerialName("program_id")
-    val id: Int = 0,
+    val id: Int? = null,
     @SerialName("name")
     val name: String = "",
     @SerialName("muscle_group")

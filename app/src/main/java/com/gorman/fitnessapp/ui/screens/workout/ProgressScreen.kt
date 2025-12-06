@@ -1,5 +1,6 @@
 package com.gorman.fitnessapp.ui.screens.workout
 
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -237,6 +238,7 @@ fun HistoryList(
 ) {
     filterHistory.forEach { history ->
         val exercise = exercises[history.exerciseId]
+        Log.d("Exercises", exercises.toString())
         val duration = history.repsCompleted * history.setsCompleted
         val complexity = exercise.complexity
         HistoryListItem(
@@ -538,10 +540,10 @@ fun UserDataScreen(
             }
         }
         Spacer(modifier = Modifier.width(24.dp))
-        usersData?.photoUrl?.let {
+        if (usersData?.photoUrl?.isNotEmpty() == true) {
             AsyncImage(
                 model = ImageRequest.Builder(LocalContext.current)
-                    .data(it)
+                    .data(usersData.photoUrl)
                     .crossfade(true)
                     .build(),
                 contentDescription = "Firebase Image",
@@ -552,6 +554,19 @@ fun UserDataScreen(
                     .size(125.dp),
                 contentScale = ContentScale.Crop)
         }
+        else
+            AsyncImage(
+                model = ImageRequest.Builder(LocalContext.current)
+                    .data("")
+                    .crossfade(true)
+                    .build(),
+                contentDescription = "Firebase Image",
+                placeholder = painterResource(R.drawable.placeholder_ava),
+                error = painterResource(R.drawable.placeholder_ava),
+                modifier = Modifier
+                    .clip(CircleShape)
+                    .size(125.dp),
+                contentScale = ContentScale.Crop)
     }
 }
 

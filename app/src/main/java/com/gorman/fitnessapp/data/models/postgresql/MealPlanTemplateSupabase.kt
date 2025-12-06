@@ -6,7 +6,7 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class MealPlanTemplateSupabase(
     @SerialName("template_id")
-    val templateId: Int = 0,
+    val templateId: Int? = null,
     @SerialName("user_id")
     val userId: Int = 0,
     @SerialName("name")
