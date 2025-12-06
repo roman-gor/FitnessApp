@@ -11,6 +11,10 @@
 /build
 /captures
 /keystore/
+/app/release/
+*.apk
+*.aab
+/app/debug/
 .externalNativeBuild
 .cxx
 local.properties
