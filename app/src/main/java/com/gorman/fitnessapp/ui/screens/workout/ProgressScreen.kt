@@ -43,7 +43,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -81,7 +80,13 @@ fun ProgressScreen(
     val usersData by progressViewModel.usersData.collectAsState()
     val exercises by progressViewModel.exercisesState.collectAsState()
     when(val state = uiState) {
-        is ProgressUiState.Error -> ErrorProgressScreen { progressViewModel.prepareData() }
+        is ProgressUiState.Error ->
+            GenerationDefault(
+                onClick = { progressViewModel.prepareData() },
+                text = stringResource(R.string.error_progress),
+                backgroundImage = R.drawable.meals_img,
+                buttonText = stringResource(R.string.try_again)
+            )
         ProgressUiState.Idle -> LoadingStub()
         ProgressUiState.Loading -> LoadingStub()
         is ProgressUiState.Success ->
@@ -394,45 +399,6 @@ fun Calendar(
 }
 
 @Composable
-fun ErrorProgressScreen(
-    onRetryClick: () -> Unit
-) {
-    Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(colorResource(R.color.bg_color)),
-        contentAlignment = Alignment.Center
-    ) {
-        Column(
-            modifier = Modifier.fillMaxSize(),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center
-        ) {
-            Text(
-                text = stringResource(R.string.error_text),
-                fontFamily = mulishFont(),
-                fontSize = 22.sp,
-                color = Color.White,
-                fontWeight = FontWeight.Bold
-            )
-            Spacer(modifier = Modifier.height(8.dp))
-            Text(
-                text = stringResource(R.string.try_again),
-                fontFamily = mulishFont(),
-                fontSize = 18.sp,
-                color = Color.White,
-                fontWeight = FontWeight.Bold,
-                modifier = Modifier.clickable(
-                    onClick = {
-                        onRetryClick()
-                    }
-                )
-            )
-        }
-    }
-}
-
-@Composable
 fun UserDataScreen(
     usersData: UsersData?
 ) {
@@ -538,10 +504,10 @@ fun UserDataScreen(
             }
         }
         Spacer(modifier = Modifier.width(24.dp))
-        usersData?.photoUrl?.let {
+        if (usersData?.photoUrl?.isNotEmpty() == true) {
             AsyncImage(
                 model = ImageRequest.Builder(LocalContext.current)
-                    .data(it)
+                    .data(usersData.photoUrl)
                     .crossfade(true)
                     .build(),
                 contentDescription = "Firebase Image",
@@ -552,16 +518,18 @@ fun UserDataScreen(
                     .size(125.dp),
                 contentScale = ContentScale.Crop)
         }
+        else
+            AsyncImage(
+                model = ImageRequest.Builder(LocalContext.current)
+                    .data("")
+                    .crossfade(true)
+                    .build(),
+                contentDescription = "Firebase Image",
+                placeholder = painterResource(R.drawable.placeholder_ava),
+                error = painterResource(R.drawable.placeholder_ava),
+                modifier = Modifier
+                    .clip(CircleShape)
+                    .size(125.dp),
+                contentScale = ContentScale.Crop)
     }
-}
-
-@Preview
-@Composable
-fun PreviewUser() {
-    UserDataScreen(UsersData(
-        name = "Maddison",
-        age = 18,
-        weight = 75f,
-        height = 1.65f,
-        photoUrl = "url"))
 }

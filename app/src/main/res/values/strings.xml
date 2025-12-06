@@ -82,6 +82,7 @@
     <string name="meals">Рационы</string>
     <string name="exercisesPerDay_header">Твоя программа по дням недели</string>
     <string name="error_text">Попробовать снова</string>
+    <string name="error_progress">Ошибка при записи прогресса</string>
     <string name="repetitions_text">Повторений:</string>
     <string name="program_created_success">Программа успешно создана!</string>
     <string name="generation_loading">Запуск процесса генерации</string>

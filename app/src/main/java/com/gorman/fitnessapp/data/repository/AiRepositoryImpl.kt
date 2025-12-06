@@ -16,13 +16,13 @@ class AiRepositoryImpl @Inject constructor(
     private val generator: GeminiGenerator
 ): AiRepository {
     override suspend fun generatePrograms(usersData: UsersData, availableExercises: Map<Int?, String>?): List<Program> {
-//        val response = availableExercises?.let {
-//            generator.generateWorkoutProgram(userData = usersData, availableExercises = it)
-//                .trimIndent()
-//                .removePrefix("```json")
-//                .removeSuffix("```")
-//        }
-//        Log.d("Json", "$response")
+        val response = availableExercises?.let {
+            generator.generateWorkoutProgram(userData = usersData, availableExercises = it)
+                .trimIndent()
+                .removePrefix("```json")
+                .removeSuffix("```")
+        }
+        Log.d("Json", "$response")
         val testResponse = """
             [
               {
@@ -39,7 +39,7 @@ class AiRepositoryImpl @Inject constructor(
                     "dayOfWeek": "Понедельник",
                     "sets": 4,
                     "repetitions": 10,
-                    "durationSec": 0,
+                    "durationSec": 120,
                     "caloriesBurned": 72
                   },
                   {
@@ -49,7 +49,7 @@ class AiRepositoryImpl @Inject constructor(
                     "dayOfWeek": "Понедельник",
                     "sets": 3,
                     "repetitions": 12,
-                    "durationSec": 0,
+                    "durationSec": 120,
                     "caloriesBurned": 55
                   },
                   {
@@ -59,7 +59,7 @@ class AiRepositoryImpl @Inject constructor(
                     "dayOfWeek": "Понедельник",
                     "sets": 4,
                     "repetitions": 10,
-                    "durationSec": 0,
+                    "durationSec": 120,
                     "caloriesBurned": 65
                   },
                   {
@@ -69,7 +69,7 @@ class AiRepositoryImpl @Inject constructor(
                     "dayOfWeek": "Понедельник",
                     "sets": 3,
                     "repetitions": 12,
-                    "durationSec": 0,
+                    "durationSec": 120,
                     "caloriesBurned": 40
                   },
                   {
@@ -79,7 +79,7 @@ class AiRepositoryImpl @Inject constructor(
                     "dayOfWeek": "Понедельник",
                     "sets": 3,
                     "repetitions": 12,
-                    "durationSec": 0,
+                    "durationSec": 120,
                     "caloriesBurned": 30
                   },
                   {
@@ -89,7 +89,7 @@ class AiRepositoryImpl @Inject constructor(
                     "dayOfWeek": "Понедельник",
                     "sets": 3,
                     "repetitions": 12,
-                    "durationSec": 0,
+                    "durationSec": 120,
                     "caloriesBurned": 35
                   },
                   {
@@ -99,7 +99,7 @@ class AiRepositoryImpl @Inject constructor(
                     "dayOfWeek": "Понедельник",
                     "sets": 3,
                     "repetitions": 15,
-                    "durationSec": 0,
+                    "durationSec": 120,
                     "caloriesBurned": 25
                   },
                   {
@@ -109,7 +109,7 @@ class AiRepositoryImpl @Inject constructor(
                     "dayOfWeek": "Среда",
                     "sets": 4,
                     "repetitions": 10,
-                    "durationSec": 0,
+                    "durationSec": 120,
                     "caloriesBurned": 80
                   },
                   {
@@ -119,7 +119,7 @@ class AiRepositoryImpl @Inject constructor(
                     "dayOfWeek": "Среда",
                     "sets": 3,
                     "repetitions": 12,
-                    "durationSec": 0,
+                    "durationSec": 120,
                     "caloriesBurned": 40
                   },
                   {
@@ -129,7 +129,7 @@ class AiRepositoryImpl @Inject constructor(
                     "dayOfWeek": "Среда",
                     "sets": 3,
                     "repetitions": 12,
-                    "durationSec": 0,
+                    "durationSec": 120,
                     "caloriesBurned": 45
                   },
                   {
@@ -139,7 +139,7 @@ class AiRepositoryImpl @Inject constructor(
                     "dayOfWeek": "Среда",
                     "sets": 3,
                     "repetitions": 15,
-                    "durationSec": 0,
+                    "durationSec": 120,
                     "caloriesBurned": 30
                   },
                   {
@@ -149,7 +149,7 @@ class AiRepositoryImpl @Inject constructor(
                     "dayOfWeek": "Среда",
                     "sets": 3,
                     "repetitions": 12,
-                    "durationSec": 0,
+                    "durationSec": 120,
                     "caloriesBurned": 30
                   },
                   {
@@ -159,7 +159,7 @@ class AiRepositoryImpl @Inject constructor(
                     "dayOfWeek": "Среда",
                     "sets": 3,
                     "repetitions": 12,
-                    "durationSec": 0,
+                    "durationSec": 120,
                     "caloriesBurned": 28
                   },
                   {
@@ -179,7 +179,7 @@ class AiRepositoryImpl @Inject constructor(
                     "dayOfWeek": "Пятница",
                     "sets": 3,
                     "repetitions": 10,
-                    "durationSec": 0,
+                    "durationSec": 120,
                     "caloriesBurned": 60
                   },
                   {
@@ -189,7 +189,7 @@ class AiRepositoryImpl @Inject constructor(
                     "dayOfWeek": "Пятница",
                     "sets": 3,
                     "repetitions": 12,
-                    "durationSec": 0,
+                    "durationSec": 120,
                     "caloriesBurned": 40
                   },
                   {
@@ -199,7 +199,7 @@ class AiRepositoryImpl @Inject constructor(
                     "dayOfWeek": "Пятница",
                     "sets": 4,
                     "repetitions": 12,
-                    "durationSec": 0,
+                    "durationSec": 120,
                     "caloriesBurned": 70
                   },
                   {
@@ -209,7 +209,7 @@ class AiRepositoryImpl @Inject constructor(
                     "dayOfWeek": "Пятница",
                     "sets": 3,
                     "repetitions": 12,
-                    "durationSec": 0,
+                    "durationSec": 120,
                     "caloriesBurned": 35
                   },
                   {
@@ -219,7 +219,7 @@ class AiRepositoryImpl @Inject constructor(
                     "dayOfWeek": "Пятница",
                     "sets": 3,
                     "repetitions": 12,
-                    "durationSec": 0,
+                    "durationSec": 120,
                     "caloriesBurned": 25
                   },
                   {
@@ -229,7 +229,7 @@ class AiRepositoryImpl @Inject constructor(
                     "dayOfWeek": "Пятница",
                     "sets": 3,
                     "repetitions": 20,
-                    "durationSec": 0,
+                    "durationSec": 120,
                     "caloriesBurned": 20
                   },
                   {
@@ -239,14 +239,14 @@ class AiRepositoryImpl @Inject constructor(
                     "dayOfWeek": "Пятница",
                     "sets": 3,
                     "repetitions": 15,
-                    "durationSec": 0,
+                    "durationSec": 120,
                     "caloriesBurned": 28
                   }
                 ]
               }
             ]
         """.trimIndent()
-        val programDto: List<ProgramDto> = Json.decodeFromString(testResponse)
+        val programDto: List<ProgramDto> = Json.decodeFromString(response!!)
         return programDto.map { it.toDomain() }
     }
 
@@ -257,13 +257,13 @@ class AiRepositoryImpl @Inject constructor(
         availableMeals: Map<Int?, String>,
         exceptionProducts: List<String>
     ): MealPlan {
-//        val response = generator.generateMealPlan(userData, goal, availableMeals, exceptionProducts)
-//            .trimIndent()
-//            .removePrefix("```json")
-//            .removeSuffix("```")
+        val response = generator.generateMealPlan(userData, dietaryPreferences, calories, availableMeals, exceptionProducts)
+            .trimIndent()
+            .removePrefix("```json")
+            .removeSuffix("```")
         val testResponse = """
             {
-                                                                                                      "planName": "План питания для набора мышечной массы (~3100 ккал)",
+                                                                                                      "planName": "План питания для набора мышечной массы",
                                                                                                       "description": "Сбалансированный рацион на 7 дней, нацеленный на гипертрофию мышц, с профицитом калорий. План содержит высокое количество белка и комплексных углеводов для эффективного роста и восстановления. Из рациона исключены продукты, содержащие молоко.",
                                                                                                       "goalType": "muscle_gain",
                                                                                                       "weeklyPlan": [
@@ -474,7 +474,7 @@ class AiRepositoryImpl @Inject constructor(
                                                                                                     }
         """.trimIndent()
         Log.d("Json", testResponse)
-        val mealDto: MealPlanDto = Json.decodeFromString(testResponse)
+        val mealDto: MealPlanDto = Json.decodeFromString(response)
         return mealDto.toDomain(userData.id)
     }
 }

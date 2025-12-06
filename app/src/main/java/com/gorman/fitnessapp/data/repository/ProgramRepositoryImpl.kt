@@ -25,11 +25,11 @@ class ProgramRepositoryImpl @Inject constructor(
         usersData: UsersData,
         selectedProgramIndex: Int
     ): String {
-        Log.d("Exercises", "${getExercisesUseCase()}")
         val availableExercises = getExercisesUseCase().associate { exercise ->
-            val key = exercise.firebaseId.toIntOrNull()
+            val key: Int? = exercise.id
             key to exercise.name
         }
+        Log.d("Exercises", availableExercises.toString())
         val oldUserPrograms = firebaseRepository.findUserPrograms(usersData.firebaseId)
         if (oldUserPrograms.isNotEmpty()) {
             firebaseRepository.deleteAllUserPrograms(oldUserPrograms)

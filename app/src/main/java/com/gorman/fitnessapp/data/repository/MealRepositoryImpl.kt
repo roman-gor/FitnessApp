@@ -24,9 +24,10 @@ class MealRepositoryImpl @Inject constructor(
         exceptionProducts: List<String>
     ): String {
         val availableMeals = getMealsUseCase().associate { meal ->
-            val key = meal.firebaseId.toIntOrNull()
+            val key: Int? = meal.localId
             key to meal.name
         }
+        Log.d("Meals", getMealsUseCase().toString())
         val generatedMealPlan = aiRepository.generateMealPlan(
             usersData,
             dietaryPreferences,

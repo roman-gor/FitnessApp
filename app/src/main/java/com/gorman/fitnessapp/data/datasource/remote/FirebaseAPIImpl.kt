@@ -139,22 +139,27 @@ class FirebaseAPIImpl @Inject constructor(
             }
         }
 
-    override suspend fun getUser(email: String): UserFirebase? = executeRequest("Получение пользователя по email: $email") {
-        val usersRef = database.child("users")
-        val query = usersRef.orderByChild("email").equalTo(email)
-        val dataSnapshot = query.get().await()
-        if (!dataSnapshot.exists()) {
-            return@executeRequest null
+    override suspend fun getUser(email: String): UserFirebase? =
+        executeRequest("Получение пользователя по email: $email") {
+            val usersRef = database.child("users")
+            val query = usersRef.orderByChild("email").equalTo(email)
+
+            val dataSnapshot = query.get().await()
+
+            if (!dataSnapshot.exists()) {
+                throw IllegalStateException("Пользователь с email $email не найден")
+            }
+
+            val userSnapshot = dataSnapshot.children.first()
+            val userId = userSnapshot.key
+            val user = userSnapshot.getValue(UserFirebase::class.java)
+
+            if (user != null && userId != null) {
+                user.copy(userId = userId)
+            } else {
+                throw IllegalStateException("Ошибка парсинга данных пользователя")
+            }
         }
-        val userSnapshot = dataSnapshot.children.first()
-        val userId = userSnapshot.key
-        val user = userSnapshot.getValue(UserFirebase::class.java)
-        if (user != null && userId != null) {
-            user.copy(userId = userId)
-        } else {
-            null
-        }
-    }
 
     override suspend fun insertUser(user: UsersData): String? = executeRequest("Вставка нового пользователя") {
         val usersRef = database.child("users")

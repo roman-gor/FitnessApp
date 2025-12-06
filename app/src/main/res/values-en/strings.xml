@@ -76,6 +76,7 @@
     <string name="exercises">Exercises</string>
     <string name="exercise">Exercises</string>
     <string name="exercise2">Exercises</string>
+    <string name="error_progress">Error recording progress</string>
     <string name="meals">Meals</string>
     <string name="exercisesPerDay_header">Your program by days of week</string>
     <string name="error_text">Try again</string>

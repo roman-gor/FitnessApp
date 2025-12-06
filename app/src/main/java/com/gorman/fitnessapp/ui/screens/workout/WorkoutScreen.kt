@@ -125,7 +125,8 @@ fun ProgramDefaultInfoScreen(
             text = stringResource(R.string.workout)
         )
         Column(
-            modifier = Modifier.fillMaxSize()
+            modifier = Modifier
+                .fillMaxSize()
                 .verticalScroll(rememberScrollState()),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
@@ -235,7 +236,8 @@ fun ProgramItemCard(
         else -> programDay
     }
     Card(
-        modifier = Modifier.fillMaxWidth()
+        modifier = Modifier
+            .fillMaxWidth()
             .padding(horizontal = 24.dp, vertical = 8.dp)
             .clickable(onClick = {
                 onItemClick(programDay)
@@ -336,7 +338,8 @@ fun ErrorLoading(
     onBackPage: () -> Unit,
     onAgainClick: () -> Unit
 ) {
-    Box(modifier = Modifier.fillMaxSize()
+    Box(modifier = Modifier
+        .fillMaxSize()
         .background(colorResource(R.color.bg_color))
     ) {
         Column(
@@ -355,6 +358,7 @@ fun ErrorLoading(
                 contentAlignment = Alignment.Center
             ) {
                 Column(
+                    modifier = Modifier.fillMaxSize(),
                     horizontalAlignment = Alignment.CenterHorizontally,
                     verticalArrangement = Arrangement.Center
                 ) {
@@ -367,7 +371,8 @@ fun ErrorLoading(
                         fontSize = 18.sp,
                         fontWeight = FontWeight.ExtraBold,
                         color = colorResource(R.color.white),
-                        modifier = Modifier.fillMaxWidth()
+                        modifier = Modifier
+                            .fillMaxWidth()
                             .clickable(onClick = {
                                 onAgainClick()
                             }),
