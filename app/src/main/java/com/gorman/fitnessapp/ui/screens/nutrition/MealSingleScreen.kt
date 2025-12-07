@@ -72,7 +72,7 @@ fun MealSingleScreen(
                 )
                 Text(
                     text = "${stringResource(R.string.cpfc)}: " +
-                            "${meal.carbs.toInt()}/${meal.protein.toInt()}/${meal.fats.toInt()}/${meal.carbs.toInt()}",
+                            "${meal.calories.toInt()}/${meal.protein.toInt()}/${meal.fats.toInt()}/${meal.carbs.toInt()}",
                     fontFamily = mulishFont(),
                     fontSize = 14.sp,
                     fontWeight = FontWeight.Medium,

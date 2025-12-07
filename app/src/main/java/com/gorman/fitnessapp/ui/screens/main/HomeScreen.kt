@@ -390,7 +390,7 @@ fun ProgramCard(
                     ) {
                         Text(
                             text = stringResource(R.string.program_header_text),
-                            fontSize = 26.sp,
+                            fontSize = 22.sp,
                             color = colorResource(R.color.meet_text),
                             fontWeight = FontWeight.ExtraBold,
                             fontFamily = mulishFont(),

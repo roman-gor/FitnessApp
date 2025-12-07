@@ -164,7 +164,7 @@ fun ProgramByDayCard(
                             text = "$durationTotal ${minutesSuffix(durationTotal)}",
                             fontFamily = mulishFont(),
                             color = colorResource(R.color.white),
-                            fontSize = 12.sp,
+                            fontSize = 10.sp,
                             fontWeight = FontWeight.Medium
                         )
                     }
@@ -180,7 +180,7 @@ fun ProgramByDayCard(
                             text = "$caloriesTotal ${stringResource(R.string.calories)}",
                             fontFamily = mulishFont(),
                             color = colorResource(R.color.white),
-                            fontSize = 12.sp,
+                            fontSize = 10.sp,
                             fontWeight = FontWeight.Medium
                         )
                     }
@@ -196,7 +196,7 @@ fun ProgramByDayCard(
                             text = "$exercisesTotal ${exercisesSuffix(exercisesTotal)}",
                             fontFamily = mulishFont(),
                             color = colorResource(R.color.white),
-                            fontSize = 12.sp,
+                            fontSize = 10.sp,
                             fontWeight = FontWeight.Medium
                         )
                     }
