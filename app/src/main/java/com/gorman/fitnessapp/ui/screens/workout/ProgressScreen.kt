@@ -175,6 +175,8 @@ fun ProgressContent (
                     )
                 }
                 Spacer(modifier = Modifier.height(24.dp))
+                WorkoutStats(filterHistory, exercises, usersData)
+                Spacer(modifier = Modifier.height(24.dp))
                 Text(
                     text = stringResource(R.string.activities),
                     fontFamily = mulishFont(),
@@ -242,7 +244,7 @@ fun HistoryList(
 ) {
     filterHistory.forEach { history ->
         val exercise = exercises[history.exerciseId]
-        val duration = history.repsCompleted * history.setsCompleted
+        val duration = history.repsCompleted * history.setsCompleted / 3
         val complexity = exercise.complexity
         HistoryListItem(
             exercise,
@@ -531,5 +533,74 @@ fun UserDataScreen(
                     .clip(CircleShape)
                     .size(125.dp),
                 contentScale = ContentScale.Crop)
+    }
+}
+
+@Composable
+fun WorkoutStats(
+    filterHistory: List<WorkoutHistory>,
+    exercises: List<Exercise>,
+    usersData: UsersData?
+) {
+    val totalCalories = filterHistory.sumOf { history ->
+        val exercise = exercises.getOrNull(history.exerciseId)
+        val complexity = exercise?.complexity ?: 1
+        val duration = history.repsCompleted * history.setsCompleted
+        (complexity * 10) + (duration / 2)
+    }
+    val totalDuration = filterHistory.sumOf { it.repsCompleted * it.setsCompleted / 3 }
+
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 32.dp)
+            .clip(RoundedCornerShape(16.dp))
+            .background(Color(0xFF2E2D38))
+            .padding(16.dp),
+        horizontalArrangement = Arrangement.SpaceAround
+    ) {
+        Column(horizontalAlignment = Alignment.CenterHorizontally) {
+            Text(
+                text = stringResource(R.string.calories),
+                color = Color.White,
+                fontSize = 16.sp,
+                fontWeight = FontWeight.Bold
+            )
+            Text(
+                text = "$totalCalories",
+                color = Color.White,
+                fontSize = 14.sp
+            )
+        }
+        Column(horizontalAlignment = Alignment.CenterHorizontally) {
+            Text(
+                text = stringResource(R.string.duration),
+                color = Color.White,
+                fontSize = 16.sp,
+                fontWeight = FontWeight.Bold
+            )
+            Text(
+                text = "$totalDuration min",
+                color = Color.White,
+                fontSize = 14.sp
+            )
+        }
+        usersData?.weight?.let {
+            Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                Text(
+                    text = stringResource(R.string.weight),
+                    color = Color.White,
+                    fontSize = 16.sp,
+                    fontWeight = FontWeight.Bold,
+                    fontFamily = mulishFont()
+                )
+                Text(
+                    text = "${it.toInt()} ${stringResource(R.string.kg)}",
+                    color = Color.White,
+                    fontSize = 14.sp,
+                    fontFamily = mulishFont()
+                )
+            }
+        }
     }
 }
